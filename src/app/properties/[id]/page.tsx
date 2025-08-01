@@ -77,9 +77,10 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
 
           <div className="mt-6">
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">Description</h2>
-            <p className="text-gray-700 dark:text-gray-300 whitespace-pre-line">
-              {property.description}
-            </p>
+            <div 
+              className="text-gray-700 dark:text-gray-300 rich-text-content" 
+              dangerouslySetInnerHTML={{ __html: property.description }}
+            />
           </div>
 
           {/* Additional Images */}

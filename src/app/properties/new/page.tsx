@@ -1,8 +1,28 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
+
+// Dynamically import React Quill to avoid SSR issues
+const ReactQuill = dynamic(
+  async () => {
+    const { default: RQ } = await import('react-quill');
+    return RQ;
+  }, {
+    ssr: false,
+    loading: () => <div className="h-64 w-full bg-gray-100 dark:bg-gray-800 animate-pulse rounded-md"></div>,
+  }
+);
+
+// Import the custom hook for Quill editor
+import { useQuillEditor } from '@/hooks/useQuillEditor';
+
+// Import Quill styles
+import 'react-quill/dist/quill.snow.css';
+// Import Quill table UI styles
+import 'quill-table-ui/dist/index.css';
 
 export default function NewPropertyPage() {
   const router = useRouter();
@@ -20,8 +40,11 @@ export default function NewPropertyPage() {
     baths: '',
     area: '',
   });
+  
+  // Initialize Quill editor
+  const { isEditorReady } = useQuillEditor(formData.description);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -147,15 +170,40 @@ export default function NewPropertyPage() {
           <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
             Description
           </label>
-          <textarea
-            id="description"
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            required
-            rows={4}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-          />
+          <div className="mt-1">
+            {/* Use ReactQuill with our custom hook */}
+            {isEditorReady && (
+              <ReactQuill
+                theme="snow"
+                value={formData.description}
+                onChange={(content) => setFormData(prev => ({ ...prev, description: content }))}
+                className="bg-white dark:bg-gray-800 rounded-md"
+                modules={{
+                  toolbar: [
+                    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    [{ 'indent': '-1'}, { 'indent': '+1' }],
+                    [{ 'align': [] }],
+                    ['link', 'image'],
+                    [{ 'table': [] }],
+                    [{ 'color': [] }, { 'background': [] }],
+                    ['clean']
+                  ],
+                  table: true,
+                  tableUI: true,
+                }}
+                formats={[
+                  'header',
+                  'bold', 'italic', 'underline', 'strike',
+                  'list', 'bullet', 'indent',
+                  'link', 'image', 'table', 'table-cell', 'table-header', 'table-row',
+                  'align', 'color', 'background',
+                ]}
+                style={{ height: '200px' }}
+              />
+            )}
+          </div>
         </div>
 
         <div>

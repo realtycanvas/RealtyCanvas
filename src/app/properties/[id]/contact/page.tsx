@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
@@ -9,13 +9,15 @@ import { AppProps } from 'next/app';
 
 // Define the correct type for the page props
 type ContactPageProps = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 
 export default function ContactPage({ params }: ContactPageProps) {
-  const { id } = params;
+  // Unwrap params Promise using React.use() for Next.js 15 compatibility
+  const unwrappedParams = use(params);
+  const { id } = unwrappedParams;
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({

@@ -11,6 +11,14 @@ export default function Navbar() {
                 RealityCanvas
               </Link>
             </div>
+            <div className="hidden md:ml-6 md:flex md:space-x-8">
+              <Link 
+                href="/properties" 
+                className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-700 hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400 border-b-2 border-transparent hover:border-indigo-600 dark:hover:border-indigo-400"
+              >
+                Properties
+              </Link>
+            </div>
           </div>
           <div className="flex items-center">
             <Link 
