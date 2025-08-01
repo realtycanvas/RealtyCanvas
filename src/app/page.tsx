@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import PropertyCard from '@/components/PropertyCard';
-import { supabase } from '@/lib/supabase';
+// import { supabase } from '@/lib/supabase';
 
 // Define the Property type based on the Prisma schema
 type Property = {
@@ -261,7 +261,7 @@ export default function Home() {
                 {contactSuccess ? (
                   <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
                     <strong className="font-bold">Thank you!</strong>
-                    <span className="block sm:inline"> We've received your message and will get back to you soon.</span>
+                    <span className="block sm:inline"> We&apos;ve received your message and will get back to you soon.</span>
                   </div>
                 ) : (
                   <form onSubmit={handleContactSubmit}>

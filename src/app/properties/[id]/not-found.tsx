@@ -5,7 +5,7 @@ export default function PropertyNotFound() {
     <div className="flex flex-col items-center justify-center py-16">
       <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Property Not Found</h2>
       <p className="text-gray-600 dark:text-gray-400 mb-8 text-center max-w-md">
-        The property you're looking for doesn't exist or has been removed.
+        The property you&apos;re looking for doesn&apos;t exist or has been removed.
       </p>
       <Link
         href="/"
