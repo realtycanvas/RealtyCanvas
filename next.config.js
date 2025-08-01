@@ -2,12 +2,10 @@
 const nextConfig = {
   images: {
     domains: [
-      
       'images.unsplash.com',
       'xsgljyuvykzfzvqwgtev.supabase.co', // Wildcard pattern for all Supabase URLs
-      // Or use a wildcard like:
       'supabase.co',
-    
+      'images.pexels.com', // Added for Pexels images
     ],
   },
 };

@@ -1,26 +1,50 @@
-import Image from 'next/image';
 import Link from 'next/link';
-import { Property } from '../generated/prisma';
+import ImageCarousel from './ImageCarousel';
+
+// Define Property type directly since generated Prisma types aren't available
+type Property = {
+  id: string;
+  title: string;
+  description: string;
+  price: number;
+  address: string;
+  location: string;
+  currency: string;
+  featuredImage: string;
+  galleryImages: string[];
+  beds: number;
+  baths: number;
+  area: number;
+  createdAt: Date;
+};
 
 type PropertyCardProps = {
   property: Property;
 };
 
 export default function PropertyCard({ property }: PropertyCardProps) {
-  // Use the featured image as the main display image
-  const mainImage = property.featuredImage || '/placeholder-property.svg';
+  // Prepare images array for carousel
+  const images = [];
+  if (property.featuredImage) {
+    images.push(property.featuredImage);
+  }
+  if (property.galleryImages && property.galleryImages.length > 0) {
+    images.push(...property.galleryImages);
+  }
+  
+  // If no images available, use placeholder
+  if (images.length === 0) {
+    images.push('/placeholder-property.svg');
+  }
 
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden dark:bg-gray-800">
-      <div className="relative h-48 w-full">
-        <Image
-          src={mainImage}
-          alt={property.title}
-          fill
-          className="object-cover"
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-        />
-      </div>
+      <ImageCarousel 
+        images={images} 
+        title={property.title} 
+        autoplay={true} 
+        loop={true} 
+      />
       <div className="p-4">
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{property.title}</h3>
         <p className="text-gray-500 dark:text-gray-400 text-sm mb-2">{property.address}</p>

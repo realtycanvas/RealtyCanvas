@@ -7,7 +7,8 @@ import Link from 'next/link';
 export default function NewPropertyPage() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [images, setImages] = useState<File[]>([]);
+  const [featuredImage, setFeaturedImage] = useState<File | null>(null);
+  const [galleryImages, setGalleryImages] = useState<File[]>([]);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -28,15 +29,25 @@ export default function NewPropertyPage() {
     }));
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const filesArray = Array.from(e.target.files);
-      setImages((prevImages) => [...prevImages, ...filesArray]);
+  const handleFeaturedImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setFeaturedImage(e.target.files[0]);
     }
   };
 
-  const removeImage = (index: number) => {
-    setImages((prevImages) => prevImages.filter((_, i) => i !== index));
+  const handleGalleryImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const filesArray = Array.from(e.target.files);
+      setGalleryImages((prevImages) => [...prevImages, ...filesArray]);
+    }
+  };
+
+  const removeFeaturedImage = () => {
+    setFeaturedImage(null);
+  };
+
+  const removeGalleryImage = (index: number) => {
+    setGalleryImages((prevImages) => prevImages.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -44,9 +55,12 @@ export default function NewPropertyPage() {
     setIsSubmitting(true);
 
     try {
-      // Upload images to Supabase Storage
+      // Prepare all images for upload (featured image first, then gallery)
+      const allImages = featuredImage ? [featuredImage, ...galleryImages] : galleryImages;
+      
+      // Upload images to server
       const imageUrls = await Promise.all(
-        images.map(async (image) => {
+        allImages.map(async (image) => {
           try {
             const formData = new FormData();
             formData.append('file', image);
@@ -85,8 +99,8 @@ export default function NewPropertyPage() {
           beds: formData.beds ? parseInt(formData.beds) : 0,
           baths: formData.baths ? parseInt(formData.baths) : 0,
           area: formData.area ? parseInt(formData.area) : 0,
-          featuredImage: validImageUrls.length > 0 ? validImageUrls[0] : '',
-          galleryImages: validImageUrls.length > 1 ? validImageUrls.slice(1) : [],
+          featuredImage: featuredImage && validImageUrls.length > 0 ? validImageUrls[0] : '',
+          galleryImages: featuredImage ? validImageUrls.slice(1) : validImageUrls,
         }),
       });
 
@@ -255,7 +269,51 @@ export default function NewPropertyPage() {
 
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-            Images
+            Featured Image
+          </label>
+          <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md dark:border-gray-700">
+            <div className="space-y-1 text-center">
+              <svg
+                className="mx-auto h-12 w-12 text-gray-400"
+                stroke="currentColor"
+                fill="none"
+                viewBox="0 0 48 48"
+                aria-hidden="true"
+              >
+                <path
+                  d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                  strokeWidth={2}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              <div className="flex text-sm text-gray-600 dark:text-gray-400">
+                <label
+                  htmlFor="featured-upload"
+                  className="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500 dark:bg-gray-800 dark:text-indigo-400 dark:hover:text-indigo-300"
+                >
+                  <span>Upload featured image</span>
+                  <input
+                    id="featured-upload"
+                    name="featured-upload"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFeaturedImageChange}
+                    className="sr-only"
+                  />
+                </label>
+                <p className="pl-1">or drag and drop</p>
+              </div>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                PNG, JPG, GIF up to 10MB
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            Gallery Images
           </label>
           <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md dark:border-gray-700">
             <div className="space-y-1 text-center">
@@ -278,14 +336,14 @@ export default function NewPropertyPage() {
                   htmlFor="file-upload"
                   className="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500 dark:bg-gray-800 dark:text-indigo-400 dark:hover:text-indigo-300"
                 >
-                  <span>Upload images</span>
+                  <span>Upload gallery images</span>
                   <input
                     id="file-upload"
                     name="file-upload"
                     type="file"
                     multiple
                     accept="image/*"
-                    onChange={handleImageChange}
+                    onChange={handleGalleryImagesChange}
                     className="sr-only"
                   />
                 </label>
@@ -298,9 +356,32 @@ export default function NewPropertyPage() {
           </div>
 
           {/* Preview uploaded images */}
-          {images.length > 0 && (
+          {(featuredImage || galleryImages.length > 0) && (
             <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3">
-              {images.map((image, index) => (
+              {featuredImage && (
+                <div className="relative">
+                  <div className="group aspect-w-10 aspect-h-7 block w-full overflow-hidden rounded-lg bg-gray-100">
+                    <img
+                      src={URL.createObjectURL(featuredImage)}
+                      alt="Featured image"
+                      className="object-cover pointer-events-none"
+                    />
+                    <button
+                      type="button"
+                      className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1 m-1"
+                      onClick={removeFeaturedImage}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                      </svg>
+                    </button>
+                  </div>
+                  <p className="mt-2 block text-sm font-medium text-gray-900 dark:text-gray-200 truncate">
+                    Featured: {featuredImage.name}
+                  </p>
+                </div>
+              )}
+              {galleryImages.map((image, index) => (
                 <div key={index} className="relative">
                   <div className="group aspect-w-10 aspect-h-7 block w-full overflow-hidden rounded-lg bg-gray-100">
                     <img
@@ -311,7 +392,7 @@ export default function NewPropertyPage() {
                     <button
                       type="button"
                       className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1 m-1"
-                      onClick={() => removeImage(index)}
+                      onClick={() => removeGalleryImage(index)}
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
