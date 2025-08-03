@@ -10,11 +10,8 @@ const nextConfig = {
       'example.com'
     ],
   },
+  // Ensure CSS modules are properly handled
   webpack: (config) => {
-    config.module.rules.push({
-      test: /\.(css)$/,
-      use: ['style-loader', 'css-loader'],
-    });
     return config;
   },
 };
