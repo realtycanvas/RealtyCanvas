@@ -378,7 +378,7 @@ export default function NewPropertyPage() {
               
               <div className="mt-4">
                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Don't have a JSON file? Fill out the form below.
+                  Don&apos;t have a JSON file? Fill out the form below.
                 </p>
               </div>
             </div>
@@ -727,7 +727,7 @@ export default function NewPropertyPage() {
           </div>
         );
 
-      case 3: // Builder Info
+      case 4: // Builder Info
         return (
           <div className="space-y-8">
             <div>
@@ -872,7 +872,7 @@ export default function NewPropertyPage() {
           </div>
         );
 
-      case 4: // FAQs
+      case 5: // FAQs
         return (
           <div className="space-y-8">
             <div>
@@ -909,7 +909,7 @@ export default function NewPropertyPage() {
                   </p>
                 ) : (
                   <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                    Enter FAQs as a direct JSON array. Each FAQ should have a question and answer. Do not wrap the array in an object with a 'faqs' property.
+                    Enter FAQs as a direct JSON array. Each FAQ should have a question and answer. Do not wrap the array in an object with a &apos;faqs&apos; property.
                   </p>
                 )}
               </div>
@@ -917,7 +917,7 @@ export default function NewPropertyPage() {
           </div>
         );
 
-      case 5: // Review
+      case 6: // Review
         return (
           <div className="space-y-8">
             <div>
@@ -1041,8 +1041,8 @@ export default function NewPropertyPage() {
         <div className="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-lg p-6">
           {renderStepContent()}
 
-          // Step 3: Builder Info
-          {currentStep === 3 && (
+          {/* Step 4: Builder Info */}
+          {currentStep === 4 && (
             <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6 animate-fadeIn">
               <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">Builder Information</h2>
               <div className="space-y-6">
@@ -1074,7 +1074,7 @@ export default function NewPropertyPage() {
                       className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
                     />
                     <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                      Enter the URL of the builder's logo image
+                      Enter the URL of the builder&apos;s logo image
                     </p>
                   </div>
 
@@ -1096,11 +1096,11 @@ export default function NewPropertyPage() {
             </div>
           )}
 
-{/* Step 4: FAQs - Rendered through renderStepContent() */}
+{/* Step 5: FAQs - Rendered through renderStepContent() */}
 
 
-          {/* Step 5: Review */}
-          {currentStep === 5 && (
+          {/* Step 6: Review */}
+          {currentStep === 6 && (
             <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6 animate-fadeIn">
               <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">Review Your Property</h2>
               <div className="space-y-6">
@@ -1196,7 +1196,7 @@ export default function NewPropertyPage() {
 
                 <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
                   <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-                    Please review all information before submitting. Once submitted, you'll be able to edit the property from the property management page.
+                    Please review all information before submitting. Once submitted, you&apos;ll be able to edit the property from the property management page.
                   </p>
                 </div>
               </div>

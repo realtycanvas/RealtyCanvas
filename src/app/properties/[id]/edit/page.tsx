@@ -831,7 +831,7 @@ export default function PropertyEditPage({ params }: PropertyEditPageProps) {
                 FAQs (JSON format)
               </label>
               <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
-                Enter as a direct JSON array of question/answer objects, NOT as an object with a 'faqs' property.
+                Enter as a direct JSON array of question/answer objects, NOT as an object with a &apos;faqs&apos; property.
               </p>
               <textarea
                 id="faqs"
