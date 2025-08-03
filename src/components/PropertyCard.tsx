@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import ImageCarousel from './ImageCarousel';
+import { stripHtml } from '@/utils/strip-html';
 
 // Define Property type directly since generated Prisma types aren't available
 type Property = {
@@ -52,7 +53,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
           ${property.price.toLocaleString()}
         </p>
         <p className="text-gray-700 dark:text-gray-300 text-sm line-clamp-2 mb-4">
-          {property.description}
+          {stripHtml(property.description)}
         </p>
         <Link 
           href={`/properties/${property.id}`}

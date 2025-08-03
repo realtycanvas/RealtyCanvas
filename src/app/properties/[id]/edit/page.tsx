@@ -7,24 +7,14 @@ import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import { use } from 'react';
 
-// Dynamically import React Quill to avoid SSR issues
-const ReactQuill = dynamic(
-  async () => {
-    const { default: RQ } = await import('react-quill');
-    return RQ;
-  }, {
+// Dynamically import LexicalEditor to avoid SSR issues
+const LexicalEditor = dynamic(
+  () => import('@/components/LexicalEditor'),
+  {
     ssr: false,
-    loading: () => <div className="h-64 w-full bg-gray-100 dark:bg-gray-800 animate-pulse rounded-md"></div>,
+    loading: () => <div className="h-64 w-full bg-gray-100 dark:bg-gray-800 animate-pulse rounded-md flex items-center justify-center"><span className="text-gray-500">Loading editor...</span></div>,
   }
 );
-
-// Import the custom hook for Quill editor
-import { useQuillEditor } from '@/hooks/useQuillEditor';
-
-// Import Quill styles
-import 'react-quill/dist/quill.snow.css';
-// Import Quill table UI styles
-import 'quill-table-ui/dist/index.css';
 
 type PropertyFormData = {
   title: string;
@@ -38,6 +28,16 @@ type PropertyFormData = {
   beds: number;
   baths: number;
   area: number;
+  // New fields
+  bannerTitle: string;
+  aboutTitle: string;
+  highlights: string; // JSON stringified array
+  floorPlans: string; // JSON stringified array
+  facilities: string; // JSON stringified array
+  sitePlanImage: string;
+  builderName: string;
+  faqs: string; // JSON stringified array
+  relatedProperties: string[]; // Array of property IDs
 };
 
 type UploadedImage = {
@@ -72,15 +72,25 @@ export default function PropertyEditPage({ params }: PropertyEditPageProps) {
     beds: 0,
     baths: 0,
     area: 0,
+    // New fields with default values
+    bannerTitle: '',
+    aboutTitle: '',
+    highlights: '[]', // Empty JSON array
+    floorPlans: '[]', // Empty JSON array
+    facilities: '[]', // Empty JSON array
+    sitePlanImage: '',
+    builderName: '',
+    faqs: '[]', // Empty JSON array
+    relatedProperties: [],
   });
   
   // State for file uploads
   const [newFeaturedImage, setNewFeaturedImage] = useState<UploadedImage | null>(null);
+  const [newSitePlanImage, setNewSitePlanImage] = useState<UploadedImage | null>(null);
   const [newGalleryImages, setNewGalleryImages] = useState<UploadedImage[]>([]);
   const [removedGalleryImages, setRemovedGalleryImages] = useState<string[]>([]);
 
-  // Initialize Quill editor
-  const { isEditorReady } = useQuillEditor(formData.description);
+  // No need to initialize editor separately with Lexical
   
   // Fetch property data
   useEffect(() => {
@@ -106,6 +116,16 @@ export default function PropertyEditPage({ params }: PropertyEditPageProps) {
           beds: property.beds || 0,
           baths: property.baths || 0,
           area: property.area || 0,
+          // New fields
+          bannerTitle: property.bannerTitle || '',
+          aboutTitle: property.aboutTitle || '',
+          highlights: property.highlights || '[]',
+          floorPlans: property.floorPlans || '[]',
+          facilities: property.facilities || '[]',
+          sitePlanImage: property.sitePlanImage || '',
+          builderName: property.builderName || '',
+          faqs: property.faqs || '[]',
+          relatedProperties: property.relatedProperties || [],
         });
       } catch (error) {
         console.error('Error fetching property:', error);
@@ -123,9 +143,27 @@ export default function PropertyEditPage({ params }: PropertyEditPageProps) {
     setFormData(prev => ({
       ...prev,
       [name]: name === 'price' || name === 'beds' || name === 'baths' || name === 'area' 
-        ? Number(value) 
+        ? parseFloat(value) || 0 
         : value
     }));
+  };
+
+  // Handle JSON array fields
+  const handleArrayFieldChange = (fieldName: string, value: any[]) => {
+    setFormData(prev => ({
+      ...prev,
+      [fieldName]: JSON.stringify(value)
+    }));
+  };
+  
+  // Parse JSON string to array
+  const parseJsonField = (jsonString: string, defaultValue: any[] = []) => {
+    try {
+      return JSON.parse(jsonString);
+    } catch (error) {
+      console.error(`Error parsing ${jsonString}:`, error);
+      return defaultValue;
+    }
   };
 
   const handleFeaturedImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -149,12 +187,31 @@ export default function PropertyEditPage({ params }: PropertyEditPageProps) {
     }
   };
 
+  const handleSitePlanImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      setNewSitePlanImage({
+        file,
+        preview: URL.createObjectURL(file)
+      });
+    }
+  };
+
   const removeFeaturedImage = () => {
     if (newFeaturedImage) {
       URL.revokeObjectURL(newFeaturedImage.preview);
       setNewFeaturedImage(null);
     } else {
       setFormData(prev => ({ ...prev, featuredImage: '' }));
+    }
+  };
+
+  const removeSitePlanImage = () => {
+    if (newSitePlanImage) {
+      URL.revokeObjectURL(newSitePlanImage.preview);
+      setNewSitePlanImage(null);
+    } else {
+      setFormData(prev => ({ ...prev, sitePlanImage: '' }));
     }
   };
 
@@ -187,11 +244,14 @@ export default function PropertyEditPage({ params }: PropertyEditPageProps) {
       if (newFeaturedImage) {
         URL.revokeObjectURL(newFeaturedImage.preview);
       }
+      if (newSitePlanImage) {
+        URL.revokeObjectURL(newSitePlanImage.preview);
+      }
       newGalleryImages.forEach(image => {
         URL.revokeObjectURL(image.preview);
       });
     };
-  }, [newFeaturedImage, newGalleryImages]);
+  }, [newFeaturedImage, newSitePlanImage, newGalleryImages]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -215,6 +275,25 @@ export default function PropertyEditPage({ params }: PropertyEditPageProps) {
           featuredImageUrl = data.url;
         } else {
           console.error('Featured image upload failed:', await response.text());
+        }
+      }
+      
+      // Upload new site plan image if exists
+      let sitePlanImageUrl = formData.sitePlanImage;
+      if (newSitePlanImage) {
+        const formDataUpload = new FormData();
+        formDataUpload.append('file', newSitePlanImage.file);
+        
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          body: formDataUpload,
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          sitePlanImageUrl = data.url;
+        } else {
+          console.error('Site plan image upload failed:', await response.text());
         }
       }
 
@@ -262,7 +341,28 @@ export default function PropertyEditPage({ params }: PropertyEditPageProps) {
         body: JSON.stringify({
           ...formData,
           featuredImage: featuredImageUrl,
+          sitePlanImage: sitePlanImageUrl,
           galleryImages: updatedGalleryImages,
+          // Ensure JSON fields are properly formatted
+          highlights: formData.highlights,
+          floorPlans: formData.floorPlans,
+          facilities: formData.facilities,
+          // Check if faqs is a JSON object with a faqs property and extract just the array if needed
+          faqs: (() => {
+            try {
+              const parsedFaqs = JSON.parse(formData.faqs);
+              // If faqs is an object with a faqs property that's an array, extract just the array
+              if (parsedFaqs && typeof parsedFaqs === 'object' && !Array.isArray(parsedFaqs) && Array.isArray(parsedFaqs.faqs)) {
+                console.log('Extracted faqs array from object');
+                return JSON.stringify(parsedFaqs.faqs);
+              }
+              // Otherwise return as is
+              return formData.faqs;
+            } catch (e) {
+              console.error('Error parsing faqs:', e);
+              return formData.faqs;
+            }
+          })(),
         }),
       });
 
@@ -340,38 +440,16 @@ export default function PropertyEditPage({ params }: PropertyEditPageProps) {
                 Description *
               </label>
               <div className="mt-1">
-                {/* Use ReactQuill with our custom hook */}
-                {isEditorReady && (
-                  <ReactQuill
-                    theme="snow"
-                    value={formData.description}
-                    onChange={(content) => setFormData(prev => ({ ...prev, description: content }))}
-                    className="bg-white dark:bg-gray-800 rounded-md"
-                    modules={{
-                      toolbar: [
-                        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-                        ['bold', 'italic', 'underline', 'strike'],
-                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                        [{ 'indent': '-1'}, { 'indent': '+1' }],
-                        [{ 'align': [] }],
-                        ['link', 'image'],
-                        [{ 'table': [] }],
-                        [{ 'color': [] }, { 'background': [] }],
-                        ['clean']
-                      ],
-                      table: true,
-                      tableUI: true,
-                    }}
-                    formats={[
-                      'header',
-                      'bold', 'italic', 'underline', 'strike',
-                      'list', 'bullet', 'indent',
-                      'link', 'image', 'table', 'table-cell', 'table-header', 'table-row',
-                      'align', 'color', 'background',
-                    ]}
-                    style={{ height: '200px' }}
-                  />
-                )}
+                {/* Use LexicalEditor */}
+                <LexicalEditor
+                  initialValue={formData.description}
+                  onChange={(content) => {
+                    console.log('Description updated:', content);
+                    setFormData(prev => ({ ...prev, description: content }));
+                  }}
+                  className="bg-white dark:bg-gray-800 rounded-md min-h-[200px] border border-gray-300 dark:border-gray-700 h-[300px] mb-5"
+                />
+
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -598,6 +676,201 @@ export default function PropertyEditPage({ params }: PropertyEditPageProps) {
                   />
                 </label>
               </div>
+            </div>
+
+            {/* Banner Title */}
+            <div>
+              <label htmlFor="bannerTitle" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Banner Title
+              </label>
+              <input
+                type="text"
+                id="bannerTitle"
+                name="bannerTitle"
+                value={formData.bannerTitle}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              />
+            </div>
+
+            {/* About Title */}
+            <div>
+              <label htmlFor="aboutTitle" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                About Title
+              </label>
+              <input
+                type="text"
+                id="aboutTitle"
+                name="aboutTitle"
+                value={formData.aboutTitle}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              />
+            </div>
+
+            {/* Builder Name */}
+            <div>
+              <label htmlFor="builderName" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Builder Name
+              </label>
+              <input
+                type="text"
+                id="builderName"
+                name="builderName"
+                value={formData.builderName}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              />
+            </div>
+
+            {/* Site Plan Image */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Site Plan Image
+              </label>
+              
+              {/* Current site plan image or new site plan image preview */}
+              {(formData.sitePlanImage || newSitePlanImage) && (
+                <div className="mb-3 relative">
+                  <div className="relative w-full h-48 rounded-md overflow-hidden">
+                    <Image 
+                      src={newSitePlanImage ? newSitePlanImage.preview : formData.sitePlanImage}
+                      alt="Site plan image"
+                      fill
+                      style={{ objectFit: 'cover' }}
+                      className="rounded-md"
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={removeSitePlanImage}
+                    className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600 focus:outline-none"
+                    aria-label="Remove image"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                    </svg>
+                  </button>
+                </div>
+              )}
+              
+              {/* Upload new site plan image */}
+              <div className="mt-1">
+                <label className="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:hover:bg-gray-600 cursor-pointer">
+                  <span>{formData.sitePlanImage || newSitePlanImage ? 'Change Site Plan Image' : 'Upload Site Plan Image'}</span>
+                  <input
+                    type="file"
+                    id="sitePlanImage"
+                    onChange={handleSitePlanImageChange}
+                    accept="image/*"
+                    className="sr-only"
+                  />
+                </label>
+              </div>
+            </div>
+
+            {/* Highlights */}
+            <div>
+              <label htmlFor="highlights" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Highlights (One per line)
+              </label>
+              <textarea
+                id="highlights"
+                name="highlights"
+                value={parseJsonField(formData.highlights).join('\n')}
+                onChange={(e) => handleArrayFieldChange('highlights', e.target.value.split('\n'))}
+                rows={4}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                placeholder="Enter each highlight on a new line"
+              />
+            </div>
+
+            {/* Floor Plans */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Floor Plans (JSON format)
+              </label>
+              <textarea
+                id="floorPlans"
+                name="floorPlans"
+                value={formData.floorPlans}
+                onChange={handleChange}
+                rows={6}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white font-mono text-sm"
+                placeholder='[
+  {
+    "name": "Type A",
+    "size": "1200 sq.ft.",
+    "bedrooms": 2,
+    "price": "$250,000",
+    "imageUrl": "https://example.com/floor-plan-a.jpg"
+  }
+]'
+              />
+            </div>
+
+            {/* Facilities */}
+            <div>
+              <label htmlFor="facilities" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Facilities (One per line)
+              </label>
+              <textarea
+                id="facilities"
+                name="facilities"
+                value={parseJsonField(formData.facilities).join('\n')}
+                onChange={(e) => handleArrayFieldChange('facilities', e.target.value.split('\n'))}
+                rows={4}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                placeholder="Enter each facility on a new line"
+              />
+            </div>
+
+            {/* FAQs */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                FAQs (JSON format)
+              </label>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
+                Enter as a direct JSON array of question/answer objects, NOT as an object with a 'faqs' property.
+              </p>
+              <textarea
+                id="faqs"
+                name="faqs"
+                value={formData.faqs}
+                onChange={handleChange}
+                rows={6}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white font-mono text-sm"
+                placeholder='[
+  {
+    "question": "What are the payment options?",
+    "answer": "We accept various payment methods including..."
+  }
+]
+
+// IMPORTANT: Enter as a direct array of objects, NOT as an object with a "faqs\" property'
+              />
+            </div>
+
+            {/* Related Properties */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Related Properties (JSON format)
+              </label>
+              <textarea
+                id="relatedProperties"
+                name="relatedProperties"
+                value={formData.relatedProperties}
+                onChange={handleChange}
+                rows={6}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white font-mono text-sm"
+                placeholder='[
+  {
+    "id": "property-id-1",
+    "title": "Related Property 1",
+    "imageUrl": "https://example.com/property1.jpg"
+  }
+]'
+              />
             </div>
           </div>
 

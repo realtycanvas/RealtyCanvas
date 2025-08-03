@@ -9,17 +9,51 @@ datasource db {
 }
 
 model Property {
-  id            String   @id @default(uuid())
-  title         String
-  description   String
-  price         Int
-  address       String
-  location      String
-  currency      String   @default("USD")
-  featuredImage String
-  galleryImages String[]
-  beds          Int      @default(0)
-  baths         Int      @default(0)
-  area          Int      @default(0)
-  createdAt     DateTime @default(now())
+  id                String   @id @default(uuid())
+  title             String
+  description       String
+  price             Int
+  address           String
+  location          String
+  currency          String   @default("USD")
+  featuredImage     String
+  galleryImages     String[]
+  beds              Int      @default(0)
+  baths             Int      @default(0)
+  area              Int      @default(0)
+  createdAt         DateTime @default(now())
+  
+  // Banner section
+  bannerTitle       String?  
+  bannerSubtitle    String?
+  bannerDescription String?
+  
+  // About section
+  aboutTitle        String?
+  aboutDescription  String?
+  
+  // Highlights section
+  highlights        Json?    // Array of highlight items
+  
+  // Floor Plan section
+  floorPlans        Json?    // Array of floor plan images and details
+  
+  // Project Facilities
+  facilities        Json?    // Array of facility items
+  
+  // Site Plan
+  sitePlanImage     String?
+  sitePlanTitle     String?
+  sitePlanDescription String?
+  
+  // Builder Information
+  builderName       String?
+  builderLogo       String?
+  builderDescription String?
+  
+  // FAQs
+  faqs              Json?    // Array of FAQ items
+  
+  // Others/Related Properties
+  relatedProperties String[]  @default([])
 }

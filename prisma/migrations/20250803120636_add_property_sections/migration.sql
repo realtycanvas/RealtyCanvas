@@ -1,0 +1,17 @@
+-- AlterTable
+ALTER TABLE "public"."Property" ADD COLUMN     "aboutDescription" TEXT,
+ADD COLUMN     "aboutTitle" TEXT,
+ADD COLUMN     "bannerDescription" TEXT,
+ADD COLUMN     "bannerSubtitle" TEXT,
+ADD COLUMN     "bannerTitle" TEXT,
+ADD COLUMN     "builderDescription" TEXT,
+ADD COLUMN     "builderLogo" TEXT,
+ADD COLUMN     "builderName" TEXT,
+ADD COLUMN     "facilities" JSONB,
+ADD COLUMN     "faqs" JSONB,
+ADD COLUMN     "floorPlans" JSONB,
+ADD COLUMN     "highlights" JSONB,
+ADD COLUMN     "relatedProperties" TEXT[] DEFAULT ARRAY[]::TEXT[],
+ADD COLUMN     "sitePlanDescription" TEXT,
+ADD COLUMN     "sitePlanImage" TEXT,
+ADD COLUMN     "sitePlanTitle" TEXT;

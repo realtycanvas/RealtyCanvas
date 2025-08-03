@@ -2,6 +2,14 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
+import PropertyBanner from '@/components/PropertyBanner';
+import PropertyAbout from '@/components/PropertyAbout';
+import PropertyFeatures from '@/components/PropertyFeatures';
+import PropertyFloorPlans from '@/components/PropertyFloorPlans';
+import PropertyAmenities from '@/components/PropertyAmenities';
+import PropertySitePlan from '@/components/PropertySitePlan';
+import PropertyBuilder from '@/components/PropertyBuilder';
+import PropertyFAQ from '@/components/PropertyFAQ';
 
 
 export default async function PropertyPage({ params }: { params: Promise<{ id: string }>, searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
@@ -37,25 +45,15 @@ export default async function PropertyPage({ params }: { params: Promise<{ id: s
         </Link>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden">
-        {/* Property Images */}
-        <div className="relative h-96 w-full bg-gray-200 dark:bg-gray-700">
-          {property.featuredImage ? (
-            <Image
-              src={property.featuredImage}
-              alt={property.title}
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              priority
-            />
-          ) : (
-            <div className="flex items-center justify-center h-full">
-              <p className="text-gray-500 dark:text-gray-400">No image available</p>
-            </div>
-          )}
-        </div>
+      {/* Banner Section */}
+      <PropertyBanner 
+        featuredImage={property.featuredImage || ''}
+        title={property.bannerTitle || property.title}
+        subtitle={property.bannerSubtitle || undefined}
+        description={property.bannerDescription || undefined}
+      />
 
+      <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden">
         {/* Property Details */}
         <div className="p-6">
           <div className="flex justify-between items-start">
@@ -70,18 +68,70 @@ export default async function PropertyPage({ params }: { params: Promise<{ id: s
             </p>
           </div>
 
-          <div className="mt-6">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">Description</h2>
-            <div 
-              className="text-gray-700 dark:text-gray-300 rich-text-content" 
-              dangerouslySetInnerHTML={{ __html: property.description }}
-            />
-          </div>
+          {/* About Section */}
+          <PropertyAbout 
+            title={property.aboutTitle || undefined}
+            description={property.aboutDescription || property.description || undefined}
+          />
 
-          {/* Additional Images */}
+          {/* Highlights Section */}
+          {property.highlights && (
+            <PropertyFeatures 
+              highlights={typeof property.highlights === 'string' ? 
+                JSON.parse(property.highlights) : 
+                property.highlights}
+              title="Highlights"
+            />
+          )}
+
+          {/* Floor Plans Section */}
+          {property.floorPlans && (
+            <PropertyFloorPlans 
+              floorPlans={typeof property.floorPlans === 'string' ? 
+                JSON.parse(property.floorPlans) : 
+                property.floorPlans}
+              title="Floor Plans & Pricing"
+            />
+          )}
+
+          {/* Facilities Section */}
+          {property.facilities && (
+            <PropertyAmenities 
+              facilities={typeof property.facilities === 'string' ? 
+                JSON.parse(property.facilities) : 
+                property.facilities}
+              title="Project Facilities"
+            />
+          )}
+
+          {/* Site Plan Section */}
+          <PropertySitePlan 
+            sitePlanImage={property.sitePlanImage || undefined}
+            sitePlanTitle={property.sitePlanTitle || undefined}
+            sitePlanDescription={property.sitePlanDescription || undefined}
+          />
+
+          {/* Builder Section */}
+          <PropertyBuilder 
+            builderName={property.builderName || undefined}
+            builderLogo={property.builderLogo || undefined}
+            builderDescription={property.builderDescription || undefined}
+          />
+
+          {/* FAQ Section */}
+          {property.faqs && (
+            <PropertyFAQ 
+              faqs={typeof property.faqs === 'string' ? 
+                JSON.parse(property.faqs) : 
+                property.faqs}
+              title="Frequently Asked Questions"
+            />
+          )}
+
+          {/* Gallery Images */}
           {property.galleryImages && property.galleryImages.length > 0 && (
             <div className="mt-8">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">More Photos</h2>
+              <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">Gallery</h2>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {property.galleryImages.map((imageUrl, index) => (
                   <div key={index} className="relative aspect-w-16 aspect-h-9 rounded-lg overflow-hidden bg-gray-200 dark:bg-gray-700">
