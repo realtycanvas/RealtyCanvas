@@ -18,9 +18,6 @@ import { useLexicalEditor } from '@/hooks/useLexicalEditor';
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
 import LexicalToolbar from './LexicalToolbar';
 
-// Import styles
-import '@/app/styles/lexical-editor.css';
-
 // Define theme for the editor
 const theme = {
   paragraph: 'editor-paragraph',
