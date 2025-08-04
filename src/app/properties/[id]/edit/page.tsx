@@ -5,6 +5,13 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
+import PropertyBasicInfoEditor from '@/components/PropertyBasicInfoEditor';
+import PropertyHighlightsEditor from '@/components/PropertyHighlightsEditor';
+import PropertyFacilitiesEditor from '@/components/PropertyFacilitiesEditor';
+import PropertyFloorPlansEditor from '@/components/PropertyFloorPlansEditor';
+import PropertyBuilderEditor from '@/components/PropertyBuilderEditor';
+import PropertySitePlanEditor from '@/components/PropertySitePlanEditor';
+import PropertyFAQEditor from '@/components/PropertyFAQEditor';
 import { use } from 'react';
 
 // Dynamically import LexicalEditor to avoid SSR issues
@@ -35,7 +42,11 @@ type PropertyFormData = {
   floorPlans: string; // JSON stringified array
   facilities: string; // JSON stringified array
   sitePlanImage: string;
+  sitePlanTitle: string;
+  sitePlanDescription: string;
   builderName: string;
+  builderLogo: string;
+  builderDescription: string;
   faqs: string; // JSON stringified array
   relatedProperties: string[]; // Array of property IDs
 };
@@ -79,7 +90,11 @@ export default function PropertyEditPage({ params }: PropertyEditPageProps) {
     floorPlans: '[]', // Empty JSON array
     facilities: '[]', // Empty JSON array
     sitePlanImage: '',
+    sitePlanTitle: '',
+    sitePlanDescription: '',
     builderName: '',
+    builderLogo: '',
+    builderDescription: '',
     faqs: '[]', // Empty JSON array
     relatedProperties: [],
   });
@@ -123,7 +138,11 @@ export default function PropertyEditPage({ params }: PropertyEditPageProps) {
           floorPlans: property.floorPlans || '[]',
           facilities: property.facilities || '[]',
           sitePlanImage: property.sitePlanImage || '',
+          sitePlanTitle: property.sitePlanTitle || '',
+          sitePlanDescription: property.sitePlanDescription || '',
           builderName: property.builderName || '',
+          builderLogo: property.builderLogo || '',
+          builderDescription: property.builderDescription || '',
           faqs: property.faqs || '[]',
           relatedProperties: property.relatedProperties || [],
         });
@@ -419,147 +438,29 @@ export default function PropertyEditPage({ params }: PropertyEditPageProps) {
         )}
 
         <form onSubmit={handleSubmit}>
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Title *
-              </label>
-              <input
-                type="text"
-                id="title"
-                name="title"
-                value={formData.title}
-                onChange={handleChange}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Description *
-              </label>
-              <div className="mt-1">
-                {/* Use LexicalEditor */}
-                <LexicalEditor
-                  initialValue={formData.description}
-                  onChange={(content) => {
-                    console.log('Description updated:', content);
-                    setFormData(prev => ({ ...prev, description: content }));
-                  }}
-                  className="bg-white dark:bg-gray-800 rounded-md min-h-[200px] border border-gray-300 dark:border-gray-700 h-[300px] mb-5"
-                />
-
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="price" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Price *
-                </label>
-                <input
-                  type="number"
-                  id="price"
-                  name="price"
-                  value={formData.price}
-                  onChange={handleChange}
-                  required
-                  min="0"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="currency" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Currency
-                </label>
-                <input
-                  type="text"
-                  id="currency"
-                  name="currency"
-                  value={formData.currency}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label htmlFor="address" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Address *
-              </label>
-              <input
-                type="text"
-                id="address"
-                name="address"
-                value={formData.address}
-                onChange={handleChange}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="location" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Location *
-              </label>
-              <input
-                type="text"
-                id="location"
-                name="location"
-                value={formData.location}
-                onChange={handleChange}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-              />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label htmlFor="beds" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Beds
-                </label>
-                <input
-                  type="number"
-                  id="beds"
-                  name="beds"
-                  value={formData.beds}
-                  onChange={handleChange}
-                  min="0"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="baths" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Baths
-                </label>
-                <input
-                  type="number"
-                  id="baths"
-                  name="baths"
-                  value={formData.baths}
-                  onChange={handleChange}
-                  min="0"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="area" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Area (sq ft)
-                </label>
-                <input
-                  type="number"
-                  id="area"
-                  name="area"
-                  value={formData.area}
-                  onChange={handleChange}
-                  min="0"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                />
-              </div>
-            </div>
+          <div className="space-y-8">
+            {/* Basic Information Section - User-Friendly Interface */}
+            <PropertyBasicInfoEditor
+              formData={{
+                title: formData.title,
+                description: formData.description,
+                price: formData.price,
+                currency: formData.currency,
+                address: formData.address,
+                location: formData.location,
+                beds: formData.beds,
+                baths: formData.baths,
+                area: formData.area,
+                bannerTitle: formData.bannerTitle,
+                aboutTitle: formData.aboutTitle
+              }}
+              onFormDataChange={(data) => {
+                setFormData(prev => ({
+                  ...prev,
+                  ...data
+                }));
+              }}
+            />
 
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -708,122 +609,43 @@ export default function PropertyEditPage({ params }: PropertyEditPageProps) {
               />
             </div>
 
-            {/* Builder Name */}
-            <div>
-              <label htmlFor="builderName" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Builder Name
-              </label>
-              <input
-                type="text"
-                id="builderName"
-                name="builderName"
-                value={formData.builderName}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-              />
-            </div>
+            {/* Builder Information */}
+            <PropertyBuilderEditor
+              builderName={formData.builderName}
+              builderLogo={formData.builderLogo}
+              builderDescription={formData.builderDescription}
+              onBuilderNameChange={(value) => setFormData(prev => ({ ...prev, builderName: value }))}
+              onBuilderLogoChange={(value) => setFormData(prev => ({ ...prev, builderLogo: value }))}
+              onBuilderDescriptionChange={(value) => setFormData(prev => ({ ...prev, builderDescription: value }))}
+            />
 
-            {/* Site Plan Image */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Site Plan Image
-              </label>
-              
-              {/* Current site plan image or new site plan image preview */}
-              {(formData.sitePlanImage || newSitePlanImage) && (
-                <div className="mb-3 relative">
-                  <div className="relative w-full h-48 rounded-md overflow-hidden">
-                    <Image 
-                      src={newSitePlanImage ? newSitePlanImage.preview : formData.sitePlanImage}
-                      alt="Site plan image"
-                      fill
-                      style={{ objectFit: 'cover' }}
-                      className="rounded-md"
-                    />
-                  </div>
-                  <button
-                    type="button"
-                    onClick={removeSitePlanImage}
-                    className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600 focus:outline-none"
-                    aria-label="Remove image"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                    </svg>
-                  </button>
-                </div>
-              )}
-              
-              {/* Upload new site plan image */}
-              <div className="mt-1">
-                <label className="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:hover:bg-gray-600 cursor-pointer">
-                  <span>{formData.sitePlanImage || newSitePlanImage ? 'Change Site Plan Image' : 'Upload Site Plan Image'}</span>
-                  <input
-                    type="file"
-                    id="sitePlanImage"
-                    onChange={handleSitePlanImageChange}
-                    accept="image/*"
-                    className="sr-only"
-                  />
-                </label>
-              </div>
-            </div>
+            {/* Site Plan */}
+            <PropertySitePlanEditor
+              sitePlanTitle={formData.sitePlanTitle}
+              sitePlanDescription={formData.sitePlanDescription}
+              sitePlanImage={formData.sitePlanImage}
+              onTitleChange={(value) => setFormData(prev => ({ ...prev, sitePlanTitle: value }))}
+              onDescriptionChange={(value) => setFormData(prev => ({ ...prev, sitePlanDescription: value }))}
+              onImageChange={(value) => setFormData(prev => ({ ...prev, sitePlanImage: value }))}
+            />
 
             {/* Highlights */}
-            <div>
-              <label htmlFor="highlights" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Highlights (One per line)
-              </label>
-              <textarea
-                id="highlights"
-                name="highlights"
-                value={parseJsonField(formData.highlights).join('\n')}
-                onChange={(e) => handleArrayFieldChange('highlights', e.target.value.split('\n'))}
-                rows={4}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                placeholder="Enter each highlight on a new line"
-              />
-            </div>
+            <PropertyHighlightsEditor
+              value={formData.highlights}
+              onChange={(value) => setFormData(prev => ({ ...prev, highlights: value }))}
+            />
 
             {/* Floor Plans */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Floor Plans (JSON format)
-              </label>
-              <textarea
-                id="floorPlans"
-                name="floorPlans"
-                value={formData.floorPlans}
-                onChange={handleChange}
-                rows={6}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white font-mono text-sm"
-                placeholder='[
-  {
-    "name": "Type A",
-    "size": "1200 sq.ft.",
-    "bedrooms": 2,
-    "price": "$250,000",
-    "imageUrl": "https://example.com/floor-plan-a.jpg"
-  }
-]'
-              />
-            </div>
+            <PropertyFloorPlansEditor
+              value={formData.floorPlans}
+              onChange={(value) => setFormData(prev => ({ ...prev, floorPlans: value }))}
+            />
 
             {/* Facilities */}
-            <div>
-              <label htmlFor="facilities" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Facilities (One per line)
-              </label>
-              <textarea
-                id="facilities"
-                name="facilities"
-                value={parseJsonField(formData.facilities).join('\n')}
-                onChange={(e) => handleArrayFieldChange('facilities', e.target.value.split('\n'))}
-                rows={4}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                placeholder="Enter each facility on a new line"
-              />
-            </div>
+            <PropertyFacilitiesEditor
+              value={formData.facilities}
+              onChange={(value) => setFormData(prev => ({ ...prev, facilities: value }))}
+            />
 
             {/* FAQs */}
             <div>
@@ -889,7 +711,7 @@ export default function PropertyEditPage({ params }: PropertyEditPageProps) {
               {submitting ? 'Saving...' : 'Save Changes'}
             </button>
           </div>
-          </div>
+         
         </form>
       </div>
     </div>

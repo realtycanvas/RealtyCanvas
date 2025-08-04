@@ -11,9 +11,10 @@ type ImageCarouselProps = {
   title: string;
   autoplay?: boolean;
   loop?: boolean;
+  showArrows?: boolean;
 };
 
-export default function ImageCarousel({ images, title, autoplay = true, loop = true }: ImageCarouselProps) {
+export default function ImageCarousel({ images, title, autoplay = true, loop = true, showArrows = true }: ImageCarouselProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   
   // Initialize carousel with autoplay plugin if enabled
@@ -86,25 +87,29 @@ export default function ImageCarousel({ images, title, autoplay = true, loop = t
         </div>
       </div>
 
-      {/* Navigation buttons */}
-      <button
-        className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 dark:bg-black/50 rounded-full p-1.5 focus:outline-none"
-        onClick={scrollPrev}
-        aria-label="Previous image"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-          <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
-        </svg>
-      </button>
-      <button
-        className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 dark:bg-black/50 rounded-full p-1.5 focus:outline-none"
-        onClick={scrollNext}
-        aria-label="Next image"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-          <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-        </svg>
-      </button>
+      {/* Navigation buttons - only show if showArrows is true */}
+      {showArrows && (
+        <>
+          <button
+            className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 dark:bg-black/50 rounded-full p-1.5 focus:outline-none"
+            onClick={scrollPrev}
+            aria-label="Previous image"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
+            </svg>
+          </button>
+          <button
+            className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 dark:bg-black/50 rounded-full p-1.5 focus:outline-none"
+            onClick={scrollNext}
+            aria-label="Next image"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+            </svg>
+          </button>
+        </>
+      )}
 
       {/* Dots indicator */}
       <div className="absolute bottom-2 left-0 right-0">

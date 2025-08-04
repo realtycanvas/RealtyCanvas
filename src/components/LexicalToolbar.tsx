@@ -21,7 +21,10 @@ import {
   REMOVE_LIST_COMMAND,
 } from '@lexical/list';
 import { $createHeadingNode, $isHeadingNode } from '@lexical/rich-text';
+import { $createParagraphNode } from 'lexical';
+import { $setBlocksType } from '@lexical/selection';
 import { $getNearestNodeOfType } from '@lexical/utils';
+import { $isTableNode, $isTableCellNode, $createTableNodeWithDimensions, INSERT_TABLE_COMMAND } from '@lexical/table';
 
 const LexicalToolbar = () => {
   const [editor] = useLexicalComposerContext();
@@ -31,6 +34,7 @@ const LexicalToolbar = () => {
   const [isLink, setIsLink] = useState(false);
   const [isBulletList, setIsBulletList] = useState(false);
   const [isNumberList, setIsNumberList] = useState(false);
+  const [isTable, setIsTable] = useState(false);
 
   // Update toolbar state based on selection
   const getSelectedNode = (selection: RangeSelection): LexicalNode => {
@@ -193,6 +197,21 @@ const LexicalToolbar = () => {
         aria-label="Redo"
       >
         <span>↪️</span>
+      </button>
+      
+      <div className="toolbar-divider mx-1 border-r border-gray-300 dark:border-gray-600"></div>
+      
+      {/* Table Button */}
+      <button
+        type="button"
+        className="toolbar-item p-1 rounded"
+        onClick={() => {
+          editor.dispatchCommand(INSERT_TABLE_COMMAND, { columns: '3', rows: '3' });
+        }}
+        aria-label="Insert Table"
+        title="Insert 3x3 Table"
+      >
+        <span>📊</span>
       </button>
     </div>
   );

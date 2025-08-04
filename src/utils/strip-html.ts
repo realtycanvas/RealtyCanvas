@@ -1,24 +1,68 @@
 /**
- * Utility function to strip HTML tags from a string
- * @param html - HTML string to strip tags from
- * @returns Plain text without HTML tags
+ * Utility function to strip HTML tags from a string and return plain text
  */
 export function stripHtml(html: string): string {
   if (!html) return '';
   
-  // Check if we're in a server environment
-  if (typeof window === 'undefined') {
-    // Simple regex-based HTML stripping for server-side
-    return html
-      .replace(/<[^>]*>/g, '') // Remove HTML tags
-      .replace(/&nbsp;/g, ' ') // Replace non-breaking spaces
-      .replace(/&amp;/g, '&') // Replace ampersands
-      .replace(/&lt;/g, '<') // Replace less than
-      .replace(/&gt;/g, '>') // Replace greater than
-      .trim();
+  // Remove HTML tags
+  const withoutTags = html.replace(/<[^>]*>/g, '');
+  
+  // Decode HTML entities
+  const textarea = document.createElement('textarea');
+  textarea.innerHTML = withoutTags;
+  const decoded = textarea.value;
+  
+  // Clean up extra whitespace
+  return decoded.replace(/\s+/g, ' ').trim();
+}
+
+/**
+ * Utility function to truncate text to a specific length
+ */
+export function truncateText(text: string, maxLength: number = 150): string {
+  if (!text) return '';
+  
+  const stripped = stripHtml(text);
+  
+  if (stripped.length <= maxLength) {
+    return stripped;
   }
   
-  // Client-side HTML stripping using DOM
-  const doc = new DOMParser().parseFromString(html, 'text/html');
-  return doc.body.textContent || '';
+  return stripped.substring(0, maxLength).trim() + '...';
+}
+
+/**
+ * Check if a string contains HTML tags
+ */
+export function hasHtmlTags(str: string): boolean {
+  if (!str) return false;
+  // Simple regex to detect HTML tags
+  return /<[^>]*>/g.test(str);
+}
+
+export function preserveRichText(html: string): string {
+  // Check if we're in a browser environment
+  if (typeof document === 'undefined') {
+    // Server-side rendering - return the HTML as is
+    return html;
+  }
+  
+  // Preserve basic formatting like bold, italic, lists, and links
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = html;
+  
+  // Remove potentially dangerous elements while keeping formatting
+  const allowedTags = ['p', 'br', 'strong', 'b', 'em', 'i', 'u', 'ul', 'ol', 'li', 'a', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'blockquote'];
+  const elements = tempDiv.querySelectorAll('*');
+  
+  elements.forEach(el => {
+    if (!allowedTags.includes(el.tagName.toLowerCase())) {
+      // Replace with span to preserve content
+      const span = document.createElement('span');
+      span.innerHTML = el.innerHTML;
+      el.parentNode?.replaceChild(span, el);
+    }
+  });
+  
+  return tempDiv.innerHTML;
 }

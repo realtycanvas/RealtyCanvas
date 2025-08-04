@@ -10,6 +10,7 @@ import PropertyAmenities from '@/components/PropertyAmenities';
 import PropertySitePlan from '@/components/PropertySitePlan';
 import PropertyBuilder from '@/components/PropertyBuilder';
 import PropertyFAQ from '@/components/PropertyFAQ';
+import RelatedProperties from '@/components/RelatedProperties';
 
 
 export default async function PropertyPage({ params }: { params: Promise<{ id: string }>, searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
@@ -30,6 +31,9 @@ export default async function PropertyPage({ params }: { params: Promise<{ id: s
   if (!property) {
     notFound();
   }
+
+  // Debug logging (remove in production)
+  // console.log('Property data:', property);
 
   return (
       <div className="max-w-4xl mx-auto">
@@ -64,7 +68,7 @@ export default async function PropertyPage({ params }: { params: Promise<{ id: s
               <p className="text-gray-600 dark:text-gray-400 mb-4">{property.address}</p>
             </div>
             <p className="text-3xl font-bold text-indigo-600 dark:text-indigo-400">
-              ${property.price.toLocaleString()}
+              ₹{(property.price / 100000).toFixed(1)}L
             </p>
           </div>
 
@@ -72,14 +76,22 @@ export default async function PropertyPage({ params }: { params: Promise<{ id: s
           <PropertyAbout 
             title={property.aboutTitle || undefined}
             description={property.aboutDescription || property.description || undefined}
+            mainTitle={property.aboutTitle ? undefined : 'About This Property'}
           />
 
           {/* Highlights Section */}
           {property.highlights && (
             <PropertyFeatures 
-              highlights={typeof property.highlights === 'string' ? 
-                JSON.parse(property.highlights) : 
-                property.highlights}
+              highlights={(() => {
+                try {
+                  return typeof property.highlights === 'string' ? 
+                    JSON.parse(property.highlights) : 
+                    property.highlights;
+                } catch (error) {
+                  console.error('Error parsing highlights:', error);
+                  return [];
+                }
+              })()}
               title="Highlights"
             />
           )}
@@ -87,9 +99,16 @@ export default async function PropertyPage({ params }: { params: Promise<{ id: s
           {/* Floor Plans Section */}
           {property.floorPlans && (
             <PropertyFloorPlans 
-              floorPlans={typeof property.floorPlans === 'string' ? 
-                JSON.parse(property.floorPlans) : 
-                property.floorPlans}
+              floorPlans={(() => {
+                try {
+                  return typeof property.floorPlans === 'string' ? 
+                    JSON.parse(property.floorPlans) : 
+                    property.floorPlans;
+                } catch (error) {
+                  console.error('Error parsing floorPlans:', error);
+                  return [];
+                }
+              })()}
               title="Floor Plans & Pricing"
             />
           )}
@@ -97,9 +116,16 @@ export default async function PropertyPage({ params }: { params: Promise<{ id: s
           {/* Facilities Section */}
           {property.facilities && (
             <PropertyAmenities 
-              facilities={typeof property.facilities === 'string' ? 
-                JSON.parse(property.facilities) : 
-                property.facilities}
+              facilities={(() => {
+                try {
+                  return typeof property.facilities === 'string' ? 
+                    JSON.parse(property.facilities) : 
+                    property.facilities;
+                } catch (error) {
+                  console.error('Error parsing facilities:', error);
+                  return [];
+                }
+              })()}
               title="Project Facilities"
             />
           )}
@@ -121,9 +147,16 @@ export default async function PropertyPage({ params }: { params: Promise<{ id: s
           {/* FAQ Section */}
           {property.faqs && (
             <PropertyFAQ 
-              faqs={typeof property.faqs === 'string' ? 
-                JSON.parse(property.faqs) : 
-                property.faqs}
+              faqs={(() => {
+                try {
+                  return typeof property.faqs === 'string' ? 
+                    JSON.parse(property.faqs) : 
+                    property.faqs;
+                } catch (error) {
+                  console.error('Error parsing faqs:', error);
+                  return [];
+                }
+              })()}
               title="Frequently Asked Questions"
             />
           )}
@@ -159,6 +192,14 @@ export default async function PropertyPage({ params }: { params: Promise<{ id: s
               Contact Agent
             </Link>
           </div>
+
+          {/* Related Properties */}
+          <RelatedProperties 
+            currentPropertyId={property.id}
+            currentPrice={property.price}
+            currentLocation={property.location}
+            limit={3}
+          />
         </div>
       </div>
       </div>

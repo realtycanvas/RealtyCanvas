@@ -1,6 +1,11 @@
+'use client';
+
+import { useState } from 'react';
 import Link from 'next/link';
 import ImageCarousel from './ImageCarousel';
-import { stripHtml } from '@/utils/strip-html';
+import { HeartIcon } from '@heroicons/react/24/outline';
+import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
+import { stripHtml, truncateText } from '@/utils/strip-html';
 
 // Define Property type directly since generated Prisma types aren't available
 type Property = {
@@ -24,6 +29,8 @@ type PropertyCardProps = {
 };
 
 export default function PropertyCard({ property }: PropertyCardProps) {
+  const [isFavorited, setIsFavorited] = useState(false);
+
   // Prepare images array for carousel
   const images = [];
   if (property.featuredImage) {
@@ -38,30 +45,101 @@ export default function PropertyCard({ property }: PropertyCardProps) {
     images.push('/placeholder-property.svg');
   }
 
+  // Format price in Indian format
+  const formatPrice = (price: number) => {
+    if (price >= 10000000) {
+      return `₹${(price / 10000000).toFixed(1)}Cr`;
+    } else if (price >= 100000) {
+      return `₹${(price / 100000).toFixed(1)}L`;
+    } else {
+      return `₹${price.toLocaleString('en-IN')}`;
+    }
+  };
+
+  // Generate key features based on property data
+  const keyFeatures = [
+    `${property.beds} Beds`,
+    `${property.area} m²`,
+    'Parking',
+  ].slice(0, 3); // Show only 3 features to maintain consistent height
+
+  const handleFavoriteClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsFavorited(!isFavorited);
+  };
+
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden dark:bg-gray-800">
-      <ImageCarousel 
-        images={images} 
-        title={property.title} 
-        autoplay={true} 
-        loop={true} 
-      />
-      <div className="p-4">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{property.title}</h3>
-        <p className="text-gray-500 dark:text-gray-400 text-sm mb-2">{property.address}</p>
-        <p className="text-indigo-600 dark:text-indigo-400 font-bold text-xl mb-2">
-          ${property.price.toLocaleString()}
-        </p>
-        <p className="text-gray-700 dark:text-gray-300 text-sm line-clamp-2 mb-4">
-          {stripHtml(property.description)}
-        </p>
-        <Link 
-          href={`/properties/${property.id}`}
-          className="text-indigo-600 dark:text-indigo-400 font-medium hover:underline"
-        >
-          View Details
-        </Link>
+    <Link href={`/properties/${property.id}`} className="block h-full">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300 h-full group cursor-pointer flex flex-col">
+        {/* Image Section */}
+        <div className="relative h-48 overflow-hidden flex-shrink-0">
+          <ImageCarousel 
+            images={images} 
+            title={property.title} 
+            autoplay={true} 
+            loop={true}
+            showArrows={false}
+          />
+          
+          {/* Price Badge */}
+          <div className="absolute top-3 left-3 bg-black/80 backdrop-blur-sm text-white px-3 py-1 rounded-xl font-bold text-sm">
+            {formatPrice(property.price)}
+          </div>
+
+          {/* Favorite Button */}
+          <button
+            onClick={handleFavoriteClick}
+            className="absolute top-3 right-3 p-2 bg-white/80 backdrop-blur-sm rounded-full hover:bg-white transition-colors duration-200 z-10"
+          >
+            {isFavorited ? (
+              <HeartIconSolid className="w-5 h-5 text-red-500" />
+            ) : (
+              <HeartIcon className="w-5 h-5 text-gray-600" />
+            )}
+          </button>
+
+          {/* Hover Overlay */}
+          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300"></div>
+        </div>
+
+        {/* Content Section */}
+        <div className="p-4 flex flex-col flex-grow">
+          {/* Title */}
+          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 line-clamp-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors min-h-[3.5rem]">
+            {property.title}
+          </h3>
+          
+          {/* Address */}
+          <p className="text-gray-600 dark:text-gray-400 text-sm mb-3 line-clamp-1">
+            {property.address}
+          </p>
+
+          {/* Key Features */}
+          <div className="flex flex-wrap gap-2 mb-3">
+            {keyFeatures.map((feature, index) => (
+              <span 
+                key={index}
+                className="inline-flex items-center px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs rounded-lg font-medium"
+              >
+                {feature}
+              </span>
+            ))}
+          </div>
+
+          {/* Price below description */}
+          <div className="mb-4 mt-auto">
+            <span className="text-xl font-bold text-indigo-600 dark:text-indigo-400">
+              {formatPrice(property.price)}
+            </span>
+          </div>
+
+          {/* View Details Button */}
+          <div className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white text-center py-2 px-4 rounded-xl font-medium text-sm transition-all duration-300 transform group-hover:scale-105 shadow-lg group-hover:shadow-xl">
+            View Details
+          </div>
+        </div>
       </div>
-    </div>
+    </Link>
   );
 }

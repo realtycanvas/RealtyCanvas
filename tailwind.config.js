@@ -5,10 +5,11 @@ module.exports = {
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
+  darkMode: 'class',
   theme: {
     extend: {},
   },
   plugins: [
-    require('@tailwindcss/aspect-ratio'),
+    require('@tailwindcss/aspect-ratio'),require('tailwind-scrollbar-hide')
   ],
 };

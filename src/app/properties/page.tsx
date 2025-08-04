@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import PropertySearchBar from '@/components/PropertySearchBar';
+import PropertyGrid from '@/components/PropertyGrid';
 
 // Define the Property type
 type Property = {
@@ -74,17 +76,55 @@ export default function PropertiesPage() {
     }
   };
 
+  const handleSearch = (filters: any) => {
+    // Navigate to search results page with filters
+    const params = new URLSearchParams({
+      type: filters.type,
+      location: filters.location,
+      propertyType: filters.propertyType,
+      minPrice: filters.priceRange.min.toString(),
+      maxPrice: filters.priceRange.max.toString(),
+    });
+    window.location.href = `/properties/search?${params.toString()}`;
+  };
+
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-800 dark:text-white">All Properties</h1>
-        <Link 
-          href="/properties/new" 
-          className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition duration-300"
-        >
-          Add New Property
-        </Link>
-      </div>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-16">
+      {/* Hero Section with Search */}
+      <section className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white py-16">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+              Find Your Perfect Property
+            </h1>
+            <p className="text-lg text-indigo-100 max-w-3xl mx-auto">
+              Discover amazing properties for buy and rent in your desired location
+            </p>
+          </div>
+          
+          <div className="max-w-4xl mx-auto">
+            <PropertySearchBar onSearch={handleSearch} />
+          </div>
+        </div>
+      </section>
+
+      {/* Properties Section */}
+      <section className="py-16">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center mb-8">
+            <div>
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">All Properties</h2>
+              <p className="text-gray-600 dark:text-gray-300">
+                Browse our collection of properties for sale and rent
+              </p>
+            </div>
+            <Link 
+              href="/properties/new" 
+              className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-6 py-3 rounded-2xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg"
+            >
+              Add New Property
+            </Link>
+          </div>
 
       {loading ? (
         <div className="grid grid-cols-1 gap-6">
@@ -144,7 +184,9 @@ export default function PropertiesPage() {
                   </div>
                   
                   <p className="text-gray-700 dark:text-gray-300 text-sm line-clamp-2 mb-4">
-                    {property.description}
+                    {property.description && property.description.length > 100 
+                      ? property.description.substring(0, 100) + '...' 
+                      : property.description}
                   </p>
                   
                   <div className="flex flex-wrap gap-4 mb-4">
@@ -188,6 +230,14 @@ export default function PropertiesPage() {
           ))}
         </div>
       )}
+        </div>
+      </section>
+
+      {/* Property Grid */}
+      <PropertyGrid 
+        title="Explore Properties by City"
+        subtitle="Discover the best properties in major cities across India"
+      />
     </div>
   );
 }

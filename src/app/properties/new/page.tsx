@@ -4,6 +4,13 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
+import PropertyBasicInfoEditor from '@/components/PropertyBasicInfoEditor';
+import PropertyHighlightsEditor from '@/components/PropertyHighlightsEditor';
+import PropertyFacilitiesEditor from '@/components/PropertyFacilitiesEditor';
+import PropertyFloorPlansEditor from '@/components/PropertyFloorPlansEditor';
+import PropertyBuilderEditor from '@/components/PropertyBuilderEditor';
+import PropertySitePlanEditor from '@/components/PropertySitePlanEditor';
+import PropertyFAQEditor from '@/components/PropertyFAQEditor';
 import { CheckCircleIcon } from '@heroicons/react/24/solid';
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
@@ -17,6 +24,34 @@ const LexicalEditor = dynamic(
     loading: () => <div className="h-64 w-full bg-gray-100 dark:bg-gray-800 animate-pulse rounded-md flex items-center justify-center"><span className="text-gray-500">Loading editor...</span></div>,
   }
 );
+
+interface PropertyFormData {
+  title: string;
+  description: string;
+  price: number;
+  address: string;
+  location: string;
+  currency: string;
+  beds: number;
+  baths: number;
+  area: number;
+  bannerTitle: string;
+  bannerSubtitle: string;
+  bannerDescription: string;
+  aboutTitle: string;
+  aboutDescription: string;
+  builderName: string;
+  builderLogo: string;
+  builderDescription: string;
+  sitePlanTitle: string;
+  sitePlanDescription: string;
+  sitePlanImage: string;
+  highlights: string;
+  floorPlans: string;
+  facilities: string;
+  faqs: string;
+  relatedProperties: string[];
+}
 
 // Define the steps for the multi-step form
 const steps = [
@@ -40,16 +75,16 @@ export default function NewPropertyPage() {
   const [galleryImagePreviews, setGalleryImagePreviews] = useState<string[]>([]);
   const [sitePlanImage, setSitePlanImage] = useState<File | null>(null);
   const [sitePlanImagePreview, setSitePlanImagePreview] = useState<string | null>(null);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<PropertyFormData>({
     title: '',
     description: '',
-    price: '',
+    price: 0,
     address: '',
     location: '',
     currency: 'USD',
-    beds: '',
-    baths: '',
-    area: '',
+    beds: 0,
+    baths: 0,
+    area: 0,
     // Banner section
     bannerTitle: '',
     bannerSubtitle: '',
@@ -64,6 +99,7 @@ export default function NewPropertyPage() {
     // Site plan
     sitePlanTitle: '',
     sitePlanDescription: '',
+    sitePlanImage: '',
     // JSON fields (initialized as empty arrays/objects)
     highlights: JSON.stringify([]),
     floorPlans: JSON.stringify([]),
@@ -116,6 +152,16 @@ export default function NewPropertyPage() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
+    
+    // Handle numeric fields
+    if (name === 'price' || name === 'beds' || name === 'baths' || name === 'area') {
+      const numValue = value === '' ? 0 : parseFloat(value);
+      setFormData(prev => ({
+        ...prev,
+        [name]: numValue
+      }));
+      return;
+    }
     
     // Special handling for JSON fields
     if (name === 'faqs' || name === 'highlights' || name === 'floorPlans' || name === 'facilities') {
@@ -281,10 +327,10 @@ export default function NewPropertyPage() {
       // Prepare request body
       const requestBody = {
         ...formData,
-        price: parseInt(formData.price),
-        beds: formData.beds ? parseInt(formData.beds) : 0,
-        baths: formData.baths ? parseInt(formData.baths) : 0,
-        area: formData.area ? parseInt(formData.area) : 0,
+        price: formData.price,
+        beds: formData.beds,
+        baths: formData.baths,
+        area: formData.area,
         featuredImage: featuredImage && validImageUrls.length > 0 ? validImageUrls[0] : '',
         sitePlanImage: sitePlanImage && validImageUrls.length > (featuredImage ? 1 : 0) ? validImageUrls[featuredImage ? 1 : 0] : '',
         galleryImages: validImageUrls.slice((featuredImage ? 1 : 0) + (sitePlanImage ? 1 : 0)),
@@ -383,146 +429,27 @@ export default function NewPropertyPage() {
               </div>
             </div>
             
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-              <div className="col-span-2">
-                <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Property Title *
-                </label>
-                <input
-                  type="text"
-                  id="title"
-                  name="title"
-                  value={formData.title}
-                  onChange={handleChange}
-                  required
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-                />
-              </div>
-
-              <div className="col-span-2">
-                <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Property Description *
-                </label>
-                <div className="mt-1">
-                  <LexicalEditor
-                    initialValue={formData.description}
-                    onChange={(value) => setFormData((prev) => ({ ...prev, description: value } as typeof formData))}
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label htmlFor="price" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Price *
-                </label>
-                <div className="mt-1 relative rounded-md shadow-sm">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <span className="text-gray-500 sm:text-sm">$</span>
-                  </div>
-                  <input
-                    type="number"
-                    id="price"
-                    name="price"
-                    value={formData.price}
-                    onChange={handleChange}
-                    required
-                    className="mt-1 block w-full pl-7 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label htmlFor="currency" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Currency
-                </label>
-                <select
-                  id="currency"
-                  name="currency"
-                  value={formData.currency}
-                  onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-                >
-                  <option value="USD">USD ($)</option>
-                  <option value="EUR">EUR (€)</option>
-                  <option value="GBP">GBP (£)</option>
-                  <option value="INR">INR (₹)</option>
-                </select>
-              </div>
-
-              <div>
-                <label htmlFor="beds" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Bedrooms
-                </label>
-                <input
-                  type="number"
-                  id="beds"
-                  name="beds"
-                  value={formData.beds}
-                  onChange={handleChange}
-                  min="0"
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="baths" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Bathrooms
-                </label>
-                <input
-                  type="number"
-                  id="baths"
-                  name="baths"
-                  value={formData.baths}
-                  onChange={handleChange}
-                  min="0"
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="area" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Area (sq ft)
-                </label>
-                <input
-                  type="number"
-                  id="area"
-                  name="area"
-                  value={formData.area}
-                  onChange={handleChange}
-                  min="0"
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-                />
-              </div>
-
-              <div className="col-span-2">
-                <label htmlFor="address" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Address *
-                </label>
-                <input
-                  type="text"
-                  id="address"
-                  name="address"
-                  value={formData.address}
-                  onChange={handleChange}
-                  required
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-                />
-              </div>
-
-              <div className="col-span-2">
-                <label htmlFor="location" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Location (City, State)
-                </label>
-                <input
-                  type="text"
-                  id="location"
-                  name="location"
-                  value={formData.location}
-                  onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-                />
-              </div>
-            </div>
+            <PropertyBasicInfoEditor
+              formData={{
+                title: formData.title,
+                description: formData.description,
+                price: formData.price,
+                currency: formData.currency,
+                address: formData.address,
+                location: formData.location,
+                beds: formData.beds,
+                baths: formData.baths,
+                area: formData.area,
+                bannerTitle: formData.bannerTitle,
+                aboutTitle: formData.aboutTitle
+              }}
+              onFormDataChange={(data) => {
+                setFormData(prev => ({
+                  ...prev,
+                  ...data
+                }));
+              }}
+            />
           </div>
         );
 
@@ -613,72 +540,19 @@ export default function NewPropertyPage() {
         return (
           <div className="space-y-8">
             <div>
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white">Property Highlights</h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Add key features and highlights of your property.</p>
-              
-              <div className="mt-4">
-                <label htmlFor="highlights" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Highlights (JSON format)
-                </label>
-                <textarea
-                  id="highlights"
-                  name="highlights"
-                  rows={8}
-                  value={formData.highlights}
-                  onChange={handleChange}
-                  className={`mt-1 block w-full rounded-md shadow-sm focus:ring-indigo-500 font-mono text-sm ${jsonErrors.highlights ? 'border-red-500 focus:border-red-500 dark:border-red-500' : 'border-gray-300 focus:border-indigo-500 dark:border-gray-700'} dark:bg-gray-800 dark:text-white`}
-                  placeholder={`[
-  {
-    "icon": "home",
-    "title": "Feature Title",
-    "description": "Feature description goes here"
-  }
-]`}
-                />
-                {jsonErrors.highlights ? (
-                  <p className="mt-2 text-sm text-red-600 dark:text-red-500">
-                    {jsonErrors.highlights}
-                  </p>
-                ) : (
-                  <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                    Enter highlights in JSON format. Each highlight should have an icon, title, and description.
-                  </p>
-                )}
-              </div>
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Property Highlights</h3>
+              <PropertyHighlightsEditor
+                value={formData.highlights}
+                onChange={(value) => setFormData(prev => ({ ...prev, highlights: value }))}
+              />
             </div>
 
             <div>
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white">Property Facilities</h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Add facilities and amenities available in the property.</p>
-              
-              <div className="mt-4">
-                <label htmlFor="facilities" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Facilities (JSON format)
-                </label>
-                <textarea
-                  id="facilities"
-                  name="facilities"
-                  rows={8}
-                  value={formData.facilities}
-                  onChange={handleChange}
-                  className={`mt-1 block w-full rounded-md shadow-sm focus:ring-indigo-500 font-mono text-sm ${jsonErrors.facilities ? 'border-red-500 focus:border-red-500 dark:border-red-500' : 'border-gray-300 focus:border-indigo-500 dark:border-gray-700'} dark:bg-gray-800 dark:text-white`}
-                  placeholder={`[
-  {
-    "icon": "wifi",
-    "title": "Facility Name"
-  }
-]`}
-                />
-                {jsonErrors.facilities ? (
-                  <p className="mt-2 text-sm text-red-600 dark:text-red-500">
-                    {jsonErrors.facilities}
-                  </p>
-                ) : (
-                  <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                    Enter facilities in JSON format. Each facility should have an icon and title.
-                  </p>
-                )}
-              </div>
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Property Facilities</h3>
+              <PropertyFacilitiesEditor
+                value={formData.facilities}
+                onChange={(value) => setFormData(prev => ({ ...prev, facilities: value }))}
+              />
             </div>
           </div>
         );
@@ -687,42 +561,11 @@ export default function NewPropertyPage() {
         return (
           <div className="space-y-8">
             <div>
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white">Floor Plans</h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Add floor plans with details and pricing.</p>
-              
-              <div className="mt-4">
-                <label htmlFor="floorPlans" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Floor Plans (JSON format)
-                </label>
-                <textarea
-                  id="floorPlans"
-                  name="floorPlans"
-                  rows={10}
-                  value={formData.floorPlans}
-                  onChange={handleChange}
-                  className={`mt-1 block w-full rounded-md shadow-sm focus:ring-indigo-500 font-mono text-sm ${jsonErrors.floorPlans ? 'border-red-500 focus:border-red-500 dark:border-red-500' : 'border-gray-300 focus:border-indigo-500 dark:border-gray-700'} dark:bg-gray-800 dark:text-white`}
-                  placeholder={`[
-  {
-    "name": "Type A",
-    "size": "1200 sq ft",
-    "beds": 2,
-    "baths": 2,
-    "price": "$250,000",
-    "image": "https://example.com/floorplan-a.jpg",
-    "description": "Description of this floor plan"
-  }
-]`}
-                />
-                {jsonErrors.floorPlans ? (
-                  <p className="mt-2 text-sm text-red-600 dark:text-red-500">
-                    {jsonErrors.floorPlans}
-                  </p>
-                ) : (
-                  <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                    Enter floor plans in JSON format. Each floor plan should have a name, size, beds, baths, price, image URL, and description.
-                  </p>
-                )}
-              </div>
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Floor Plans</h3>
+              <PropertyFloorPlansEditor
+                value={formData.floorPlans}
+                onChange={(value) => setFormData(prev => ({ ...prev, floorPlans: value }))}
+              />
             </div>
           </div>
         );
@@ -731,144 +574,25 @@ export default function NewPropertyPage() {
         return (
           <div className="space-y-8">
             <div>
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white">Builder Information</h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Add details about the property developer or builder.</p>
-              
-              <div className="mt-4 grid grid-cols-1 gap-6 md:grid-cols-2">
-                <div className="col-span-2">
-                  <label htmlFor="builderName" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Builder Name
-                  </label>
-                  <input
-                    type="text"
-                    id="builderName"
-                    name="builderName"
-                    value={formData.builderName}
-                    onChange={handleChange}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-                  />
-                </div>
-
-                <div className="col-span-2">
-                  <label htmlFor="builderLogo" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Builder Logo URL
-                  </label>
-                  <input
-                    type="text"
-                    id="builderLogo"
-                    name="builderLogo"
-                    value={formData.builderLogo}
-                    onChange={handleChange}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-                  />
-                </div>
-
-                <div className="col-span-2">
-                  <label htmlFor="builderDescription" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Builder Description
-                  </label>
-                  <textarea
-                    id="builderDescription"
-                    name="builderDescription"
-                    rows={4}
-                    value={formData.builderDescription}
-                    onChange={handleChange}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-                  />
-                </div>
-              </div>
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Builder Information</h3>
+              <PropertyBuilderEditor
+                builderName={formData.builderName}
+                builderLogo={formData.builderLogo}
+                builderDescription={formData.builderDescription}
+                onBuilderNameChange={(value) => setFormData(prev => ({ ...prev, builderName: value }))}
+                onBuilderLogoChange={(value) => setFormData(prev => ({ ...prev, builderLogo: value }))}
+                onBuilderDescriptionChange={(value) => setFormData(prev => ({ ...prev, builderDescription: value }))}
+              />
             </div>
 
-            <div>
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white">Site Plan</h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Add a site plan image and details.</p>
-              
-              <div className="mt-4 grid grid-cols-1 gap-6 md:grid-cols-2">
-                <div className="col-span-2">
-                  <label htmlFor="sitePlanTitle" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Site Plan Title
-                  </label>
-                  <input
-                    type="text"
-                    id="sitePlanTitle"
-                    name="sitePlanTitle"
-                    value={formData.sitePlanTitle}
-                    onChange={handleChange}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-                  />
-                </div>
-
-                <div className="col-span-2">
-                  <label htmlFor="sitePlanDescription" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Site Plan Description
-                  </label>
-                  <textarea
-                    id="sitePlanDescription"
-                    name="sitePlanDescription"
-                    rows={3}
-                    value={formData.sitePlanDescription}
-                    onChange={handleChange}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-                  />
-                </div>
-
-                <div className="col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Site Plan Image
-                  </label>
-                  <div className="flex items-center space-x-4">
-                    <div className="flex-1">
-                      <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-                        <div className="space-y-1 text-center">
-                          {sitePlanImagePreview ? (
-                            <div className="relative w-full h-48">
-                              <Image 
-                                src={sitePlanImagePreview} 
-                                alt="Site plan image preview" 
-                                fill
-                                className="object-contain rounded-md"
-                              />
-                              <button
-                                type="button"
-                                onClick={removeSitePlanImage}
-                                className="absolute top-2 right-2 bg-red-600 text-white rounded-full p-1 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                              >
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                  <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                                </svg>
-                              </button>
-                            </div>
-                          ) : (
-                            <>
-                              <svg className="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
-                              </svg>
-                              <div className="flex text-sm text-gray-600 dark:text-gray-400">
-                                <label htmlFor="site-plan-image-upload" className="relative cursor-pointer bg-white dark:bg-gray-700 rounded-md font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500">
-                                  <span>Upload a file</span>
-                                  <input 
-                                    id="site-plan-image-upload" 
-                                    name="site-plan-image" 
-                                    type="file" 
-                                    className="sr-only" 
-                                    accept="image/*"
-                                    onChange={handleSitePlanImageChange}
-                                  />
-                                </label>
-                                <p className="pl-1">or drag and drop</p>
-                              </div>
-                              <p className="text-xs text-gray-500 dark:text-gray-400">
-                                PNG, JPG, GIF up to 10MB
-                              </p>
-                            </>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <PropertySitePlanEditor
+              sitePlanTitle={formData.sitePlanTitle}
+              sitePlanDescription={formData.sitePlanDescription}
+              sitePlanImage={formData.sitePlanImage}
+              onTitleChange={(value) => setFormData(prev => ({ ...prev, sitePlanTitle: value }))}
+              onDescriptionChange={(value) => setFormData(prev => ({ ...prev, sitePlanDescription: value }))}
+              onImageChange={(value) => setFormData(prev => ({ ...prev, sitePlanImage: value }))}
+            />
           </div>
         );
 
@@ -876,43 +600,11 @@ export default function NewPropertyPage() {
         return (
           <div className="space-y-8">
             <div>
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white">Frequently Asked Questions</h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Add FAQs to help potential buyers.</p>
-              
-              <div className="mt-4">
-                <label htmlFor="faqs" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  FAQs (JSON format)
-                </label>
-                <textarea
-                  id="faqs"
-                  name="faqs"
-                  rows={10}
-                  value={formData.faqs}
-                  onChange={handleChange}
-                  className={`mt-1 block w-full rounded-md shadow-sm focus:ring-indigo-500 font-mono text-sm ${jsonErrors.faqs ? 'border-red-500 focus:border-red-500 dark:border-red-500' : 'border-gray-300 focus:border-indigo-500 dark:border-gray-700'} dark:bg-gray-800 dark:text-white`}
-                  placeholder={`[
-  {
-    "question": "What is the possession date?",
-    "answer": "The possession date is expected to be December 2023."
-  },
-  {
-    "question": "Are there any additional charges?",
-    "answer": "Yes, there are maintenance charges and one-time registration fees."
-  }
-]
-
-// IMPORTANT: Enter as a direct array of objects, NOT as an object with a 'faqs' property`}
-                />
-                {jsonErrors.faqs ? (
-                  <p className="mt-2 text-sm text-red-600 dark:text-red-500">
-                    {jsonErrors.faqs}
-                  </p>
-                ) : (
-                  <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                    Enter FAQs as a direct JSON array. Each FAQ should have a question and answer. Do not wrap the array in an object with a &apos;faqs&apos; property.
-                  </p>
-                )}
-              </div>
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Frequently Asked Questions</h3>
+              <PropertyFAQEditor
+                value={formData.faqs}
+                onChange={(value) => setFormData(prev => ({ ...prev, faqs: value }))}
+              />
             </div>
           </div>
         );
@@ -938,7 +630,7 @@ export default function NewPropertyPage() {
                     <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                       <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Price</dt>
                       <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">
-                        {formData.price ? `${formData.currency === 'USD' ? '$' : formData.currency === 'EUR' ? '€' : formData.currency === 'GBP' ? '£' : '₹'}${parseInt(formData.price).toLocaleString()}` : 'Not specified'}
+                        {formData.price ? `${formData.currency === 'USD' ? '$' : formData.currency === 'EUR' ? '€' : formData.currency === 'GBP' ? '£' : '₹'}${formData.price.toLocaleString()}` : 'Not specified'}
                       </dd>
                     </div>
                     <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">

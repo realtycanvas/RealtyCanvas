@@ -15,7 +15,7 @@ model Property {
   price             Int
   address           String
   location          String
-  currency          String   @default("USD")
+  currency          String   @default("INR")
   featuredImage     String
   galleryImages     String[]
   beds              Int      @default(0)
