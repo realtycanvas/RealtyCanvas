@@ -138,7 +138,7 @@ export default function RelatedProperties({
         <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">Related Properties</h2>
         <Link 
           href="/properties" 
-          className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-medium"
+          className="text-brand-primary dark:text-brand-primary hover:text-primary-600 dark:hover:text-primary-300 font-medium"
         >
           View All Properties →
         </Link>
@@ -182,7 +182,7 @@ export default function RelatedProperties({
               {/* Title and Address */}
               <div className="mb-3">
                 <Link href={`/properties/${property.id}`}>
-                  <h3 className="font-semibold text-gray-900 dark:text-white mb-1 line-clamp-1 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                  <h3 className="font-semibold text-gray-900 dark:text-white mb-1 line-clamp-1 hover:text-brand-primary dark:hover:text-brand-primary transition-colors">
                     {property.title}
                   </h3>
                 </Link>
@@ -199,7 +199,7 @@ export default function RelatedProperties({
               {/* View Details Button */}
               <Link
                 href={`/properties/${property.id}`}
-                className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white text-center py-2 px-4 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl block"
+                className="w-full bg-gradient-to-r from-brand-primary to-brand-primary hover:from-primary-600 hover:to-primary-600 text-white text-center py-2 px-4 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl block"
               >
                 View Details
               </Link>

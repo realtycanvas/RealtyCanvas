@@ -420,7 +420,7 @@ export default function PropertyEditPage({ params }: PropertyEditPageProps) {
         <div className="mb-6">
           <Link 
             href={`/properties/${id}`} 
-            className="text-indigo-600 dark:text-indigo-400 hover:underline flex items-center"
+            className="text-brand-primary dark:text-brand-primary hover:underline flex items-center"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
@@ -494,7 +494,7 @@ export default function PropertyEditPage({ params }: PropertyEditPageProps) {
               
               {/* Upload new featured image */}
               <div className="mt-1">
-                <label className="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:hover:bg-gray-600 cursor-pointer">
+                <label className="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:hover:bg-gray-600 cursor-pointer">
                   <span>{formData.featuredImage || newFeaturedImage ? 'Change Featured Image' : 'Upload Featured Image'}</span>
                   <input
                     type="file"
@@ -565,7 +565,7 @@ export default function PropertyEditPage({ params }: PropertyEditPageProps) {
               
               {/* Upload new gallery images */}
               <div className="mt-1">
-                <label className="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:hover:bg-gray-600 cursor-pointer">
+                <label className="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:hover:bg-gray-600 cursor-pointer">
                   <span>Add Gallery Images</span>
                   <input
                     type="file"
@@ -590,7 +590,7 @@ export default function PropertyEditPage({ params }: PropertyEditPageProps) {
                 name="bannerTitle"
                 value={formData.bannerTitle}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-primary focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               />
             </div>
 
@@ -605,7 +605,7 @@ export default function PropertyEditPage({ params }: PropertyEditPageProps) {
                 name="aboutTitle"
                 value={formData.aboutTitle}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-primary focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               />
             </div>
 
@@ -661,7 +661,7 @@ export default function PropertyEditPage({ params }: PropertyEditPageProps) {
                 value={formData.faqs}
                 onChange={handleChange}
                 rows={6}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white font-mono text-sm"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-primary focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white font-mono text-sm"
                 placeholder='[
   {
     "question": "What are the payment options?",
@@ -684,7 +684,7 @@ export default function PropertyEditPage({ params }: PropertyEditPageProps) {
                 value={formData.relatedProperties}
                 onChange={handleChange}
                 rows={6}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white font-mono text-sm"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-primary focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white font-mono text-sm"
                 placeholder='[
   {
     "id": "property-id-1",
@@ -699,14 +699,14 @@ export default function PropertyEditPage({ params }: PropertyEditPageProps) {
           <div className="mt-6 flex justify-end space-x-3">
             <Link
               href={`/properties/${id}`}
-              className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:hover:bg-gray-600"
+              className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:hover:bg-gray-600"
             >
               Cancel
             </Link>
             <button
               type="submit"
               disabled={submitting}
-              className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-brand-primary hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {submitting ? 'Saving...' : 'Save Changes'}
             </button>

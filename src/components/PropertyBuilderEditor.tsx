@@ -196,7 +196,7 @@ export default function PropertyBuilderEditor({
             className={`flex items-center px-3 py-1 rounded-md text-sm font-medium transition-colors ${
               isJsonMode
                 ? 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white'
-                : 'bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300'
+                : 'bg-primary-100 dark:bg-secondary-900 text-brand-primary dark:text-brand-primary'
             }`}
           >
             {isJsonMode ? (
@@ -452,7 +452,7 @@ export default function PropertyBuilderEditor({
                       onClick={() => setUploadMethod('url')}
                       className={`px-2 py-1 text-xs rounded ${
                         uploadMethod === 'url'
-                          ? 'bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300'
+                          ? 'bg-primary-100 dark:bg-secondary-900 text-brand-primary dark:text-brand-primary'
                           : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
                       }`}
                     >
@@ -463,7 +463,7 @@ export default function PropertyBuilderEditor({
                       onClick={() => setUploadMethod('file')}
                       className={`px-2 py-1 text-xs rounded ${
                         uploadMethod === 'file'
-                          ? 'bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300'
+                          ? 'bg-primary-100 dark:bg-secondary-900 text-brand-primary dark:text-brand-primary'
                           : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
                       }`}
                     >

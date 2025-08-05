@@ -81,7 +81,7 @@ export default function PropertyHighlightsEditor({ value, onChange, label = "Pro
             className={`flex items-center px-3 py-1 rounded-md text-sm font-medium transition-colors ${
               isJsonMode
                 ? 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white'
-                : 'bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300'
+                : 'bg-primary-100 dark:bg-secondary-900 text-brand-primary dark:text-brand-primary'
             }`}
           >
             {isJsonMode ? (
@@ -193,7 +193,7 @@ export default function PropertyHighlightsEditor({ value, onChange, label = "Pro
           <button
             type="button"
             onClick={addHighlight}
-            className="w-full flex items-center justify-center px-4 py-3 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-gray-600 dark:text-gray-400 hover:border-indigo-500 hover:text-indigo-600 dark:hover:border-indigo-400 dark:hover:text-indigo-400 transition-colors"
+            className="w-full flex items-center justify-center px-4 py-3 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-gray-600 dark:text-gray-400 hover:border-brand-primary hover:text-brand-primary dark:hover:border-brand-primary dark:hover:text-brand-primary transition-colors"
           >
             <PlusIcon className="w-5 h-5 mr-2" />
             Add Highlight
@@ -202,8 +202,8 @@ export default function PropertyHighlightsEditor({ value, onChange, label = "Pro
       )}
 
       {highlights.length > 0 && (
-        <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-          <h4 className="text-sm font-medium text-blue-900 dark:text-blue-100 mb-2">
+        <div className="mt-6 p-4 bg-primary-50 dark:bg-secondary-900/20 rounded-lg border border-primary-200 dark:border-secondary-800">
+          <h4 className="text-sm font-medium text-brand-secondary dark:text-white mb-2">
             Preview
           </h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -211,10 +211,10 @@ export default function PropertyHighlightsEditor({ value, onChange, label = "Pro
               <div key={index} className="flex items-start space-x-3">
                 <div className="text-lg">{highlight.icon}</div>
                 <div>
-                  <div className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                  <div className="text-sm font-medium text-brand-secondary dark:text-white">
                     {highlight.title || 'Untitled'}
                   </div>
-                  <div className="text-xs text-blue-700 dark:text-blue-300">
+                  <div className="text-xs text-brand-secondary dark:text-gray-300">
                     {highlight.description || 'No description'}
                   </div>
                 </div>

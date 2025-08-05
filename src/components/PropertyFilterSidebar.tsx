@@ -130,7 +130,7 @@ export default function PropertyFilterSidebar({
             </button>
             <button
               onClick={onSaveSearch}
-              className="text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors"
+              className="text-sm text-brand-primary dark:text-brand-primary hover:text-primary-600 dark:hover:text-primary-300 transition-colors"
             >
               Save search
             </button>

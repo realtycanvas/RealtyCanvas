@@ -40,7 +40,7 @@ export default async function PropertyPage({ params }: { params: Promise<{ id: s
       <div className="mb-6">
         <Link 
           href="/" 
-          className="text-indigo-600 dark:text-indigo-400 hover:underline flex items-center"
+          className="text-brand-primary dark:text-brand-primary hover:underline flex items-center"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
             <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
@@ -67,7 +67,7 @@ export default async function PropertyPage({ params }: { params: Promise<{ id: s
               </h1>
               <p className="text-gray-600 dark:text-gray-400 mb-4">{property.address}</p>
             </div>
-            <p className="text-3xl font-bold text-indigo-600 dark:text-indigo-400">
+            <p className="text-3xl font-bold text-brand-primary dark:text-brand-primary">
               ₹{(property.price / 100000).toFixed(1)}L
             </p>
           </div>
@@ -187,7 +187,7 @@ export default async function PropertyPage({ params }: { params: Promise<{ id: s
             </p>
             <Link
               href={`/properties/${property.id}/contact`}
-              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="px-4 py-2 bg-brand-primary hover:bg-primary-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary"
             >
               Contact Agent
             </Link>

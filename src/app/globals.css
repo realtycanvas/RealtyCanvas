@@ -43,7 +43,7 @@ html {
 }
 
 .dark .glass-effect {
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(20, 49, 75, 0.8);
 }
 
 /* Enhanced Lexical Editor Styles */
@@ -288,7 +288,7 @@ html {
 
 /* Link Styles */
 .editor-link {
-  color: rgb(79 70 229);
+  color: #14314b;
   text-decoration: none;
   cursor: pointer;
 }
@@ -298,20 +298,20 @@ html {
 }
 
 .dark .editor-link {
-  color: rgb(129 140 248);
+  color: #feb711;
 }
 
 /* Quote Styles */
 .editor-quote {
   margin: 0 0 15px 0;
   padding-left: 16px;
-  border-left: 4px solid rgb(99 102 241);
+  border-left: 4px solid #feb711;
   font-style: italic;
   color: rgb(55 65 81);
 }
 
 .dark .editor-quote {
-  border-left-color: rgb(129 140 248);
+  border-left-color: #feb711;
   color: rgb(209 213 219);
 }
 
@@ -373,8 +373,8 @@ html {
 }
 
 .toolbar-button.active {
-  background: rgb(99 102 241);
-  color: white;
+  background: #feb711;
+  color: #14314b;
 }
 
 .dark .toolbar-button {
@@ -387,8 +387,8 @@ html {
 }
 
 .dark .toolbar-button.active {
-  background: rgb(129 140 248);
-  color: rgb(17 24 39);
+  background: #feb711;
+  color: #14314b;
 }
 
 .toolbar-divider {

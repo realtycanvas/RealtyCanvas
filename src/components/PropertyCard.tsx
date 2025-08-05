@@ -106,7 +106,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
         {/* Content Section */}
         <div className="p-4 flex flex-col flex-grow">
           {/* Title */}
-          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 line-clamp-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors min-h-[3.5rem]">
+          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 line-clamp-2 group-hover:text-brand-primary dark:group-hover:text-brand-primary transition-colors min-h-[3.5rem]">
             {property.title}
           </h3>
           
@@ -129,13 +129,13 @@ export default function PropertyCard({ property }: PropertyCardProps) {
 
           {/* Price below description */}
           <div className="mb-4 mt-auto">
-            <span className="text-xl font-bold text-indigo-600 dark:text-indigo-400">
+            <span className="text-xl font-bold text-brand-primary dark:text-brand-primary">
               {formatPrice(property.price)}
             </span>
           </div>
 
           {/* View Details Button */}
-          <div className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white text-center py-2 px-4 rounded-xl font-medium text-sm transition-all duration-300 transform group-hover:scale-105 shadow-lg group-hover:shadow-xl">
+          <div className="w-full bg-gradient-to-r from-brand-primary to-brand-primary hover:from-primary-600 hover:to-primary-600 text-white text-center py-2 px-4 rounded-xl font-medium text-sm transition-all duration-300 transform group-hover:scale-105 shadow-lg group-hover:shadow-xl">
             View Details
           </div>
         </div>

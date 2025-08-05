@@ -483,7 +483,7 @@ export default function NewPropertyPage() {
                         <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
                       <div className="flex text-sm text-gray-600 dark:text-gray-400">
-                        <label htmlFor="featured-image-upload" className="relative cursor-pointer bg-white dark:bg-gray-800 rounded-md font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+                        <label htmlFor="featured-image-upload" className="relative cursor-pointer bg-white dark:bg-gray-800 rounded-md font-medium text-brand-primary dark:text-brand-primary hover:text-primary-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-brand-primary">
                           <span>Upload a file</span>
                           <input id="featured-image-upload" name="featured-image" type="file" className="sr-only" onChange={handleFeaturedImageChange} accept="image/*" />
                         </label>
@@ -714,7 +714,7 @@ export default function NewPropertyPage() {
                 className={`group flex w-full items-center ${index <= currentStep ? 'cursor-pointer' : 'cursor-not-allowed'}`}
                 disabled={index > currentStep}
               >
-                <span className={`flex items-center px-4 py-2 text-sm font-medium rounded-full ${index < currentStep ? 'bg-indigo-600 text-white' : index === currentStep ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-200' : 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400'}`}>
+                <span className={`flex items-center px-4 py-2 text-sm font-medium rounded-full ${index < currentStep ? 'bg-brand-primary text-white' : index === currentStep ? 'bg-primary-100 text-brand-primary dark:bg-secondary-900 dark:text-brand-primary' : 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400'}`}>
                   {index < currentStep ? (
                     <CheckCircleIcon className="h-5 w-5 mr-2" aria-hidden="true" />
                   ) : (
@@ -749,7 +749,7 @@ export default function NewPropertyPage() {
                       name="builderName"
                       value={formData.builderName}
                       onChange={handleChange}
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-brand-primary dark:bg-gray-800 dark:border-gray-700 dark:text-white"
                     />
                   </div>
 
@@ -763,7 +763,7 @@ export default function NewPropertyPage() {
                       name="builderLogo"
                       value={formData.builderLogo}
                       onChange={handleChange}
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-brand-primary dark:bg-gray-800 dark:border-gray-700 dark:text-white"
                     />
                     <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                       Enter the URL of the builder&apos;s logo image
@@ -780,7 +780,7 @@ export default function NewPropertyPage() {
                       rows={4}
                       value={formData.builderDescription}
                       onChange={handleChange}
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-brand-primary dark:bg-gray-800 dark:border-gray-700 dark:text-white"
                     />
                   </div>
                 </div>
@@ -911,7 +911,7 @@ export default function NewPropertyPage() {
               <button
                 type="button"
                 onClick={nextStep}
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-brand-primary hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary"
               >
                 Next
                 <ArrowRightIcon className="-mr-1 ml-2 h-5 w-5" aria-hidden="true" />
@@ -920,7 +920,7 @@ export default function NewPropertyPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white ${isSubmitting ? 'bg-indigo-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'}`}
+                className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white ${isSubmitting ? 'bg-primary-400 cursor-not-allowed' : 'bg-brand-primary hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary'}`}
               >
                 {isSubmitting ? (
                   <>

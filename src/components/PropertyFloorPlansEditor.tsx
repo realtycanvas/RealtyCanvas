@@ -84,7 +84,7 @@ export default function PropertyFloorPlansEditor({
             className={`flex items-center px-3 py-1 rounded-md text-sm font-medium transition-colors ${
               isJsonMode
                 ? 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white'
-                : 'bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300'
+                : 'bg-primary-100 dark:bg-secondary-900 text-brand-primary dark:text-brand-primary'
             }`}
           >
             {isJsonMode ? (
@@ -284,7 +284,7 @@ export default function PropertyFloorPlansEditor({
           <button
             type="button"
             onClick={addFloorPlan}
-            className="w-full flex items-center justify-center px-4 py-3 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-gray-600 dark:text-gray-400 hover:border-indigo-500 hover:text-indigo-600 dark:hover:border-indigo-400 dark:hover:text-indigo-400 transition-colors"
+            className="w-full flex items-center justify-center px-4 py-3 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-gray-600 dark:text-gray-400 hover:border-brand-primary hover:text-brand-primary dark:hover:border-brand-primary dark:hover:text-brand-primary transition-colors"
           >
             <PlusIcon className="w-5 h-5 mr-2" />
             Add Floor Plan

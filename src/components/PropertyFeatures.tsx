@@ -58,7 +58,7 @@ const PropertyFeatures: React.FC<PropertyFeaturesProps> = ({
           >
             <div className="flex items-start">
               {typeof highlight !== 'string' && highlight.icon && (
-                <div className="mr-3 text-indigo-600 dark:text-indigo-400">
+                <div className="mr-3 text-brand-primary dark:text-brand-primary">
                   <span className="text-xl">{highlight.icon}</span>
                 </div>
               )}

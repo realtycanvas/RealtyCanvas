@@ -100,7 +100,7 @@ export default function PropertyFAQEditor({
             className={`flex items-center px-3 py-1 rounded-md text-sm font-medium transition-colors ${
               isJsonMode
                 ? 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white'
-                : 'bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300'
+                : 'bg-primary-100 dark:bg-secondary-900 text-brand-primary dark:text-brand-primary'
             }`}
           >
             {isJsonMode ? (
@@ -144,8 +144,8 @@ export default function PropertyFAQEditor({
         <div className="space-y-6">
           {/* Quick Add Common Questions */}
           {faqs.length === 0 && (
-            <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
-              <h4 className="text-sm font-medium text-blue-900 dark:text-blue-100 mb-3">
+            <div className="bg-primary-50 dark:bg-secondary-900/20 p-4 rounded-lg border border-primary-200 dark:border-secondary-800">
+              <h4 className="text-sm font-medium text-brand-secondary dark:text-white mb-3">
                 Quick Add Common Questions
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -154,7 +154,7 @@ export default function PropertyFAQEditor({
                     key={index}
                     type="button"
                     onClick={() => addCommonQuestion(question)}
-                    className="text-left text-sm text-blue-700 dark:text-blue-300 hover:text-blue-900 dark:hover:text-blue-100 hover:bg-blue-100 dark:hover:bg-blue-800/50 p-2 rounded transition-colors"
+                    className="text-left text-sm text-brand-secondary dark:text-gray-300 hover:text-brand-secondary dark:hover:text-white hover:bg-primary-100 dark:hover:bg-secondary-800/50 p-2 rounded transition-colors"
                   >
                     + {question}
                   </button>
@@ -173,7 +173,7 @@ export default function PropertyFAQEditor({
                     <button
                       type="button"
                       onClick={() => toggleFAQ(index)}
-                      className="flex items-center justify-center w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-400"
+                      className="flex items-center justify-center w-6 h-6 rounded-full bg-primary-100 dark:bg-secondary-900 text-brand-primary dark:text-brand-primary"
                     >
                       {expandedFAQ === index ? (
                         <ChevronUpIcon className="w-4 h-4" />
@@ -234,7 +234,7 @@ export default function PropertyFAQEditor({
           <button
             type="button"
             onClick={addFAQ}
-            className="w-full flex items-center justify-center px-4 py-3 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-gray-600 dark:text-gray-400 hover:border-indigo-500 hover:text-indigo-600 dark:hover:border-indigo-400 dark:hover:text-indigo-400 transition-colors"
+            className="w-full flex items-center justify-center px-4 py-3 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-gray-600 dark:text-gray-400 hover:border-brand-primary hover:text-brand-primary dark:hover:border-brand-primary dark:hover:text-brand-primary transition-colors"
           >
             <PlusIcon className="w-5 h-5 mr-2" />
             Add FAQ

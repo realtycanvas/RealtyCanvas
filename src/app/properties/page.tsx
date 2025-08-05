@@ -91,13 +91,13 @@ export default function PropertiesPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-16">
       {/* Hero Section with Search */}
-      <section className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white py-16">
+      <section className="bg-gradient-to-r from-brand-primary via-brand-primary to-brand-primary text-white py-16">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
               Find Your Perfect Property
             </h1>
-            <p className="text-lg text-indigo-100 max-w-3xl mx-auto">
+            <p className="text-lg text-white max-w-3xl mx-auto">
               Discover amazing properties for buy and rent in your desired location
             </p>
           </div>
@@ -120,7 +120,7 @@ export default function PropertiesPage() {
             </div>
             <Link 
               href="/properties/new" 
-              className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-6 py-3 rounded-2xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg"
+              className="bg-gradient-to-r from-brand-primary to-brand-primary hover:from-primary-600 hover:to-primary-600 text-white px-6 py-3 rounded-2xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg"
             >
               Add New Property
             </Link>
@@ -148,7 +148,7 @@ export default function PropertiesPage() {
           <p className="text-gray-600 dark:text-gray-300 text-lg mb-4">No properties found.</p>
           <Link 
             href="/properties/new" 
-            className="inline-block bg-indigo-600 text-white font-medium py-2 px-6 rounded-md hover:bg-indigo-700 transition duration-300"
+            className="inline-block bg-brand-primary text-white font-medium py-2 px-6 rounded-md hover:bg-primary-600 transition duration-300"
           >
             Add Your First Property
           </Link>
@@ -178,7 +178,7 @@ export default function PropertiesPage() {
                       <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">{property.title}</h2>
                       <p className="text-gray-500 dark:text-gray-400 text-sm mb-2">{property.address}</p>
                     </div>
-                    <p className="text-indigo-600 dark:text-indigo-400 font-bold text-xl">
+                    <p className="text-brand-primary dark:text-brand-primary font-bold text-xl">
                       ${property.price.toLocaleString()}
                     </p>
                   </div>
@@ -207,7 +207,7 @@ export default function PropertiesPage() {
                   <div className="flex space-x-3">
                     <Link 
                       href={`/properties/${property.id}`}
-                      className="text-indigo-600 dark:text-indigo-400 hover:underline"
+                      className="text-brand-primary dark:text-brand-primary hover:underline"
                     >
                       View Details
                     </Link>

@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState } from 'react';
 import { Bars3Icon, XMarkIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
 import { Menu, Transition } from '@headlessui/react';
@@ -24,11 +25,10 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <div className="flex-shrink-0">
+          <div className="">
             <Link href="/" className="flex items-center">
-              <span className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent dark:from-indigo-400 dark:to-purple-400">
-                Reality Canvas
-              </span>
+              {/* <Image src="/logo.webp" alt="Reality Canvas" fill  /> */}
+              <Image src="/logo.webp" alt="Reality Canvas" width={1200} height={100} className="w-48 h-14" />
             </Link>
           </div>
 
@@ -74,14 +74,14 @@ export default function Navbar() {
                 leaveFrom="transform opacity-100 scale-100"
                 leaveTo="transform opacity-0 scale-95"
               >
-                <Menu.Items className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                <Menu.Items className="absolute right-0 mt-2 w-48 bg-white dark:bg-secondary-800 rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                   <div className="py-1">
                     <Menu.Item>
                       {({ active }) => (
                         <Link
                           href="/profile"
                           className={`${
-                            active ? 'bg-gray-100 dark:bg-gray-700' : ''
+                            active ? 'bg-gray-100 dark:bg-secondary-700' : ''
                           } block px-4 py-2 text-sm text-gray-700 dark:text-gray-300`}
                         >
                           Your Profile
@@ -93,7 +93,7 @@ export default function Navbar() {
                         <Link
                           href="/dashboard"
                           className={`${
-                            active ? 'bg-gray-100 dark:bg-gray-700' : ''
+                            active ? 'bg-gray-100 dark:bg-secondary-700' : ''
                           } block px-4 py-2 text-sm text-gray-700 dark:text-gray-300`}
                         >
                           Dashboard
@@ -105,7 +105,7 @@ export default function Navbar() {
                         <Link
                           href="/settings"
                           className={`${
-                            active ? 'bg-gray-100 dark:bg-gray-700' : ''
+                            active ? 'bg-gray-100 dark:bg-secondary-700' : ''
                           } block px-4 py-2 text-sm text-gray-700 dark:text-gray-300`}
                         >
                           Settings
@@ -116,7 +116,7 @@ export default function Navbar() {
                       {({ active }) => (
                         <button
                           className={`${
-                            active ? 'bg-gray-100 dark:bg-gray-700' : ''
+                            active ? 'bg-gray-100 dark:bg-secondary-700' : ''
                           } block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300`}
                         >
                           Sign out
@@ -176,17 +176,17 @@ export default function Navbar() {
                   List your property
                 </Link>
               </div>
-              <div className="px-3 py-2 border-t border-gray-200 dark:border-gray-700">
+              <div className="px-3 py-2 border-t border-gray-200 dark:border-secondary-700">
                 <Link
                   href="/profile"
-                  className="block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md transition-colors duration-200"
+                  className="block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:text-brand-primary dark:hover:text-brand-primary hover:bg-gray-50 dark:hover:bg-secondary-800 rounded-md transition-colors duration-200"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Profile
                 </Link>
                 <Link
                   href="/dashboard"
-                  className="block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md transition-colors duration-200"
+                  className="block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:text-brand-primary dark:hover:text-brand-primary hover:bg-gray-50 dark:hover:bg-secondary-800 rounded-md transition-colors duration-200"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Dashboard

@@ -215,7 +215,7 @@ export default function PropertyGrid({ title = "Featured Properties", subtitle =
           </div>
           <Link
             href="/properties"
-            className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-medium flex items-center"
+            className="text-brand-primary dark:text-brand-primary hover:text-primary-600 dark:hover:text-primary-300 font-medium flex items-center"
           >
             View all
             <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -327,7 +327,7 @@ export default function PropertyGrid({ title = "Featured Properties", subtitle =
                   </div>
                   <Link
                     href={`/properties/${property.id}`}
-                    className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-300 transform hover:scale-105"
+                    className="bg-gradient-to-r from-brand-primary to-brand-primary hover:from-primary-600 hover:to-primary-600 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-300 transform hover:scale-105"
                   >
                     Book Now
                   </Link>

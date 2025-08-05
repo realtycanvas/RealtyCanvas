@@ -119,7 +119,7 @@ export default function PropertyListingCard({ property }: PropertyListingCardPro
         {/* View Details Button */}
         <Link
           href={`/properties/${property.id}`}
-          className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white text-center py-2 px-4 rounded-lg font-medium text-sm transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl block mt-auto"
+          className="w-full bg-gradient-to-r from-brand-primary to-brand-primary hover:from-primary-600 hover:to-primary-600 text-white text-center py-2 px-4 rounded-lg font-medium text-sm transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl block mt-auto"
         >
           View Details
         </Link>
