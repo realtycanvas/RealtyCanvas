@@ -45,7 +45,7 @@ export default function HeroSection() {
               <Link href="/properties/new">
                 <Link
                   href="/properties/new" 
-                  className="rounded-2xl min-w-[300px] bg-transparent text-blue-950 border-2 border-blue-950 px-10 py-5 text-semibold"               >
+                  className="rounded-2xl min-w-[300px] bg-transparent text-blue-950 border-2 border-blue-950 px-10 py-5 dark:text-white dark:border-white dark:border-2 text-semibold"               >
                   List Your Property
                 </Link>
               </Link>
