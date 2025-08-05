@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { HeartIcon, StarIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartIconSolid, StarIcon as StarIconSolid } from '@heroicons/react/24/solid';
+import { BrandButton } from './ui/BrandButton';
 
 interface PropertyGridProps {
   title?: string;
@@ -327,9 +328,15 @@ export default function PropertyGrid({ title = "Featured Properties", subtitle =
                   </div>
                   <Link
                     href={`/properties/${property.id}`}
-                    className="bg-gradient-to-r from-brand-primary to-brand-primary hover:from-primary-600 hover:to-primary-600 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-300 transform hover:scale-105"
+                    className="no-underline hover:no-underline focus:no-underline"
                   >
-                    Book Now
+                    <BrandButton
+                      variant="primary"
+                      size="sm"
+                      className="rounded-xl text-sm"
+                    >
+                      Book Now
+                    </BrandButton>
                   </Link>
                 </div>
               </div>

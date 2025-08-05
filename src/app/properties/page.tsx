@@ -94,10 +94,10 @@ export default function PropertiesPage() {
       <section className="bg-gradient-to-r from-brand-primary via-brand-primary to-brand-primary text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 text-blue-950">
               Find Your Perfect Property
             </h1>
-            <p className="text-lg text-white max-w-3xl mx-auto">
+            <p className="text-lg text-black max-w-3xl mx-auto">
               Discover amazing properties for buy and rent in your desired location
             </p>
           </div>
@@ -120,7 +120,7 @@ export default function PropertiesPage() {
             </div>
             <Link 
               href="/properties/new" 
-              className="bg-gradient-to-r from-brand-primary to-brand-primary hover:from-primary-600 hover:to-primary-600 text-white px-6 py-3 rounded-2xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg"
+              className="bg-gradient-to-r from-brand-primary to-brand-primary hover:from-primary-600 hover:to-primary-600 text-white px-6 py-3 rounded-2xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg no-underline hover:no-underline focus:no-underline"
             >
               Add New Property
             </Link>

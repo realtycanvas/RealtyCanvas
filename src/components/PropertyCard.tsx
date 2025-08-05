@@ -6,6 +6,7 @@ import ImageCarousel from './ImageCarousel';
 import { HeartIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
 import { stripHtml, truncateText } from '@/utils/strip-html';
+import { BrandButton } from './ui/BrandButton';
 
 // Define Property type directly since generated Prisma types aren't available
 type Property = {
@@ -70,7 +71,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
   };
 
   return (
-    <Link href={`/properties/${property.id}`} className="block h-full">
+    <Link href={`/properties/${property.id}`} className="block h-full no-underline hover:no-underline focus:no-underline">
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300 h-full group cursor-pointer flex flex-col">
         {/* Image Section */}
         <div className="relative h-48 overflow-hidden flex-shrink-0">
@@ -135,9 +136,13 @@ export default function PropertyCard({ property }: PropertyCardProps) {
           </div>
 
           {/* View Details Button */}
-          <div className="w-full bg-gradient-to-r from-brand-primary to-brand-primary hover:from-primary-600 hover:to-primary-600 text-white text-center py-2 px-4 rounded-xl font-medium text-sm transition-all duration-300 transform group-hover:scale-105 shadow-lg group-hover:shadow-xl">
-            View Details
-          </div>
+                      <BrandButton
+              variant="primary"
+              size="sm"
+              className="w-full rounded-xl text-sm"
+            >
+              View Details
+            </BrandButton>
         </div>
       </div>
     </Link>

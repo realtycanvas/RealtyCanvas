@@ -7,6 +7,8 @@ import { Bars3Icon, XMarkIcon, ChevronDownIcon } from '@heroicons/react/24/outli
 import { Menu, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
 import ThemeToggle from './ThemeToggle';
+import { useTheme } from '@/contexts/ThemeContext';
+import { BrandButton } from './ui/BrandButton';
 
 const navigation = [
   { name: 'Properties', href: '/properties' },
@@ -19,6 +21,7 @@ const navigation = [
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { actualTheme } = useTheme();
 
   return (
     <nav className="bg-white/95 backdrop-blur-sm shadow-lg dark:bg-gray-900/95 fixed w-full z-50 transition-all duration-300">
@@ -26,9 +29,15 @@ export default function Navbar() {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="">
-            <Link href="/" className="flex items-center">
-              {/* <Image src="/logo.webp" alt="Reality Canvas" fill  /> */}
-              <Image src="/logo.webp" alt="Reality Canvas" width={1200} height={100} className="w-48 h-14" />
+            <Link href="/" className="flex items-center no-underline hover:no-underline focus:no-underline">
+              {/* Conditional Logo based on theme */}
+              <Image 
+                src={actualTheme === 'light' ? "/logo1.webp" : "/logo.webp"} 
+                alt="Reality Canvas" 
+                width={1200} 
+                height={100} 
+                className="w-48 h-12" 
+              />
             </Link>
           </div>
 
@@ -38,7 +47,7 @@ export default function Navbar() {
               <Link
                 key={item.name}
                 href={item.href}
-                className="text-gray-700 hover:text-brand-primary dark:text-gray-300 dark:hover:text-brand-primary px-3 py-2 text-sm font-medium transition-colors duration-200 relative group"
+                className="text-gray-700 hover:text-brand-primary dark:text-gray-300 dark:hover:text-brand-primary px-3 py-2 text-sm font-medium transition-colors duration-200 relative group no-underline hover:no-underline focus:no-underline"
               >
                 {item.name}
                 <span className="absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-brand-primary to-brand-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></span>
@@ -49,12 +58,15 @@ export default function Navbar() {
           {/* Right side items */}
           <div className="hidden lg:flex lg:items-center lg:space-x-4">
             <ThemeToggle />
-            <Link
-              href="/properties/new"
-              className="bg-gradient-to-r from-brand-primary to-brand-primary hover:from-primary-600 hover:to-primary-600 text-brand-secondary px-6 py-2 rounded-full text-sm font-medium transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
-            >
-              List your property
-            </Link>
+                              <Link href="/properties/new">
+                    <BrandButton
+                      variant="primary"
+                      size="sm"
+                      className="rounded-full"
+                    >
+                      List your property
+                    </BrandButton>
+                  </Link>
             
             {/* Profile Menu */}
             <Menu as="div" className="relative">
@@ -82,7 +94,7 @@ export default function Navbar() {
                           href="/profile"
                           className={`${
                             active ? 'bg-gray-100 dark:bg-secondary-700' : ''
-                          } block px-4 py-2 text-sm text-gray-700 dark:text-gray-300`}
+                          } block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 no-underline hover:no-underline focus:no-underline`}
                         >
                           Your Profile
                         </Link>
@@ -94,7 +106,7 @@ export default function Navbar() {
                           href="/dashboard"
                           className={`${
                             active ? 'bg-gray-100 dark:bg-secondary-700' : ''
-                          } block px-4 py-2 text-sm text-gray-700 dark:text-gray-300`}
+                          } block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 no-underline hover:no-underline focus:no-underline`}
                         >
                           Dashboard
                         </Link>
@@ -106,7 +118,7 @@ export default function Navbar() {
                           href="/settings"
                           className={`${
                             active ? 'bg-gray-100 dark:bg-secondary-700' : ''
-                          } block px-4 py-2 text-sm text-gray-700 dark:text-gray-300`}
+                          } block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 no-underline hover:no-underline focus:no-underline`}
                         >
                           Settings
                         </Link>
@@ -161,32 +173,34 @@ export default function Navbar() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className="block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:text-brand-primary dark:hover:text-brand-primary hover:bg-gray-50 dark:hover:bg-secondary-800 rounded-md transition-colors duration-200"
+                  className="block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:text-brand-primary dark:hover:text-brand-primary hover:bg-gray-50 dark:hover:bg-secondary-800 rounded-md transition-colors duration-200 no-underline hover:no-underline focus:no-underline"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {item.name}
                 </Link>
               ))}
               <div className="px-3 py-2">
-                <Link
-                  href="/properties/new"
-                  className="block w-full text-center bg-gradient-to-r from-brand-primary to-brand-primary hover:from-primary-600 hover:to-primary-600 text-brand-secondary px-4 py-2 rounded-full text-sm font-medium transition-all duration-200"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  List your property
-                </Link>
+                                      <Link href="/properties/new" onClick={() => setMobileMenuOpen(false)}>
+                        <BrandButton
+                          variant="primary"
+                          size="sm"
+                          className="w-full rounded-full"
+                        >
+                          List your property
+                        </BrandButton>
+                      </Link>
               </div>
               <div className="px-3 py-2 border-t border-gray-200 dark:border-secondary-700">
                 <Link
                   href="/profile"
-                  className="block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:text-brand-primary dark:hover:text-brand-primary hover:bg-gray-50 dark:hover:bg-secondary-800 rounded-md transition-colors duration-200"
+                  className="block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:text-brand-primary dark:hover:text-brand-primary hover:bg-gray-50 dark:hover:bg-secondary-800 rounded-md transition-colors duration-200 no-underline hover:no-underline focus:no-underline"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Profile
                 </Link>
                 <Link
                   href="/dashboard"
-                  className="block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:text-brand-primary dark:hover:text-brand-primary hover:bg-gray-50 dark:hover:bg-secondary-800 rounded-md transition-colors duration-200"
+                  className="block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:text-brand-primary dark:hover:text-brand-primary hover:bg-gray-50 dark:hover:bg-secondary-800 rounded-md transition-colors duration-200 no-underline hover:no-underline focus:no-underline"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Dashboard

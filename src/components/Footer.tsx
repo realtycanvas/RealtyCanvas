@@ -15,7 +15,7 @@ const Footer = () => {
            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
              {/* Company Info */}
              <div className="lg:col-span-2">
-               <Link href="/" className="inline-block mb-6">
+               <Link href="/" className="inline-block mb-6 no-underline hover:no-underline focus:no-underline">
                <Image src="/logo.webp" alt="Reality Canvas" width={1200} height={100} className="w-56 h-22" />
                </Link>
                <p className="text-gray-300 text-lg leading-relaxed mb-6 max-w-md">

@@ -6,6 +6,7 @@ import { HeartIcon, MapPinIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
 import { useState } from 'react';
 import { truncateText } from '@/utils/strip-html';
+import { BrandButton } from './ui/BrandButton';
 
 interface PropertyListingCardProps {
   property: {
@@ -119,9 +120,15 @@ export default function PropertyListingCard({ property }: PropertyListingCardPro
         {/* View Details Button */}
         <Link
           href={`/properties/${property.id}`}
-          className="w-full bg-gradient-to-r from-brand-primary to-brand-primary hover:from-primary-600 hover:to-primary-600 text-white text-center py-2 px-4 rounded-lg font-medium text-sm transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl block mt-auto"
+          className="block mt-auto no-underline hover:no-underline focus:no-underline"
         >
-          View Details
+          <BrandButton
+            variant="primary"
+            size="sm"
+            className="w-full rounded-lg text-sm text-center"
+          >
+            View Details
+          </BrandButton>
         </Link>
       </div>
     </div>

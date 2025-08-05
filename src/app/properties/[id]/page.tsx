@@ -36,6 +36,7 @@ export default async function PropertyPage({ params }: { params: Promise<{ id: s
   // console.log('Property data:', property);
 
   return (
+    <section className='bg-white dark:bg-gray-800 '>
       <div className="max-w-7xl mx-auto">
       <div className="mb-6">
         <Link 
@@ -52,12 +53,12 @@ export default async function PropertyPage({ params }: { params: Promise<{ id: s
       {/* Banner Section */}
       <PropertyBanner 
         featuredImage={property.featuredImage || ''}
-        title={property.bannerTitle || property.title}
+        // title={property.bannerTitle || property.title}
         subtitle={property.bannerSubtitle || undefined}
         description={property.bannerDescription || undefined}
       />
 
-      <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden">
+      <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden border border-black dark:border-gray-700">
         {/* Property Details */}
         <div className="p-6">
           <div className="flex justify-between items-start">
@@ -203,5 +204,6 @@ export default async function PropertyPage({ params }: { params: Promise<{ id: s
         </div>
       </div>
       </div>
+      </section>
     );
 }

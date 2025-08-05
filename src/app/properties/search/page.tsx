@@ -277,7 +277,7 @@ function PropertySearchContent() {
                           {/* View Details Button */}
                           <a
                             href={`/properties/${property.id}`}
-                            className="inline-block bg-gradient-to-r from-brand-primary to-brand-primary hover:from-primary-600 hover:to-primary-600 text-white text-center py-3 px-6 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                            className="inline-block bg-gradient-to-r from-brand-primary to-brand-primary hover:from-primary-600 hover:to-primary-600 text-white text-center py-3 px-6 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl no-underline hover:no-underline focus:no-underline"
                           >
                             View Details
                           </a>

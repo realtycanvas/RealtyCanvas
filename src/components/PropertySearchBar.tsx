@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { MagnifyingGlassIcon, MapPinIcon, HomeIcon, CurrencyDollarIcon } from '@heroicons/react/24/outline';
+import { BrandButton } from './ui/BrandButton';
 import { Menu, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
 
@@ -183,13 +184,15 @@ export default function PropertySearchBar({ onSearch, className = '' }: Property
         </div>
 
         {/* Search Button */}
-        <button
+        <BrandButton
           onClick={handleSearch}
-          className="bg-gradient-to-r from-brand-primary to-brand-primary hover:from-primary-600 hover:to-primary-600 text-white px-8 py-3 rounded-2xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center"
+          variant="primary"
+          size="md"
+          className="rounded-2xl flex items-center justify-center"
         >
           <MagnifyingGlassIcon className="w-5 h-5 mr-2" />
           Search
-        </button>
+        </BrandButton>
       </div>
     </div>
   );

@@ -4,6 +4,8 @@ import "./globals.css";
 import Navbar from "../components/Navbar";
 import { ThemeProvider } from "../contexts/ThemeContext";
 import Footer from "@/components/Footer";
+import ScrollToTop from "@/components/ScrollToTop";
+import Chatbot from "@/components/Chatbot";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,8 +40,12 @@ export default function RootLayout({
       >
         <ThemeProvider>
           <Navbar />
-          {children}
+          <div className="py-10">
+            {children}
+          </div>
           <Footer />
+          <ScrollToTop />
+          <Chatbot />
         </ThemeProvider>
       </body>
     </html>

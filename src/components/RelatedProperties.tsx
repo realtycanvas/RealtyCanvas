@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { HeartIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
+import { BrandButton } from './ui/BrandButton';
 
 interface Property {
   id: string;
@@ -197,11 +198,14 @@ export default function RelatedProperties({
               </div>
 
               {/* View Details Button */}
-              <Link
-                href={`/properties/${property.id}`}
-                className="w-full bg-gradient-to-r from-brand-primary to-brand-primary hover:from-primary-600 hover:to-primary-600 text-white text-center py-2 px-4 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl block"
-              >
-                View Details
+              <Link href={`/properties/${property.id}`} className="block no-underline hover:no-underline focus:no-underline">
+                <BrandButton
+                  variant="primary"
+                  size="sm"
+                  className="w-full rounded-xl text-center"
+                >
+                  View Details
+                </BrandButton>
               </Link>
             </div>
           </div>
