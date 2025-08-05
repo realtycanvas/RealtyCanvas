@@ -63,12 +63,12 @@ export default function PropertyListingCard({ property }: PropertyListingCardPro
         {/* Favorite Button */}
         <button
           onClick={() => setIsFavorited(!isFavorited)}
-          className="absolute top-4 right-4 p-2 bg-white/80 backdrop-blur-sm rounded-full hover:bg-white transition-colors duration-200"
+          className="absolute top-4 right-4 p-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full hover:bg-white dark:hover:bg-gray-700 transition-colors duration-200"
         >
           {isFavorited ? (
             <HeartIconSolid className="w-5 h-5 text-red-500" />
           ) : (
-            <HeartIcon className="w-5 h-5 text-gray-600" />
+            <HeartIcon className="w-5 h-5 text-gray-600 dark:text-gray-300" />
           )}
         </button>
       </div>

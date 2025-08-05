@@ -36,11 +36,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSansVariable} ${geistMonoVariable} antialiased min-h-screen bg-gray-50 dark:bg-secondary-950`}
+        className={`${geistSansVariable} ${geistMonoVariable} antialiased min-h-screen bg-gray-50 dark:bg-gray-900`}
       >
         <ThemeProvider>
           <Navbar />
-          <div className="py-10">
+          <div className="">
             {children}
           </div>
           <Footer />

@@ -12,9 +12,6 @@ import { BrandButton } from './ui/BrandButton';
 
 const navigation = [
   { name: 'Properties', href: '/properties' },
-  { name: 'Search', href: '/properties/search' },
-  { name: 'Residential', href: '/properties?type=residential' },
-  { name: 'Commercial', href: '/properties?type=commercial' },
   { name: 'About', href: '/about' },
   { name: 'Contact', href: '/contact' },
 ];

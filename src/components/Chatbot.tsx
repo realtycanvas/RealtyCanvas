@@ -134,7 +134,7 @@ export default function Chatbot() {
       {/* Chat Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`fixed bottom-20 right-4 w-14 h-14 rounded-full bg-gradient-to-r from-brand-primary to-brand-primary text-brand-secondary shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 z-50 flex items-center justify-center ${
+        className={`fixed bottom-6 right-4 w-14 h-14 rounded-full bg-gradient-to-r from-brand-primary to-brand-primary text-brand-secondary shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 z-[1001] flex items-center justify-center ${
           isOpen ? 'rotate-45' : 'chatbot-pulse'
         }`}
         aria-label="Toggle chat"
@@ -153,7 +153,7 @@ export default function Chatbot() {
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-36 right-4 w-80 sm:w-96 h-[500px] bg-white dark:bg-secondary-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-secondary-700 z-40 flex flex-col overflow-hidden chatbot-fade-in">
+        <div className="fixed bottom-20 right-4 w-80 sm:w-96 h-[500px] bg-white dark:bg-secondary-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-secondary-700 z-40 flex flex-col overflow-hidden chatbot-fade-in">
           {/* Header */}
           <div className="bg-gradient-to-r from-brand-primary to-brand-primary text-brand-secondary p-4 flex items-center justify-between">
             <div className="flex items-center space-x-3">

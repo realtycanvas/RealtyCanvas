@@ -67,8 +67,7 @@ export const BrandButton = React.forwardRef<HTMLButtonElement, BrandButtonProps>
           variantStyles.className,
           sizeStyles,
           'transition-all duration-300 transform hover:scale-105 active:scale-95',
-          'no-underline hover:no-underline focus:no-underline active:no-underline visited:no-underline',
-          '[&_*]:no-underline [&_*:hover]:no-underline [&_*:focus]:no-underline [&_*:active]:no-underline [&_*:visited]:no-underline',
+          'no-underline hover:no-underline focus:no-underline active:no-underline',
           className
         )}
         {...props}

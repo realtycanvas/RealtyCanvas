@@ -50,12 +50,12 @@ export default function NewsletterSection() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
                 required
-                className="flex-1 px-6 py-4 rounded-2xl text-gray-900 focus:outline-none focus:ring-4 focus:ring-white/30 transition-all duration-300"
+                className="flex-1 px-6 py-4 rounded-2xl text-gray-900 dark:text-white dark:bg-gray-800 focus:outline-none focus:ring-4 focus:ring-white/30 transition-all duration-300"
               />
               <button
                 type="submit"
                 disabled={subscribing || subscribed}
-                className="bg-white text-brand-secondary font-bold py-4 px-10 rounded-full hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 shadow-2xl hover:shadow-white/25 min-w-[220px] no-underline hover:no-underline focus:no-underline"
+                className="bg-white dark:bg-gray-800 text-brand-secondary dark:text-brand-primary font-bold py-4 px-10 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300 transform hover:scale-105 shadow-2xl hover:shadow-white/25 min-w-[220px] no-underline hover:no-underline focus:no-underline"
               >
                 {subscribing ? (
                   <span className="flex items-center justify-center">

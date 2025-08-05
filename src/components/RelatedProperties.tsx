@@ -5,7 +5,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { HeartIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
-import { BrandButton } from './ui/BrandButton';
 
 interface Property {
   id: string;
@@ -139,7 +138,7 @@ export default function RelatedProperties({
         <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">Related Properties</h2>
         <Link 
           href="/properties" 
-          className="text-brand-primary dark:text-brand-primary hover:text-primary-600 dark:hover:text-primary-300 font-medium"
+          className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-medium"
         >
           View All Properties →
         </Link>
@@ -183,7 +182,7 @@ export default function RelatedProperties({
               {/* Title and Address */}
               <div className="mb-3">
                 <Link href={`/properties/${property.id}`}>
-                  <h3 className="font-semibold text-gray-900 dark:text-white mb-1 line-clamp-1 hover:text-brand-primary dark:hover:text-brand-primary transition-colors">
+                  <h3 className="font-semibold text-gray-900 dark:text-white mb-1 line-clamp-1 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
                     {property.title}
                   </h3>
                 </Link>
@@ -198,14 +197,11 @@ export default function RelatedProperties({
               </div>
 
               {/* View Details Button */}
-              <Link href={`/properties/${property.id}`} className="block no-underline hover:no-underline focus:no-underline">
-                <BrandButton
-                  variant="primary"
-                  size="sm"
-                  className="w-full rounded-xl text-center"
-                >
-                  View Details
-                </BrandButton>
+              <Link
+                href={`/properties/${property.id}`}
+                className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white text-center py-2 px-4 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl block"
+              >
+                View Details
               </Link>
             </div>
           </div>

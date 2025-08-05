@@ -21,137 +21,16 @@ html {
   overflow: hidden;
 }
 
-/* Remove underlines from ALL button-like elements */
-button,
-.btn,
-[role="button"],
-a[class*="bg-gradient"],
-a[class*="bg-brand"],
-a[class*="bg-primary"],
-a[class*="bg-secondary"],
-a[class*="rounded"],
-a[class*="px-"],
-a[class*="py-"],
-.button,
-[class*="button"],
-[class*="btn"] {
-  text-decoration: none !important;
-}
-
-button:hover,
-.btn:hover,
-[role="button"]:hover,
-a[class*="bg-gradient"]:hover,
-a[class*="bg-brand"]:hover,
-a[class*="bg-primary"]:hover,
-a[class*="bg-secondary"]:hover,
-a[class*="rounded"]:hover,
-a[class*="px-"]:hover,
-a[class*="py-"]:hover,
-.button:hover,
-[class*="button"]:hover,
-[class*="btn"]:hover {
-  text-decoration: none !important;
-}
-
-button:focus,
-.btn:focus,
-[role="button"]:focus,
-a[class*="bg-gradient"]:focus,
-a[class*="bg-brand"]:focus,
-a[class*="bg-primary"]:focus,
-a[class*="bg-secondary"]:focus,
-a[class*="rounded"]:focus,
-a[class*="px-"]:focus,
-a[class*="py-"]:focus,
-.button:focus,
-[class*="button"]:focus,
-[class*="btn"]:focus {
-  text-decoration: none !important;
-  outline: none !important;
-}
-
-button:active,
-.btn:active,
-[role="button"]:active,
-a[class*="bg-gradient"]:active,
-a[class*="bg-brand"]:active,
-a[class*="bg-primary"]:active,
-a[class*="bg-secondary"]:active,
-a[class*="rounded"]:active,
-a[class*="px-"]:active,
-a[class*="py-"]:active,
-.button:active,
-[class*="button"]:active,
-[class*="btn"]:active {
-  text-decoration: none !important;
-}
-
-/* Utility class for button-like elements */
-.btn-no-underline {
-  text-decoration: none !important;
-}
-
-.btn-no-underline:hover,
-.btn-no-underline:focus,
-.btn-no-underline:active,
-.btn-no-underline:visited {
-  text-decoration: none !important;
-}
-
-/* Global override for all links that look like buttons */
+/* Minimal underline prevention for links and buttons */
 a {
-  text-decoration: none !important;
+  text-decoration: none;
 }
 
-a:hover,
-a:focus,
-a:active,
-a:visited {
-  text-decoration: none !important;
+button {
+  text-decoration: none;
 }
 
-/* Additional specific overrides for button-like elements */
-a[class*="bg-"],
-a[class*="border"],
-a[class*="rounded"],
-a[class*="px-"],
-a[class*="py-"],
-a[class*="font-"],
-a[class*="text-center"],
-button[class*="bg-"],
-div[class*="cursor-pointer"] {
-  text-decoration: none !important;
-}
 
-a[class*="bg-"]:hover,
-a[class*="border"]:hover,
-a[class*="rounded"]:hover,
-a[class*="px-"]:hover,
-a[class*="py-"]:hover,
-a[class*="font-"]:hover,
-a[class*="text-center"]:hover,
-button[class*="bg-"]:hover,
-div[class*="cursor-pointer"]:hover {
-  text-decoration: none !important;
-}
-
-/* Override any inherited text-decoration */
-.no-underline,
-.no-underline:hover,
-.no-underline:focus,
-.no-underline:active,
-.no-underline:visited {
-  text-decoration: none !important;
-}
-
-/* Force remove underlines from specific UI elements */
-div[class*="bg-gradient"] a,
-div[class*="bg-brand"] a,
-span[class*="bg-gradient"] a,
-span[class*="bg-brand"] a {
-  text-decoration: none !important;
-}
 
 /* Scroll to top button styles */
 .scroll-to-top {
@@ -170,14 +49,14 @@ span[class*="bg-brand"] a {
   z-index: 1000;
   box-shadow: 0 4px 12px rgba(254, 183, 17, 0.3);
   border: none;
-  text-decoration: none !important;
+  text-decoration: none;
 }
 
 .scroll-to-top:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(254, 183, 17, 0.4);
   background: linear-gradient(135deg, #d97706, #d97706);
-  text-decoration: none !important;
+  text-decoration: none;
 }
 
 .scroll-to-top.hidden {

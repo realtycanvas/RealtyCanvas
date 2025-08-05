@@ -37,12 +37,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const effectiveTheme = getEffectiveTheme(theme);
     setActualTheme(effectiveTheme);
 
-    // Update the document class
-    if (effectiveTheme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
+    // Remove any existing theme classes
+    document.documentElement.classList.remove('dark', 'light');
+    
+    // Add the new theme class
+    document.documentElement.classList.add(effectiveTheme);
 
     // Store preference
     localStorage.setItem('theme', theme);
@@ -57,11 +56,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         const effectiveTheme = getEffectiveTheme(theme);
         setActualTheme(effectiveTheme);
         
-        if (effectiveTheme === 'dark') {
-          document.documentElement.classList.add('dark');
-        } else {
-          document.documentElement.classList.remove('dark');
-        }
+        // Remove any existing theme classes
+        document.documentElement.classList.remove('dark', 'light');
+        
+        // Add the new theme class
+        document.documentElement.classList.add(effectiveTheme);
       };
 
       mediaQuery.addEventListener('change', handleChange);

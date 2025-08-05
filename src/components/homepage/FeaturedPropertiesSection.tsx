@@ -87,7 +87,7 @@ export default function FeaturedPropertiesSection({ properties, loading }: Featu
               No properties available
             </h3>
             <p className="text-gray-600 dark:text-gray-300 mb-8">
-              We're working on adding amazing properties. Check back soon!
+              We&apos;re working on adding amazing properties. Check back soon!
             </p>
             <Link
               href="/properties/new"

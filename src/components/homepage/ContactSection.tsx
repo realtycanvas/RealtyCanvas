@@ -176,7 +176,7 @@ export default function ContactSection({
                   {contactSuccess && (
                     <div className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl">
                       <p className="text-green-700 dark:text-green-300 text-sm">
-                        Thank you! We'll get back to you within 24 hours.
+                        Thank you! We&apos;ll get back to you within 24 hours.
                       </p>
                     </div>
                   )}

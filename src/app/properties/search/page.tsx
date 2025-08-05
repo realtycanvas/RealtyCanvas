@@ -176,7 +176,7 @@ function PropertySearchContent() {
                   onClick={() => setShowMap(!showMap)}
                   className={`flex items-center px-4 py-2 rounded-lg font-medium transition-colors ${
                     showMap
-                      ? 'bg-brand-primary text-white'
+                      ? 'bg-indigo-600 text-white'
                       : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                   }`}
                 >
@@ -277,7 +277,7 @@ function PropertySearchContent() {
                           {/* View Details Button */}
                           <a
                             href={`/properties/${property.id}`}
-                            className="inline-block bg-gradient-to-r from-brand-primary to-brand-primary hover:from-primary-600 hover:to-primary-600 text-white text-center py-3 px-6 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl no-underline hover:no-underline focus:no-underline"
+                            className="inline-block bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white text-center py-3 px-6 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
                           >
                             View Details
                           </a>
@@ -295,7 +295,7 @@ function PropertySearchContent() {
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="text-center">
                     <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-200 dark:border-gray-600">
-                      <MapIcon className="w-16 h-16 text-brand-primary dark:text-brand-primary mx-auto mb-4" />
+                      <MapIcon className="w-16 h-16 text-indigo-600 dark:text-indigo-400 mx-auto mb-4" />
                       <h3 className="text-lg font-semibold text-gray-600 dark:text-gray-300 mb-2">
                         Interactive Map
                       </h3>
@@ -321,7 +321,7 @@ function PropertySearchContent() {
                   return (
                     <div 
                       key={property.id}
-                      className="absolute bg-black/80 backdrop-blur-sm text-white px-3 py-1 rounded-lg text-sm font-semibold cursor-pointer hover:bg-brand-primary transition-colors"
+                      className="absolute bg-black/80 backdrop-blur-sm text-white px-3 py-1 rounded-lg text-sm font-semibold cursor-pointer hover:bg-indigo-600 transition-colors"
                       style={positions[index]}
                       title={property.title}
                     >

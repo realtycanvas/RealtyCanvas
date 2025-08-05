@@ -183,7 +183,7 @@ export default function PropertySitePlanEditor({
             className={`flex items-center px-3 py-1 rounded-md text-sm font-medium transition-colors ${
               isJsonMode
                 ? 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white'
-                : 'bg-primary-100 dark:bg-secondary-900 text-brand-primary dark:text-brand-primary'
+                : 'bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300'
             }`}
           >
             {isJsonMode ? (
@@ -329,7 +329,7 @@ export default function PropertySitePlanEditor({
                     <button
                       type="button"
                       onClick={addFeature}
-                      className="text-sm text-brand-primary dark:text-brand-primary hover:text-primary-600 dark:hover:text-primary-300"
+                      className="text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300"
                     >
                       + Add Feature
                     </button>
@@ -459,7 +459,7 @@ export default function PropertySitePlanEditor({
                     onClick={() => toggleAmenity(amenity)}
                     className={`text-sm px-3 py-2 rounded-md border transition-colors ${
                       (sitePlanData.amenities || []).includes(amenity)
-                        ? 'bg-indigo-100 dark:bg-indigo-900 border-primary-300 dark:border-secondary-700 text-indigo-700 dark:text-indigo-300'
+                        ? 'bg-indigo-100 dark:bg-indigo-900 border-indigo-300 dark:border-indigo-700 text-indigo-700 dark:text-indigo-300'
                         : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
                     }`}
                   >

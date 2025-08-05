@@ -271,10 +271,10 @@ export default function PropertyGrid({ title = "Featured Properties", subtitle =
 
                 {/* Network and Category Badges */}
                 <div className="absolute top-3 right-3 flex flex-col space-y-2">
-                  <div className="bg-white/90 backdrop-blur-sm px-2 py-1 rounded-lg text-xs text-gray-700 font-medium">
+                  <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm px-2 py-1 rounded-lg text-xs text-gray-700 dark:text-gray-300 font-medium">
                     📊 {property.network}
                   </div>
-                  <div className="bg-white/90 backdrop-blur-sm px-2 py-1 rounded-lg text-xs text-gray-700 font-medium">
+                  <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm px-2 py-1 rounded-lg text-xs text-gray-700 dark:text-gray-300 font-medium">
                     👨‍👩‍👧‍👦 {property.category}
                   </div>
                 </div>
@@ -282,12 +282,12 @@ export default function PropertyGrid({ title = "Featured Properties", subtitle =
                 {/* Favorite Button */}
                 <button
                   onClick={() => toggleFavorite(property.id)}
-                  className="absolute bottom-3 right-3 p-2 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-colors duration-200"
+                  className="absolute bottom-3 right-3 p-2 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-full hover:bg-white dark:hover:bg-gray-700 transition-colors duration-200"
                 >
                   {favorites.has(property.id) ? (
                     <HeartIconSolid className="w-5 h-5 text-red-500" />
                   ) : (
-                    <HeartIcon className="w-5 h-5 text-gray-600" />
+                    <HeartIcon className="w-5 h-5 text-gray-600 dark:text-gray-300" />
                   )}
                 </button>
               </div>

@@ -33,7 +33,9 @@ export default function ScrollToTop() {
   return (
     <button
       onClick={scrollToTop}
-      className={`scroll-to-top ${isVisible ? 'visible' : 'hidden'}`}
+      className={`fixed left-4 bottom-4 z-50 p-3 bg-gray-800 rounded-full shadow-lg transition-opacity duration-300 ${
+        isVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
+      }`}
       aria-label="Scroll to top"
       title="Scroll to top"
     >
@@ -53,4 +55,5 @@ export default function ScrollToTop() {
       </svg>
     </button>
   );
+  
 }
