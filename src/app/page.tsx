@@ -1718,7 +1718,7 @@ export default function Home() {
           <div className="max-w-4xl mx-auto">
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
               Ready to Find Your
-              <span className="block text-yellow-300"> Dream Property?</span>
+              <span className="block text-blue-950"> Dream Property?</span>
             </h2>
             <p className="text-lg md:text-xl mb-10 max-w-3xl mx-auto text-gray-100 leading-relaxed">
               Join thousands of satisfied customers who found their perfect home
@@ -1744,19 +1744,19 @@ export default function Home() {
             {/* Trust indicators */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-3xl mx-auto">
               <div className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-yellow-300 mb-2">
+                <div className="text-3xl md:text-4xl font-bold text-blue-950 mb-2">
                   5,000+
                 </div>
                 <div className="text-gray-200">Properties Sold</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-yellow-300 mb-2">
+                <div className="text-3xl md:text-4xl font-bold text-blue-950 mb-2">
                   10,000+
                 </div>
                 <div className="text-gray-200">Happy Families</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-yellow-300 mb-2">
+                <div className="text-3xl md:text-4xl font-bold text-blue-950 mb-2">
                   15+
                 </div>
                 <div className="text-gray-200">Years Experience</div>

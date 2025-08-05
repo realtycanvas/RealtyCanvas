@@ -36,7 +36,7 @@ export default async function PropertyPage({ params }: { params: Promise<{ id: s
   // console.log('Property data:', property);
 
   return (
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-7xl mx-auto">
       <div className="mb-6">
         <Link 
           href="/" 

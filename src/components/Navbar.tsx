@@ -38,10 +38,10 @@ export default function Navbar() {
               <Link
                 key={item.name}
                 href={item.href}
-                className="text-gray-700 hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400 px-3 py-2 text-sm font-medium transition-colors duration-200 relative group"
+                className="text-gray-700 hover:text-brand-primary dark:text-gray-300 dark:hover:text-brand-primary px-3 py-2 text-sm font-medium transition-colors duration-200 relative group"
               >
                 {item.name}
-                <span className="absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-indigo-600 to-purple-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></span>
+                <span className="absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-brand-primary to-brand-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></span>
               </Link>
             ))}
           </div>
@@ -51,15 +51,15 @@ export default function Navbar() {
             <ThemeToggle />
             <Link
               href="/properties/new"
-              className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-6 py-2 rounded-full text-sm font-medium transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+              className="bg-gradient-to-r from-brand-primary to-brand-primary hover:from-primary-600 hover:to-primary-600 text-brand-secondary px-6 py-2 rounded-full text-sm font-medium transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
             >
               List your property
             </Link>
             
             {/* Profile Menu */}
             <Menu as="div" className="relative">
-              <Menu.Button className="flex items-center space-x-2 text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors duration-200">
-                <div className="w-8 h-8 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
+              <Menu.Button className="flex items-center space-x-2 text-gray-700 dark:text-gray-300 hover:text-brand-primary dark:hover:text-brand-primary transition-colors duration-200">
+                <div className="w-8 h-8 bg-gradient-to-r from-brand-primary to-brand-primary rounded-full flex items-center justify-center text-brand-secondary text-sm font-medium">
                   U
                 </div>
                 <ChevronDownIcon className="w-4 h-4" />
@@ -161,7 +161,7 @@ export default function Navbar() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className="block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md transition-colors duration-200"
+                  className="block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:text-brand-primary dark:hover:text-brand-primary hover:bg-gray-50 dark:hover:bg-secondary-800 rounded-md transition-colors duration-200"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {item.name}
@@ -170,7 +170,7 @@ export default function Navbar() {
               <div className="px-3 py-2">
                 <Link
                   href="/properties/new"
-                  className="block w-full text-center bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-4 py-2 rounded-full text-sm font-medium transition-all duration-200"
+                  className="block w-full text-center bg-gradient-to-r from-brand-primary to-brand-primary hover:from-primary-600 hover:to-primary-600 text-brand-secondary px-4 py-2 rounded-full text-sm font-medium transition-all duration-200"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   List your property
