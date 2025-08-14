@@ -72,7 +72,7 @@ export default function PropertyFAQ({
         <div className="text-center">
           <h3 className="text-xl font-bold text-gray-900 mb-2">Still have questions?</h3>
           <p className="text-gray-600 mb-4">
-            If you couldn't find the answer to your question, please feel free to contact us directly.
+            If you couldn&apos;t find the answer to your question, please feel free to contact us directly.
           </p>
           <div className="flex flex-col sm:flex-row justify-center space-y-2 sm:space-y-0 sm:space-x-4">
             <button className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">

@@ -241,9 +241,7 @@ export default function ProjectDetailPage() {
       url: typeof window !== "undefined" ? window.location.href : "",
     };
     try {
-      // @ts-ignore - web share not in TS dom by default in some configs
       if (navigator.share) {
-        // @ts-ignore
         await navigator.share(shareData);
         showToast("Share dialog opened");
       } else if (navigator.clipboard) {

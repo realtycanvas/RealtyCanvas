@@ -300,7 +300,7 @@ export default function IconSelector({ onSelect, selectedIcon, className = '' }:
             <div className="p-6 overflow-y-auto max-h-96">
               {filteredIcons.length === 0 ? (
                 <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-                  No icons found for "{searchTerm}"
+                  No icons found for &quot;{searchTerm}&quot;
                 </div>
               ) : (
                 <div className="grid grid-cols-6 md:grid-cols-8 gap-3">

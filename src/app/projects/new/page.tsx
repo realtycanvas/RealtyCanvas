@@ -1218,7 +1218,7 @@ export default function UnifiedProjectForm() {
                 multiple={true}
               />
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                For multiple URLs, separate them with commas. Click "Add" button to add images to gallery.
+                For multiple URLs, separate them with commas. Click &quot;Add&quot; button to add images to gallery.
               </p>
         </div>
           </div>
