@@ -649,10 +649,13 @@ export default function ProjectDetailPage() {
                       {amenity.icon && (
                         <span className="text-2xl">{amenity.icon}</span>
                       )}
+                      < BuildingOfficeIcon className="text-yellow-400 dark:text-gray-400 w-[2vw]" />
                      
+
 
                       <div>
                         <div className="font-semibold text-gray-900 dark:text-white">
+                          
                           {amenity.name}
                         </div>
                         {amenity.details && (
