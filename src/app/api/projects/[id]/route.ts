@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     // Log the request to help with debugging
     console.log('GET /api/projects/[id] request received', { 
@@ -9,7 +9,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
       headers: Object.fromEntries(req.headers.entries())
     });
     
-    const { id } = params;
+    const { id } = await params;
     console.log(`Fetching project with ID: ${id}`);
     
     // Check if ID is valid
@@ -81,9 +81,9 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
 
     if (body.slug) {
@@ -186,9 +186,9 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
-export async function DELETE(_req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const { id } = params;
+    const { id } = await params;
     await prisma.project.delete({ where: { id } });
     return NextResponse.json({ message: 'Project deleted' });
   } catch (error) {
