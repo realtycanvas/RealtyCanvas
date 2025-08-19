@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     // Log the request to help with debugging
     console.log('GET /api/projects/[id] request received', { 
@@ -9,13 +9,40 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       headers: Object.fromEntries(req.headers.entries())
     });
     
-    const { id } = await params;
+    const { id } = params;
     console.log(`Fetching project with ID: ${id}`);
     
-    // Force Prisma to make a fresh database query using transaction
-    const project = await prisma.$transaction(async (tx) => {
-      return await tx.project.findUnique({
-        where: { id },
+    // Check if ID is valid
+    if (!id) {
+      console.log('Invalid project ID');
+      return NextResponse.json({ error: 'Invalid project ID' }, { status: 400 });
+    }
+    
+    // Try to find by ID first
+    let project = await prisma.project.findUnique({
+      where: { id },
+      include: {
+        units: true,
+        highlights: true,
+        amenities: true,
+        faqs: true,
+        floorPlans: true,
+        documents: true,
+        media: true,
+        configurations: true,
+        anchors: true,
+        pricingPlans: true,
+        pricingTable: true,
+        construction: true,
+        nearbyPoints: true,
+      },
+    });
+    
+    // If not found by ID, try to find by slug (in case ID is actually a slug)
+    if (!project) {
+      console.log(`Project with ID ${id} not found, trying as slug`);
+      project = await prisma.project.findUnique({
+        where: { slug: id },
         include: {
           units: true,
           highlights: true,
@@ -32,10 +59,10 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
           nearbyPoints: true,
         },
       });
-    });
+    }
     
     if (!project) {
-      console.log(`Project with ID ${id} not found`);
+      console.log(`Project with ID/slug ${id} not found`);
       return NextResponse.json({ error: 'Project not found' }, { status: 404 });
     }
     

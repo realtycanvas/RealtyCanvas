@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { notFound } from "next/navigation";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import {
@@ -178,9 +179,14 @@ export default function ProjectDetailPage() {
     
     const fetchProjectData = async () => {
       try {
+        setLoading(true);
+        setError(null);
+        
         // Add timestamp to prevent caching
         const timestamp = new Date().getTime();
-        const res = await fetch(`/api/projects/${id}?t=${timestamp}`, { 
+        console.log(`Fetching project with ID/slug: ${id}`);
+        
+        const res = await fetch(`/api/projects/${encodeURIComponent(id)}?t=${timestamp}`, { 
           cache: "no-store",
           headers: {
             'Cache-Control': 'no-cache, no-store, must-revalidate',
@@ -190,14 +196,23 @@ export default function ProjectDetailPage() {
         });
         
         if (!res.ok) {
-          throw new Error(`Failed to fetch project: ${res.status}`);
+          const errorData = await res.json();
+          console.error(`Failed to fetch project: ${res.status}`, errorData);
+          
+          // If project not found (404), use Next.js notFound
+          if (res.status === 404) {
+            notFound();
+            return;
+          }
+          
+          throw new Error(errorData.error || `Failed to fetch project: ${res.status}`);
         }
         
         const data = await res.json();
         console.log('Project data fetched:', data.title);
         setProject(data);
       } catch (err) {
-        console.error(err);
+        console.error('Error fetching project:', err);
         setError(err instanceof Error ? err.message : "Failed to load project");
       } finally {
         setLoading(false);
