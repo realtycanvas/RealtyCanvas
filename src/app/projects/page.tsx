@@ -26,12 +26,23 @@ export default function ProjectsPage() {
   const [toast, setToast] = useState('');
 
   useEffect(() => {
-    (async () => {
+    const fetchProjects = async () => {
       try {
-        const res = await fetch('/api/projects', { cache: 'no-store' });
+        // Use a timestamp query parameter to bypass cache
+        const timestamp = new Date().getTime();
+        const res = await fetch(`/api/projects?t=${timestamp}`, { 
+          cache: 'no-store',
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0'
+          }
+        });
+        
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
         }
+        
         const data = await res.json();
         console.log('Projects API response:', data);
         
@@ -48,8 +59,46 @@ export default function ProjectsPage() {
       } finally {
         setLoading(false);
       }
-    })();
+    };
+    
+    fetchProjects();
   }, []);
+  
+  // Add a refresh button function
+  const refreshProjects = async () => {
+    setLoading(true);
+    try {
+      const timestamp = new Date().getTime();
+      const res = await fetch(`/api/projects?t=${timestamp}`, { 
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
+      });
+      
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      
+      const data = await res.json();
+      console.log('Refreshed projects:', data);
+      
+      if (Array.isArray(data)) {
+        setProjects(data);
+        showToast('Projects refreshed successfully');
+      } else {
+        console.error('API did not return an array:', data);
+        setProjects([]);
+      }
+    } catch (error) {
+      console.error('Failed to refresh projects:', error);
+      showToast('Failed to refresh projects');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const showToast = (message: string) => {
     setToast(message);
@@ -93,6 +142,13 @@ export default function ProjectsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-16">
+      {/* Toast notification */}
+      {toast && (
+        <div className="fixed top-20 right-4 bg-green-500 text-white px-4 py-2 rounded-md shadow-lg z-50 animate-fade-in-out">
+          {toast}
+        </div>
+      )}
+      
       {/* Header Section */}
       <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -103,12 +159,24 @@ export default function ProjectsPage() {
                 Discover our exclusive portfolio of commercial and residential developments
               </p>
             </div>
-            <Link 
-              href="/projects/new" 
-              className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white px-8 py-4 rounded-2xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
-            >
-              ✨ Create New Project
-            </Link>
+            <div className="flex space-x-3">
+              <button 
+                onClick={refreshProjects} 
+                disabled={loading}
+                className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white px-6 py-4 rounded-2xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className={`h-5 w-5 mr-2 ${loading ? 'animate-spin' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                {loading ? 'Refreshing...' : 'Refresh'}
+              </button>
+              <Link 
+                href="/projects/new" 
+                className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white px-8 py-4 rounded-2xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+              >
+                ✨ Create New Project
+              </Link>
+            </div>
           </div>
         </div>
       </div>

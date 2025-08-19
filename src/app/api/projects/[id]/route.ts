@@ -1,29 +1,53 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const { id } = await params;
-    const project = await prisma.project.findUnique({
-      where: { id },
-      include: {
-        units: true,
-        highlights: true,
-        amenities: true,
-        faqs: true,
-        floorPlans: true,
-        documents: true,
-        media: true,
-        configurations: true,
-        anchors: true,
-        pricingPlans: true,
-        pricingTable: true,
-        construction: true,
-        nearbyPoints: true,
-      },
+    // Log the request to help with debugging
+    console.log('GET /api/projects/[id] request received', { 
+      url: req.url,
+      headers: Object.fromEntries(req.headers.entries())
     });
-    if (!project) return NextResponse.json({ error: 'Project not found' }, { status: 404 });
-    return NextResponse.json(project);
+    
+    const { id } = await params;
+    console.log(`Fetching project with ID: ${id}`);
+    
+    // Force Prisma to make a fresh database query using transaction
+    const project = await prisma.$transaction(async (tx) => {
+      return await tx.project.findUnique({
+        where: { id },
+        include: {
+          units: true,
+          highlights: true,
+          amenities: true,
+          faqs: true,
+          floorPlans: true,
+          documents: true,
+          media: true,
+          configurations: true,
+          anchors: true,
+          pricingPlans: true,
+          pricingTable: true,
+          construction: true,
+          nearbyPoints: true,
+        },
+      });
+    });
+    
+    if (!project) {
+      console.log(`Project with ID ${id} not found`);
+      return NextResponse.json({ error: 'Project not found' }, { status: 404 });
+    }
+    
+    console.log(`Successfully fetched project: ${project.title}`);
+    
+    // Set cache control headers to prevent caching
+    const response = NextResponse.json(project);
+    response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    response.headers.set('Pragma', 'no-cache');
+    response.headers.set('Expires', '0');
+    
+    return response;
   } catch (error) {
     console.error('Get project error:', error);
     return NextResponse.json({ error: 'Failed to fetch project' }, { status: 500 });

@@ -103,28 +103,46 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const projects = await prisma.project.findMany({
-      orderBy: { createdAt: 'desc' },
-      select: {
-        id: true,
-        slug: true,
-        title: true,
-        subtitle: true,
-        category: true,
-        status: true,
-        address: true,
-        city: true,
-        state: true,
-        featuredImage: true,
-        galleryImages: true,
-        createdAt: true,
-        minRatePsf: true,
-        maxRatePsf: true,
-      },
+    // Log the request to help with debugging
+    console.log('GET /api/projects request received', { 
+      url: request.url,
+      headers: Object.fromEntries(request.headers.entries())
     });
-    return NextResponse.json(projects);
+    
+    // Force Prisma to make a fresh database query
+    const projects = await prisma.$transaction(async (tx) => {
+      return await tx.project.findMany({
+        orderBy: { createdAt: 'desc' },
+        select: {
+          id: true,
+          slug: true,
+          title: true,
+          subtitle: true,
+          category: true,
+          status: true,
+          address: true,
+          city: true,
+          state: true,
+          featuredImage: true,
+          galleryImages: true,
+          createdAt: true,
+          minRatePsf: true,
+          maxRatePsf: true,
+        },
+      });
+    });
+    
+    console.log(`Found ${projects.length} projects`);
+    
+    // Set cache control headers to prevent caching
+    const response = NextResponse.json(projects);
+    response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    response.headers.set('Pragma', 'no-cache');
+    response.headers.set('Expires', '0');
+    
+    return response;
   } catch (error) {
     console.error('List projects error:', error);
     return NextResponse.json({ error: 'Failed to fetch projects' }, { status: 500 });
