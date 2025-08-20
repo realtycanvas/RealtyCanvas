@@ -24,6 +24,7 @@ interface FloorPlanManagerProps {
 
 const defaultFloorLevels = [
   'Basement',
+  'Lower Ground Floor',
   'Ground Floor',
   'First Floor', 
   'Second Floor',
@@ -35,7 +36,8 @@ const defaultFloorLevels = [
   'Seventh Floor',
   'Eighth Floor',
   'Ninth Floor',
-  'Tenth Floor'
+  'Tenth Floor',
+  'Typical Floor'
 ];
 
 export default function FloorPlanManager({ value, onChange, className = '' }: FloorPlanManagerProps) {
