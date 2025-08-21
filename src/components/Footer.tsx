@@ -6,7 +6,7 @@ const Footer = () => {
   return (
     <section>
          {/* Footer */}
-         <footer className="bg-gradient-to-br from-secondary-900 via-secondary-800 to-secondary-900 text-white py-16 relative overflow-hidden">
+         <footer className="bg-gradient-to-br from-secondary-900 via-secondary-800 to-secondary-900 text-white py-16 relative overflow-hidden z-20">
          {/* Background elements */}
          <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-l from-brand-primary/10 to-brand-primary/10 rounded-full blur-3xl"></div>
          <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-r from-brand-primary/5 to-brand-primary/5 rounded-full blur-3xl"></div>

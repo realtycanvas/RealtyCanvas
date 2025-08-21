@@ -12,7 +12,7 @@ import { BrandButton } from './ui/BrandButton';
 import gsap from 'gsap';
 
 const navigation = [
-  { name: 'Properties', href: '/properties' },
+  // { name: 'Properties', href: '/properties' },
   { name: 'Projects', href: '/projects' },
   { name: 'About', href: '/about' },
   { name: 'Contact', href: '/contact' },

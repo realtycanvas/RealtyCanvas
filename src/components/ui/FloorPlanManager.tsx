@@ -37,7 +37,8 @@ const defaultFloorLevels = [
   'Eighth Floor',
   'Ninth Floor',
   'Tenth Floor',
-  'Typical Floor'
+  'Typical Floor',
+  'None'
 ];
 
 export default function FloorPlanManager({ value, onChange, className = '' }: FloorPlanManagerProps) {
