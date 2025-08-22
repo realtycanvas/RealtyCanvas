@@ -199,8 +199,20 @@ export default function ProjectsPage() {
   };
   
   // Handle search query changes
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
+  const handleSearch = (filters: any) => {
+    if (typeof filters === 'string') {
+      setSearchQuery(filters);
+    } else {
+      // Handle SearchFilters object
+      setSearchQuery('');
+      setFilters({
+        category: filters.category === 'All Categories' ? 'ALL' : filters.category,
+        status: filters.status === 'All Status' ? 'ALL' : filters.status,
+        city: filters.location || '',
+        state: '',
+        priceRange: filters.priceRange || { min: 0, max: 10000000 },
+      });
+    }
   };
   
   // Handle filter changes
@@ -305,12 +317,12 @@ export default function ProjectsPage() {
             <Separator />
             
             <SidebarGroup className="flex-1">
-              <SidebarGroupLabel>Search & Filters</SidebarGroupLabel>
+              {/* <SidebarGroupLabel>Search & Filters</SidebarGroupLabel> */}
               <SidebarGroupContent className="space-y-4">
-                <ProjectSearchBar 
-                  searchQuery={searchQuery}
-                  onSearch={handleSearch} 
-                />
+                {/* <ProjectSearchBar 
+                  onSearch={handleSearch}
+                  compact={true}
+                /> */}
                 <ProjectFilterSidebar 
                   filters={filters}
                   onFiltersChange={handleFiltersChange}

@@ -32,6 +32,21 @@ type PropertyCardProps = {
 export default function PropertyCard({ property }: PropertyCardProps) {
   const [isFavorited, setIsFavorited] = useState(false);
 
+  const handlePropertyClick = async () => {
+    try {
+      // Track the click
+      await fetch(`/api/properties/${property.id}/click`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+    } catch (error) {
+      console.error('Error tracking property click:', error);
+      // Don't prevent navigation if tracking fails
+    }
+  };
+
   // Prepare images array for carousel
   const images = [];
   if (property.featuredImage) {
@@ -71,7 +86,11 @@ export default function PropertyCard({ property }: PropertyCardProps) {
   };
 
   return (
-    <Link href={`/properties/${property.id}`} className="block h-full no-underline hover:no-underline focus:no-underline">
+    <Link 
+      href={`/properties/${property.id}`} 
+      className="block h-full no-underline hover:no-underline focus:no-underline"
+      onClick={handlePropertyClick}
+    >
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300 h-full group cursor-pointer flex flex-col">
         {/* Image Section */}
         <div className="relative h-48 overflow-hidden flex-shrink-0">

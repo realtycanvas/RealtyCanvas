@@ -1,5 +1,6 @@
 import React from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 
 const Newsletter = () => {
   return (
@@ -34,7 +35,7 @@ const Newsletter = () => {
               </div>
 
               {/* Email subscription form */}
-              <div className="relative">
+              {/* <div className="relative">
                 <input
                   type="email"
                   placeholder="Enter your email"
@@ -55,7 +56,11 @@ const Newsletter = () => {
                     />
                   </svg>
                 </button>
-              </div>
+              </div> */}
+              <Link href="/contact" className="inline-block mt-6 px-8 py-3 bg-yellow-500 text-white rounded-full font-medium hover:bg-[#14304c] transition-all duration-300 transform hover:scale-105">
+                Contact Us
+              </Link>
+
             </div>
 
             {/* Right side - Illustration */}

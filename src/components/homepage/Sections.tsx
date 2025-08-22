@@ -194,7 +194,7 @@ const Sections = ({ properties, loading }: { properties: any[], loading: boolean
       {/* </section> */}
 
       {/* Luxury For You Section */}
-      <section className="py-20 bg-white dark:bg-gray-900">
+      {/* <section className="py-20 bg-white dark:bg-gray-900">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
@@ -207,7 +207,7 @@ const Sections = ({ properties, loading }: { properties: any[], loading: boolean
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Left side - Content */}
+           
             <div className="space-y-8">
               <div className="space-y-4">
                 <h3 className="text-3xl font-bold text-gray-900 dark:text-white">Ultra Luxury Living</h3>
@@ -280,7 +280,7 @@ const Sections = ({ properties, loading }: { properties: any[], loading: boolean
               </div>
             </div>
 
-            {/* Right side - Image */}
+       
             <div className="relative">
               <div className="relative w-full h-96 lg:h-[500px] rounded-3xl overflow-hidden shadow-2xl">
                 <Image 
@@ -290,8 +290,7 @@ const Sections = ({ properties, loading }: { properties: any[], loading: boolean
                   className="object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
-                
-                {/* Floating stats */}
+               
                 <div className="absolute top-6 right-6 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-2xl p-4 shadow-xl">
                   <div className="text-center">
                     <div className="text-2xl font-bold text-gray-900 dark:text-white">₹5Cr+</div>
@@ -309,7 +308,7 @@ const Sections = ({ properties, loading }: { properties: any[], loading: boolean
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
   </section>
   )
 }

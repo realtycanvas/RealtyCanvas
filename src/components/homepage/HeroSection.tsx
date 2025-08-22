@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { BrandButton } from "../ui/BrandButton";
-import PropertySearchBar from "../PropertySearchBar";
+import ProjectSearchBar from "../ProjectSearchBar";
 
 export default function HeroSection() {
   return (
@@ -28,7 +28,7 @@ export default function HeroSection() {
                  
                 </h1>
                 <h2 className="text-5xl sm:text-6xl md:text-7xl font-bold mb-6 leading-tigh block bg-gradient-to-r from-brand-primary to-brand-primary bg-clip-text text-transparent">
-                    Dream Home
+                    Dream Project
                   </h2>
               </div>
               <p className="text-xl md:text-2xl mb-8 text-gray-600 dark:text-gray-300 text-center max-w-5xl mx-auto lg:mx-0 leading-relaxed">
@@ -38,20 +38,20 @@ export default function HeroSection() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center  items-center mb-12">
-              <Link href="/properties">
+              <Link href="/projects">
                 <BrandButton
                   variant="primary"
                   size="lg"
                   className="rounded-2xl min-w-[200px] "
                 >
-                  Explore Properties
+                  Explore Projects
                 </BrandButton>
               </Link>
               <Link
-                href="/properties/new"
+                href="/projects/new"
                 className="px-10 py-5 bg-transparent border-2 border-blue-950 text-blue-950 dark:border-white dark:text-white rounded-xl"
               >
-                List Your property
+                List Your Project
               </Link>
             </div>
 
@@ -107,17 +107,17 @@ export default function HeroSection() {
             </div>
           </div> */}
         </div>
-        <PropertySearchBar
+        <ProjectSearchBar
           onSearch={(filters) => {
-            // Navigate to search results page with filters
+            // Navigate to projects page with filters
             const params = new URLSearchParams({
-              type: filters.type,
+              category: filters.category,
               location: filters.location,
-              propertyType: filters.propertyType,
+              status: filters.status,
               minPrice: filters.priceRange.min.toString(),
               maxPrice: filters.priceRange.max.toString(),
             });
-            window.location.href = `/properties/search?${params.toString()}`;
+            window.location.href = `/projects?${params.toString()}`;
           }}
         />
       </div>

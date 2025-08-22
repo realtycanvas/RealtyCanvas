@@ -4,15 +4,17 @@ import { useEffect, useState } from "react";
 // Homepage Components
 import {
   HeroSection,
-  PropertySearchSection,
+  // PropertySearchSection,
   BenefitsSection,
   FeaturedPropertiesSection,
+  FeaturedProjectsSection,
+  TrendingPropertiesSection,
   ServicesSection,
   NewsletterSection,
   ContactSection,
 } from "@/components/homepage";
-import Adventure from "@/components/homepage/Adventure";
-import Developer from "@/components/homepage/Developer";
+// import Adventure from "@/components/homepage/Adventure";
+// import Developer from "@/components/homepage/Developer";
 import Sections from "@/components/homepage/Sections";
 import Newsletter from "@/components/homepage/Newsletter";
 
@@ -33,9 +35,28 @@ type Property = {
   createdAt: Date;
 };
 
+// Define the Project type
+type Project = {
+  id: string;
+  slug: string;
+  title: string;
+  subtitle?: string | null;
+  category: 'COMMERCIAL' | 'RETAIL_ONLY' | 'MIXED_USE' | 'RESIDENTIAL';
+  status: 'PLANNED' | 'UNDER_CONSTRUCTION' | 'READY';
+  address: string;
+  city?: string | null;
+  state?: string | null;
+  featuredImage: string;
+  createdAt: string;
+  minRatePsf?: string | null;
+  maxRatePsf?: string | null;
+};
+
 export default function Home() {
   const [properties, setProperties] = useState<Property[]>([]);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
+  const [projectsLoading, setProjectsLoading] = useState(true);
   const [contactForm, setContactForm] = useState({
     name: "",
     email: "",
@@ -71,7 +92,43 @@ export default function Home() {
       }
     }
 
+    async function fetchProjects() {
+      try {
+        console.log("Fetching projects from API...");
+        const timestamp = new Date().getTime();
+        const response = await fetch(`/api/projects?t=${timestamp}`, { 
+          cache: 'no-store',
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0'
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`API error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("Projects API response:", data);
+
+        // Ensure data is an array
+        if (Array.isArray(data)) {
+          setProjects(data);
+        } else {
+          console.error('Projects API did not return an array:', data);
+          setProjects([]);
+        }
+      } catch (error) {
+        console.error("Error fetching projects:", error);
+        setProjects([]);
+      } finally {
+        setProjectsLoading(false);
+      }
+    }
+
     fetchProperties();
+    fetchProjects();
   }, []);
 
   // Reset loading state when navigating back to this page
@@ -125,14 +182,16 @@ export default function Home() {
       {/* Benefits Section */}
       <BenefitsSection />
 
-      {/* Featured Properties Section */}
-      <FeaturedPropertiesSection properties={properties} loading={loading} />
+      {/* Featured Projects Section */}
+      <FeaturedProjectsSection projects={projects} loading={projectsLoading} />
+
+      {/* Trending Properties Section */}
 
       {/* Adventure Section */}
-      <Adventure />
+      {/* <Adventure /> */}
 
       {/* Developer Section */}
-      <Developer />
+      {/* <Developer /> */}
 
       {/* Services Section */}
       <ServicesSection />
@@ -147,13 +206,13 @@ export default function Home() {
       <Newsletter />
 
       {/* Contact Section */}
-      <ContactSection
+      {/* <ContactSection
         contactForm={contactForm}
         contactSubmitting={contactSubmitting}
         contactSuccess={contactSuccess}
         onFormChange={handleContactChange}
         onFormSubmit={handleContactSubmit}
-      />
+      /> */}
     </main>
   );
 }

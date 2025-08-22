@@ -54,6 +54,7 @@ export async function POST(request: NextRequest) {
       sitePlanTitle,
       sitePlanDescription,
       slug,
+      isTrending = false,
     } = body || {};
 
     if (!title || !description || !address || !featuredImage) {
@@ -93,6 +94,7 @@ export async function POST(request: NextRequest) {
         sitePlanImage: sitePlanImage || null,
         sitePlanTitle: sitePlanTitle || null,
         sitePlanDescription: sitePlanDescription || null,
+        isTrending: Boolean(isTrending),
       },
     });
 

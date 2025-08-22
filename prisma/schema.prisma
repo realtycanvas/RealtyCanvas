@@ -57,6 +57,13 @@ model Property {
   
   // Others/Related Properties
   relatedProperties String[]  @default([])
+  
+  // Click tracking fields
+  totalClicks       Int      @default(0)
+  isTrending        Boolean  @default(false)
+  
+  // Relations
+  propertyClicks    PropertyClick[]
 }
 
 // =====================
@@ -213,6 +220,7 @@ model Project {
   totalUnits    Int?    // Total number of units
   soldUnits     Int?    // Number of units sold
   availableUnits Int?   // Number of units available
+  isTrending    Boolean @default(false) // Manual trending flag
 }
 
 // Normalized tables for better querying and management
@@ -378,4 +386,19 @@ model ConstructionMilestone {
   date      DateTime?
   images    String[] // status photos
   project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+// Click tracking model for properties
+model PropertyClick {
+  id          String   @id @default(uuid())
+  propertyId  String
+  clickCount  Int      @default(1)
+  clickDate   DateTime // Date of the click (used for daily aggregation)
+  lastClickAt DateTime @default(now())
+  clientIP    String?  // Optional IP tracking
+  createdAt   DateTime @default(now())
+  
+  property    Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  
+  @@unique([propertyId, clickDate]) // One record per property per day
 }

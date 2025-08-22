@@ -138,6 +138,7 @@ function UnifiedProjectFormContent() {
     videoUrl: '',
     minRatePsf: '',
     maxRatePsf: '',
+    isTrending: false,
   });
 
   // Video state
@@ -212,6 +213,7 @@ function UnifiedProjectFormContent() {
         videoUrl: projectData.videoUrl || '',
         minRatePsf: projectData.minRatePsf || '',
         maxRatePsf: projectData.maxRatePsf || '',
+        isTrending: projectData.isTrending || false,
       });
 
       // Load video URLs
@@ -555,6 +557,7 @@ function UnifiedProjectFormContent() {
         videoUrl: projectData.videoUrl || '',
         minRatePsf: projectData.minRatePsf || '',
         maxRatePsf: projectData.maxRatePsf || '',
+        isTrending: projectData.isTrending || false,
       });
 
       // Import video URLs
@@ -1262,6 +1265,31 @@ function UnifiedProjectFormContent() {
                     {stat.replace('_', ' ')}
                   </button>
                 ))}
+              </div>
+            </div>
+
+            {/* Trending Toggle */}
+            <div className="bg-orange-50 dark:bg-orange-900/20 p-4 rounded-lg border border-orange-200 dark:border-orange-800">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="text-sm font-medium text-gray-900 dark:text-white">
+                    🔥 Trending Project
+                  </h4>
+                  <p className="text-xs text-orange-700 dark:text-orange-300 mt-1">
+                    Mark this project as trending to boost its visibility
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setProject(prev => ({ ...prev, isTrending: !prev.isTrending }))}
+                  className={`flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                    project.isTrending
+                      ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg'
+                      : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+                  }`}
+                >
+                  {project.isTrending ? '🔥 Trending' : 'Make Trending'}
+                </button>
               </div>
             </div>
 
