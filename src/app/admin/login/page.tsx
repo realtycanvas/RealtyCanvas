@@ -72,7 +72,7 @@ export default function AdminLoginPage() {
             <div className="text-center mb-8">
               <h1 className="text-3xl font-bold text-gray-900 mb-2">Reset Password</h1>
               <p className="text-gray-600">
-                Enter your email address and we'll send you a link to reset your password.
+                Enter your email address and we&apos;ll send you a link to reset your password.
               </p>
             </div>
 
@@ -89,7 +89,7 @@ export default function AdminLoginPage() {
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">Email Sent!</h3>
                 <p className="text-gray-600 mb-6">
-                  We've sent a password reset link to {forgotEmail}
+                  We&apos;ve sent a password reset link to {forgotEmail}
                 </p>
                 <button
                   onClick={() => {
@@ -158,7 +158,7 @@ export default function AdminLoginPage() {
             </div>
             <h2 className="text-3xl font-bold mb-4">Forgot Password?</h2>
             <p className="text-yellow-100 text-lg max-w-md">
-              No worries! We'll help you reset your password and get back to managing your projects.
+              No worries! We&apos;ll help you reset your password and get back to managing your projects.
             </p>
           </motion.div>
         </div>
