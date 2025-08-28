@@ -4,8 +4,19 @@ import { prisma } from '@/lib/prisma';
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
+    
+    // Find the actual project ID using the slug
+    const project = await prisma.project.findUnique({
+      where: { slug: id },
+      select: { id: true },
+    });
+
+    if (!project) {
+      return NextResponse.json({ error: 'Project not found' }, { status: 404 });
+    }
+
     const units = await prisma.unit.findMany({
-      where: { projectId: id },
+      where: { projectId: project.id },
       orderBy: [{ floor: 'asc' }, { unitNumber: 'asc' }],
     });
     return NextResponse.json(units);
@@ -19,6 +30,16 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
   try {
     const { id } = await params;
     const body = await request.json();
+
+    // Find the actual project ID using the slug
+    const project = await prisma.project.findUnique({
+      where: { slug: id },
+      select: { id: true },
+    });
+
+    if (!project) {
+      return NextResponse.json({ error: 'Project not found' }, { status: 404 });
+    }
 
     const {
       unitNumber,
@@ -48,7 +69,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
     const unit = await prisma.unit.create({
       data: {
-        projectId: id,
+        projectId: project.id,
         configurationId: configurationId || null,
         unitNumber,
         type,
@@ -81,7 +102,18 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
-    await prisma.unit.deleteMany({ where: { projectId: id } });
+    
+    // Find the actual project ID using the slug
+    const project = await prisma.project.findUnique({
+      where: { slug: id },
+      select: { id: true },
+    });
+
+    if (!project) {
+      return NextResponse.json({ error: 'Project not found' }, { status: 404 });
+    }
+
+    await prisma.unit.deleteMany({ where: { projectId: project.id } });
     return NextResponse.json({ message: 'Units deleted' });
   } catch (error) {
     console.error('Delete units error:', error);
