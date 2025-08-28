@@ -863,7 +863,7 @@ export default function ProjectDetailPage() {
               )}
 
               {/* Nearby Points */}
-              {/* {project.nearbyPoints && project.nearbyPoints.length > 0 ? (
+              {project.nearbyPoints && project.nearbyPoints.length > 0 ? (
                 <div>
                   <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
                     Nearby Landmarks
@@ -910,7 +910,7 @@ export default function ProjectDetailPage() {
                     </p>
                   </div>
                 </div>
-              )} */}
+              )}
             </div>
 
             {/* Floor Plans Section */}
