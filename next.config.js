@@ -3,7 +3,6 @@ const nextConfig = {
   allowedDevOrigins: ['192.168.1.3'],
   // Performance optimizations
   experimental: {
-    optimizeCss: true,
     optimizePackageImports: ['@heroicons/react'],
   },
   // Compiler optimizations
