@@ -10,9 +10,19 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields (projectId, type, url)' }, { status: 400 });
     }
 
+    // Find the actual project ID using the slug
+    const project = await prisma.project.findUnique({
+      where: { slug: projectId },
+      select: { id: true },
+    });
+
+    if (!project) {
+      return NextResponse.json({ error: 'Project not found' }, { status: 404 });
+    }
+
     const media = await prisma.media.create({
       data: {
-        projectId,
+        projectId: project.id,
         type,
         url,
         caption: caption || null,

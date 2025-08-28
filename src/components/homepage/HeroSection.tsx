@@ -32,12 +32,12 @@ export default function HeroSection() {
             <div className="mb-8 max-w-7xl mx-auto flex flex-col items-center justify-center">
               <div className="flex flex-row items-center justify-center gap-4">
                 <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold mb-6 leading-tight text-gray-900 dark:text-white">
-                  Find Your
+                  Find Your   <span className="text-5xl sm:text-6xl md:text-7xl font-bold mb-6 leading-tigh block bg-gradient-to-r from-brand-primary to-brand-primary bg-clip-text text-transparent">
+                    Dream Project
+                  </span>
                  
                 </h1>
-                <h2 className="text-5xl sm:text-6xl md:text-7xl font-bold mb-6 leading-tigh block bg-gradient-to-r from-brand-primary to-brand-primary bg-clip-text text-transparent">
-                    Dream Project
-                  </h2>
+              
               </div>
               <p className="text-xl md:text-2xl mb-8 text-gray-600 dark:text-gray-300 text-center max-w-5xl mx-auto lg:mx-0 leading-relaxed">
                 Discover premium properties across India with our curated

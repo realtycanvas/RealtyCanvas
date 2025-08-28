@@ -167,7 +167,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 
     if (body.slug) {
       const exists = await prisma.project.findFirst({
-        where: { slug: body.slug, NOT: { id } },
+        where: { slug: body.slug, NOT: { slug: id } },
         select: { id: true },
       });
       if (exists) return NextResponse.json({ error: 'Slug already in use' }, { status: 400 });
@@ -216,7 +216,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     } = body;
 
     const updated = await prisma.project.update({
-      where: { id },
+      where: { slug: id },
       data: {
         title: title || undefined,
         subtitle: subtitle || null,
@@ -268,7 +268,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
-    await prisma.project.delete({ where: { id } });
+    await prisma.project.delete({ where: { slug: id } });
     return NextResponse.json({ message: 'Project deleted' });
   } catch (error) {
     console.error('Delete project error:', error);
