@@ -60,15 +60,9 @@ export default function ProjectsPage() {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        // Use a timestamp query parameter to bypass cache
-        const timestamp = new Date().getTime();
-        const res = await fetch(`/api/projects?t=${timestamp}`, { 
-          cache: 'no-store',
-          headers: {
-            'Cache-Control': 'no-cache, no-store, must-revalidate',
-            'Pragma': 'no-cache',
-            'Expires': '0'
-          }
+        const res = await fetch('/api/projects', { 
+          cache: 'force-cache',
+          next: { revalidate: 300 } // Revalidate every 5 minutes
         });
         
         if (!res.ok) {
@@ -499,7 +493,7 @@ export default function ProjectsPage() {
                            View
                          </Link>
                          <Link 
-                           href={`/projects/new?edit=${project.id}`} 
+                           href={`/projects/new?edit=${project.slug}`} 
                            className="px-3 py-1.5 text-xs rounded-lg bg-purple-600 text-white hover:bg-purple-700 transition-colors duration-200"
                            onClick={(e) => e.stopPropagation()}
                          >
@@ -595,7 +589,7 @@ export default function ProjectsPage() {
                           View
                         </Link>
                         <Link 
-                          href={`/projects/new?edit=${project.id}`} 
+                          href={`/projects/new?edit=${project.slug}`} 
                           className="px-3 py-1.5 text-xs rounded-lg bg-purple-600 text-white hover:bg-purple-700 transition-colors duration-200"
                           onClick={(e) => e.stopPropagation()}
                         >

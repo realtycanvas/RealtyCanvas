@@ -3,78 +3,157 @@ import { prisma } from '@/lib/prisma';
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    // Log the request to help with debugging
-    console.log('GET /api/projects/[id] request received', { 
-      url: req.url,
-      headers: Object.fromEntries(req.headers.entries())
-    });
-    
     const { id } = await params;
     console.log(`Fetching project with ID: ${id}`);
     
     // Check if ID is valid
     if (!id) {
-      console.log('Invalid project ID');
       return NextResponse.json({ error: 'Invalid project ID' }, { status: 400 });
     }
+
+    // Check for ETag caching
+    const ifNoneMatch = req.headers.get('if-none-match');
+    const cacheKey = `project-${id}`;
     
-    // Try to find by ID first
-    let project = await prisma.project.findUnique({
-      where: { id },
+    // Optimized query using slug only for better performance
+    const project = await prisma.project.findUnique({
+      where: { slug: id },
       include: {
-        units: true,
-        highlights: true,
-        amenities: true,
-        faqs: true,
-        floorPlans: true,
-        documents: true,
-        media: true,
-        configurations: true,
-        anchors: true,
-        pricingPlans: true,
-        pricingTable: true,
-        construction: true,
-        nearbyPoints: true,
+        units: {
+          select: {
+            id: true,
+            unitNumber: true,
+            type: true,
+            floor: true,
+            areaSqFt: true,
+            ratePsf: true,
+            priceTotal: true,
+            availability: true,
+            notes: true
+          },
+          orderBy: { unitNumber: 'asc' },
+          take: 20 // Reduced for better performance
+        },
+        highlights: {
+          select: {
+            id: true,
+            label: true,
+            icon: true
+          },
+          orderBy: { id: 'asc' },
+          take: 10
+        },
+        amenities: {
+          select: {
+            id: true,
+            category: true,
+            name: true,
+            details: true
+          },
+          orderBy: { category: 'asc' },
+          take: 20
+        },
+        faqs: {
+          select: {
+            id: true,
+            question: true,
+            answer: true
+          },
+          orderBy: { id: 'asc' },
+          take: 10
+        },
+        floorPlans: {
+          select: {
+            id: true,
+            level: true,
+            title: true,
+            imageUrl: true,
+            details: true,
+            sortOrder: true
+          },
+          orderBy: { sortOrder: 'asc' }
+        },
+        anchors: {
+          select: {
+            id: true,
+            name: true,
+            category: true,
+            floor: true,
+            areaSqFt: true,
+            status: true
+          },
+          orderBy: { name: 'asc' },
+          take: 10
+        },
+        pricingPlans: {
+          select: {
+            id: true,
+            name: true,
+            planType: true,
+            schedule: true,
+            taxes: true,
+            charges: true,
+            notes: true
+          },
+          orderBy: { id: 'asc' },
+          take: 5
+        },
+        pricingTable: {
+          select: {
+            id: true,
+            type: true,
+            reraArea: true,
+            price: true,
+            pricePerSqft: true,
+            availableUnits: true,
+            floorNumbers: true,
+            features: true
+          },
+          orderBy: { id: 'asc' },
+          take: 10
+        },
+        nearbyPoints: {
+          select: {
+            id: true,
+            type: true,
+            name: true,
+            distanceKm: true,
+            travelTimeMin: true
+          },
+          orderBy: { distanceKm: 'asc' },
+          take: 15
+        }
       },
     });
-    
-    // If not found by ID, try to find by slug (in case ID is actually a slug)
-    if (!project) {
-      console.log(`Project with ID ${id} not found, trying as slug`);
-      project = await prisma.project.findUnique({
-        where: { slug: id },
-        include: {
-          units: true,
-          highlights: true,
-          amenities: true,
-          faqs: true,
-          floorPlans: true,
-          documents: true,
-          media: true,
-          configurations: true,
-          anchors: true,
-          pricingPlans: true,
-          pricingTable: true,
-          construction: true,
-          nearbyPoints: true,
-        },
-      });
-    }
     
     if (!project) {
       console.log(`Project with ID/slug ${id} not found`);
       return NextResponse.json({ error: 'Project not found' }, { status: 404 });
     }
+
+    // Generate ETag based on project data
+    const etag = `"${Buffer.from(JSON.stringify({ id: project.id, updatedAt: project.updatedAt })).toString('base64')}"`;
     
+    // Check if client has cached version
+    if (ifNoneMatch === etag) {
+      return new NextResponse(null, { 
+        status: 304,
+        headers: {
+          'Cache-Control': 'public, max-age=300, stale-while-revalidate=600',
+          'ETag': etag
+        }
+      });
+    }
+
     console.log(`Successfully fetched project: ${project.title}`);
     
-    // Set cache control headers to prevent caching
-    const response = NextResponse.json(project);
-    response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-    response.headers.set('Pragma', 'no-cache');
-    response.headers.set('Expires', '0');
-    
-    return response;
+    return NextResponse.json(project, {
+      headers: {
+        'Cache-Control': 'public, max-age=300, stale-while-revalidate=600',
+        'ETag': etag,
+        'X-Response-Time': Date.now().toString()
+      }
+    });
   } catch (error) {
     console.error('Get project error:', error);
     return NextResponse.json({ error: 'Failed to fetch project' }, { status: 500 });

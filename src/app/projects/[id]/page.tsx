@@ -190,16 +190,11 @@ export default function ProjectDetailPage() {
         setError(null);
         
         // Add timestamp to prevent caching
-        const timestamp = new Date().getTime();
         console.log(`Fetching project with ID/slug: ${id}`);
         
-        const res = await fetch(`/api/projects/${encodeURIComponent(id)}?t=${timestamp}`, { 
-          cache: "no-store",
-          headers: {
-            'Cache-Control': 'no-cache, no-store, must-revalidate',
-            'Pragma': 'no-cache',
-            'Expires': '0'
-          }
+        const res = await fetch(`/api/projects/${encodeURIComponent(id)}`, { 
+          cache: "force-cache",
+          next: { revalidate: 300 } // Revalidate every 5 minutes
         });
         
         if (!res.ok) {
@@ -218,6 +213,24 @@ export default function ProjectDetailPage() {
         
         const data = await res.json();
         console.log('Project data fetched:', data.title);
+        
+        // Debug floor plans and site plan data
+        console.log('=== IMAGE DEBUG INFO ===');
+        console.log('Floor plans count:', data.floorPlans?.length || 0);
+        if (data.floorPlans && data.floorPlans.length > 0) {
+          console.log('Floor plan URLs:', data.floorPlans.map((fp: any) => ({
+            level: fp.level,
+            url: fp.imageUrl,
+            hasUrl: !!fp.imageUrl
+          })));
+        }
+        
+        console.log('Site plan image:', {
+          url: data.sitePlanImage,
+          hasUrl: !!data.sitePlanImage
+        });
+        console.log('========================');
+        
         setProject(data);
       } catch (err) {
         console.error('Error fetching project:', err);
@@ -859,22 +872,14 @@ export default function ProjectDetailPage() {
                     Location Map
                   </h3>
                   <div className="rounded-xl overflow-hidden shadow-lg border border-gray-200 dark:border-gray-700 relative aspect-video">
-                    <Image
-                       src={project.sitePlanImage}
-                       alt="Project Location Map"
-                       fill
-                       className="object-cover"
-                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                       onError={(e) => {
-                         console.error('Site plan image failed to load:', project.sitePlanImage);
-                         // Fallback to regular img if Next.js Image fails
-                         const img = document.createElement('img');
-                         img.src = project.sitePlanImage || '';
-                         img.alt = 'Project Location Map';
-                         img.className = 'w-full h-auto object-cover';
-                         e.currentTarget.parentNode?.replaceChild(img, e.currentTarget);
-                       }}
-                     />
+                    <img
+  src={project.sitePlanImage}
+  alt="Project Location Map"
+  className="w-full h-auto object-cover"
+  loading="lazy"
+  onLoad={() => console.log('✅ Site plan image loaded successfully')}
+  onError={(e) => e.currentTarget.style.display = 'none'}
+/>
                   </div>
                 </div>
               )}
@@ -947,22 +952,14 @@ export default function ProjectDetailPage() {
                     >
                       {plan.imageUrl && (
                         <div className="aspect-video relative">
-                          <Image
-                            src={plan.imageUrl}
-                            alt={`${plan.level} floor plan`}
-                            fill
-                            className="object-cover"
-                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                            onError={(e) => {
-                              console.error('Floor plan image failed to load:', plan.imageUrl);
-                              // Fallback to regular img if Next.js Image fails
-                              const img = document.createElement('img');
-                              img.src = plan.imageUrl;
-                              img.alt = `${plan.level} floor plan`;
-                              img.className = 'w-full h-full object-cover';
-                              e.currentTarget.parentNode?.replaceChild(img, e.currentTarget);
-                            }}
-                          />
+                         <img
+  src={plan.imageUrl}
+  alt={`${plan.level} floor plan`}
+  className="w-full h-full object-cover"
+  loading="lazy"
+  onLoad={() => console.log('✅ Floor plan image loaded successfully')}
+  onError={(e) => e.currentTarget.style.display = 'none'}
+/>
                         </div>
                       )}
                       <div className="p-6">

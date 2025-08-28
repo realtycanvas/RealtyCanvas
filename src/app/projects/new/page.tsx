@@ -172,17 +172,17 @@ function UnifiedProjectFormContent() {
 
   // Load existing project data when in edit mode
   useEffect(() => {
-    const editId = searchParams.get('edit');
-    if (editId) {
-      setEditingProjectId(editId);
-      loadProjectData(editId);
+    const editSlug = searchParams.get('edit');
+    if (editSlug) {
+      setEditingProjectId(editSlug);
+      loadProjectData(editSlug);
     }
   }, [searchParams]);
 
-  const loadProjectData = async (projectId: string) => {
+  const loadProjectData = async (projectSlug: string) => {
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/projects/${projectId}`);
+      const response = await fetch(`/api/projects/${projectSlug}`);
       if (!response.ok) {
         throw new Error('Failed to load project data');
       }
@@ -1207,7 +1207,7 @@ function UnifiedProjectFormContent() {
         }
       }
 
-      router.push(`/projects/${projectResult.id}`);
+      router.push(`/projects/${projectResult.slug}`);
     } catch (err) {
       console.error(err);
       alert(editingProjectId ? 'Error updating project' : 'Error creating project');
