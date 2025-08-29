@@ -54,7 +54,7 @@ export default function HeroSection() {
             </div>
 
             <p className="text-sm sm:text-base md:text-lg lg:text-xl font-bold lg:font-semibold text-white/90 leading-relaxed max-w-xl lg:max-w-2xl mx-auto px-2 sm:px-4">
-              Discover premium residential homes and commercial spaces across Gurgaon with India's most trusted real estate consultant.
+              Discover premium residential homes and commercial spaces across Gurgaon with India&apos;s most trusted real estate consultant.
             </p>
           </div>
 
