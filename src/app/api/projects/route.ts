@@ -135,9 +135,22 @@ export async function GET(request: NextRequest) {
       headers: Object.fromEntries(request.headers.entries())
     });
     
-    // Query directly without wrapping in a transaction to prevent P2028 timeouts
+    // Parse query parameters for pagination
+    const { searchParams } = new URL(request.url);
+    const page = parseInt(searchParams.get('page') || '1');
+    const limit = parseInt(searchParams.get('limit') || '6');
+    const skip = (page - 1) * limit;
+    
+    console.log(`Pagination: page=${page}, limit=${limit}, skip=${skip}`);
+    
+    // Get total count for pagination info
+    const totalCount = await prisma.project.count();
+    
+    // Query projects with pagination, ordered by updatedAt (most recently updated first)
     const projects = await prisma.project.findMany({
-      orderBy: { createdAt: 'desc' },
+      orderBy: { updatedAt: 'desc' },
+      skip,
+      take: limit,
       select: {
         id: true,
         slug: true,
@@ -151,18 +164,33 @@ export async function GET(request: NextRequest) {
         featuredImage: true,
         galleryImages: true,
         createdAt: true,
+        updatedAt: true,
         minRatePsf: true,
         maxRatePsf: true,
       },
     });
 
-    console.log(`Found ${projects.length} projects`);
+    const totalPages = Math.ceil(totalCount / limit);
+    const hasMore = page < totalPages;
+    
+    console.log(`Found ${projects.length} projects (page ${page}/${totalPages}, total: ${totalCount})`);
 
-    // Set cache control headers to prevent caching
-    const response = NextResponse.json(projects);
-    response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-    response.headers.set('Pragma', 'no-cache');
-    response.headers.set('Expires', '0');
+    const responseData = {
+      projects,
+      pagination: {
+        page,
+        limit,
+        totalCount,
+        totalPages,
+        hasMore,
+        hasPrevious: page > 1
+      }
+    };
+
+    // Set cache control headers
+    const response = NextResponse.json(responseData);
+    response.headers.set('Cache-Control', 'public, max-age=300, stale-while-revalidate=600');
+    response.headers.set('X-Response-Time', Date.now().toString());
 
     return response;
   } catch (error) {

@@ -56,13 +56,24 @@ export default function ProjectsPage() {
     priceRange: { min: 0, max: 10000000 },
   });
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pagination, setPagination] = useState({
+    page: 1,
+    limit: 6,
+    totalCount: 0,
+    totalPages: 0,
+    hasMore: false,
+    hasPrevious: false
+  });
 
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const res = await fetch('/api/projects', { 
-          cache: 'force-cache',
-          next: { revalidate: 300 } // Revalidate every 5 minutes
+        setLoading(true);
+        const res = await fetch(`/api/projects?page=${currentPage}&limit=6`, { 
+          headers: {
+            'Cache-Control': 'max-age=300'
+          }
         });
         
         if (!res.ok) {
@@ -72,12 +83,13 @@ export default function ProjectsPage() {
         const data = await res.json();
         console.log('Projects API response:', data);
         
-        // Ensure data is an array
-        if (Array.isArray(data)) {
-          setProjects(data);
-          setFilteredProjects(data);
+        // Handle new paginated response format
+        if (data.projects && Array.isArray(data.projects)) {
+          setProjects(data.projects);
+          setFilteredProjects(data.projects);
+          setPagination(data.pagination);
         } else {
-          console.error('API did not return an array:', data);
+          console.error('API did not return expected format:', data);
           setProjects([]);
           setFilteredProjects([]);
         }
@@ -91,7 +103,7 @@ export default function ProjectsPage() {
     };
     
     fetchProjects();
-  }, []);
+  }, [currentPage]);
   
   // Filter projects when search query or filters change
   useEffect(() => {
@@ -616,6 +628,65 @@ export default function ProjectsPage() {
       </>
         )}
 
+        {/* Pagination Controls */}
+        {!loading && filteredProjects.length > 0 && (
+          <div className="flex items-center justify-between mt-8 px-4">
+            <div className="text-sm text-gray-600 dark:text-gray-400">
+              Showing page {pagination.page} of {pagination.totalPages} ({pagination.totalCount} total projects)
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                disabled={!pagination.hasPrevious || loading}
+                className="px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                Previous
+              </button>
+              
+              <div className="flex items-center gap-1">
+                {Array.from({ length: pagination.totalPages }, (_, i) => i + 1)
+                  .filter(pageNum => {
+                    const current = pagination.page;
+                    return pageNum === 1 || 
+                           pageNum === pagination.totalPages || 
+                           (pageNum >= current - 1 && pageNum <= current + 1);
+                  })
+                  .map((pageNum, index, array) => {
+                    const prevPageNum = array[index - 1];
+                    const showEllipsis = prevPageNum && pageNum - prevPageNum > 1;
+                    
+                    return (
+                      <div key={pageNum} className="flex items-center gap-1">
+                        {showEllipsis && (
+                          <span className="px-2 py-1 text-gray-500">...</span>
+                        )}
+                        <button
+                          onClick={() => setCurrentPage(pageNum)}
+                          disabled={loading}
+                          className={`px-3 py-2 text-sm rounded-lg transition-colors ${
+                            pageNum === pagination.page
+                              ? 'bg-blue-600 text-white'
+                              : 'border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'
+                          } disabled:opacity-50 disabled:cursor-not-allowed`}
+                        >
+                          {pageNum}
+                        </button>
+                      </div>
+                    );
+                  })
+                }
+              </div>
+              
+              <button
+                onClick={() => setCurrentPage(prev => Math.min(pagination.totalPages, prev + 1))}
+                disabled={!pagination.hasMore || loading}
+                className="px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        )}
        
       </main>
       
