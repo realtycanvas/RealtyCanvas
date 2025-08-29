@@ -9,75 +9,84 @@ const nextConfig = {
   compiler: {
     removeConsole: process.env.NODE_ENV === "production",
   },
-  images: {
-    remotePatterns: [
-      // Unsplash (all paths)
-      {
-        protocol: "https",
-        hostname: "images.unsplash.com",
-        pathname: "/**",
-      },
-      // Supabase storage buckets (your project)
-      {
-        protocol: "https",
-        hostname: "xsgljyuvykzfzvqwgtev.supabase.co",
-        pathname: "/**",
-      },
-      // Generic supabase domain
-      {
-        protocol: "https",
-        hostname: "*.supabase.co",
-        pathname: "/**",
-      },
-      // Pexels
-      {
-        protocol: "https",
-        hostname: "images.pexels.com",
-        pathname: "/**",
-      },
-      // Wikimedia
-      {
-        protocol: "https",
-        hostname: "upload.wikimedia.org",
-        pathname: "/**",
-      },
-      // M3M Jewel
-      {
-        protocol: "https",
-        hostname: "m3mjewel.commercial-gurgaon.in",
-        pathname: "/**",
-      },
-      // Example placeholder
-      {
-        protocol: "https",
-        hostname: "example.com",
-        pathname: "/**",
-      },
-      // M3M Properties
-      {
-        protocol: "https",
-        hostname: "www.m3mproperties.com",
-        pathname: "/floorplan/**",
-      },
-      // M3M Jewel New
-      {
-        protocol: "https",
-        hostname: "m3mjewel.commercial-gurgaon.in",
-        pathname: "/img/**",
-      },
-      {
-        protocol: "https",
-        hostname: "www.m3mprojects.in",
-        port: "",
-        pathname: "/images/**", // adjust path as needed
-      },
-      {
-        protocol: "https",
-        hostname: "www.m3mrealty.com",
-        pathname: "/commercial/**", // or "/**" if you want to be more permissive
-      },
-    ],
-  },
+images: {
+  remotePatterns: [
+    // Unsplash
+    {
+      protocol: "https",
+      hostname: "images.unsplash.com",
+      pathname: "/**",
+    },
+    // Supabase
+    {
+      protocol: "https",
+      hostname: "xsgljyuvykzfzvqwgtev.supabase.co",
+      pathname: "/**",
+    },
+    {
+      protocol: "https",
+      hostname: "*.supabase.co",
+      pathname: "/**",
+    },
+    // Pexels
+    {
+      protocol: "https",
+      hostname: "images.pexels.com",
+      pathname: "/**",
+    },
+    // Wikimedia
+    {
+      protocol: "https",
+      hostname: "upload.wikimedia.org",
+      pathname: "/**",
+    },
+    // M3M Jewel
+    {
+      protocol: "https",
+      hostname: "m3mjewel.commercial-gurgaon.in",
+      pathname: "/**",
+    },
+    // Example
+    {
+      protocol: "https",
+      hostname: "example.com",
+      pathname: "/**",
+    },
+    // M3M Properties
+    {
+      protocol: "https",
+      hostname: "www.m3mproperties.com",
+      pathname: "/floorplan/**",
+    },
+    {
+      protocol: "https",
+      hostname: "m3mjewel.commercial-gurgaon.in",
+      pathname: "/img/**",
+    },
+    {
+      protocol: "https",
+      hostname: "www.m3mprojects.in",
+      pathname: "/images/**",
+    },
+    {
+      protocol: "https",
+      hostname: "www.m3mrealty.com",
+      pathname: "/commercial/**",
+    },
+    {
+      protocol: "https",
+      hostname: "m3m-paragon57",
+      pathname: "/commercial/**",
+    },
+    // ✅ Add CloudFront
+    {
+      protocol: "https",
+      hostname: "d2dy9w7mmecm6m.cloudfront.net",
+      pathname: "/**",
+    },
+  ],
+},
+
   webpack: (config, { dev, isServer }) => {
     // Optimize bundle splitting
     if (!dev && !isServer) {
