@@ -17,7 +17,18 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
 export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
-    await prisma.nearbyPoint.deleteMany({ where: { projectId: id } });
+    
+    // Find the actual project ID using the slug
+    const project = await prisma.project.findUnique({
+      where: { slug: id },
+      select: { id: true },
+    });
+
+    if (!project) {
+      return NextResponse.json({ error: 'Project not found' }, { status: 404 });
+    }
+
+    await prisma.nearbyPoint.deleteMany({ where: { projectId: project.id } });
     return NextResponse.json({ message: 'Nearby points deleted' });
   } catch (error) {
     console.error('Delete nearby points error:', error);

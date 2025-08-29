@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { withDatabaseRetry, periodicHealthCheck } from '@/middleware/database';
 
-export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+async function getProjectHandler(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    // Perform periodic health check
+    await periodicHealthCheck();
+    
     const { id } = await params;
     console.log(`Fetching project with ID: ${id}`);
     
@@ -15,7 +19,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     const ifNoneMatch = req.headers.get('if-none-match');
     const cacheKey = `project-${id}`;
     
-    // Optimized query using slug only for better performance
+    // Optimized query using slug with better performance and reduced data transfer
     const project = await prisma.project.findUnique({
       where: { slug: id },
       include: {
@@ -31,8 +35,8 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
             availability: true,
             notes: true
           },
-          orderBy: { unitNumber: 'asc' },
-          take: 20 // Reduced for better performance
+          orderBy: [{ floor: 'asc' }, { unitNumber: 'asc' }],
+          take: 50 // Increased but still limited for performance
         },
         highlights: {
           select: {
@@ -40,8 +44,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
             label: true,
             icon: true
           },
-          orderBy: { id: 'asc' },
-          take: 10
+          orderBy: { id: 'asc' }
         },
         amenities: {
           select: {
@@ -50,8 +53,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
             name: true,
             details: true
           },
-          orderBy: { category: 'asc' },
-          take: 20
+          orderBy: [{ category: 'asc' }, { name: 'asc' }]
         },
         faqs: {
           select: {
@@ -59,8 +61,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
             question: true,
             answer: true
           },
-          orderBy: { id: 'asc' },
-          take: 10
+          orderBy: { id: 'asc' }
         },
         floorPlans: {
           select: {
@@ -71,7 +72,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
             details: true,
             sortOrder: true
           },
-          orderBy: { sortOrder: 'asc' }
+          orderBy: [{ sortOrder: 'asc' }, { level: 'asc' }]
         },
         anchors: {
           select: {
@@ -82,8 +83,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
             areaSqFt: true,
             status: true
           },
-          orderBy: { name: 'asc' },
-          take: 10
+          orderBy: [{ status: 'asc' }, { name: 'asc' }]
         },
         pricingPlans: {
           select: {
@@ -95,8 +95,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
             charges: true,
             notes: true
           },
-          orderBy: { id: 'asc' },
-          take: 5
+          orderBy: { id: 'asc' }
         },
         pricingTable: {
           select: {
@@ -109,8 +108,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
             floorNumbers: true,
             features: true
           },
-          orderBy: { id: 'asc' },
-          take: 10
+          orderBy: { id: 'asc' }
         },
         nearbyPoints: {
           select: {
@@ -120,8 +118,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
             distanceKm: true,
             travelTimeMin: true
           },
-          orderBy: { distanceKm: 'asc' },
-          take: 15
+          orderBy: [{ type: 'asc' }, { distanceKm: 'asc' }]
         }
       },
     });
@@ -160,7 +157,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   }
 }
 
-export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+async function putProjectHandler(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
     const body = await request.json();
@@ -265,7 +262,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
   }
 }
 
-export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+async function deleteProjectHandler(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
     await prisma.project.delete({ where: { slug: id } });
@@ -275,3 +272,8 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
     return NextResponse.json({ error: 'Failed to delete project' }, { status: 500 });
   }
 }
+
+// Export wrapped handlers with database retry logic
+export const GET = withDatabaseRetry(getProjectHandler);
+export const PUT = withDatabaseRetry(putProjectHandler);
+export const DELETE = withDatabaseRetry(deleteProjectHandler);

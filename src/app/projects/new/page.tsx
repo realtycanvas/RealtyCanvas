@@ -890,29 +890,48 @@ function UnifiedProjectFormContent() {
             { name: 'pricingTable', url: `/api/projects/pricingTable?projectId=${editingProjectId}` }
           ];
           
-          // Process each deletion sequentially to ensure completion
+          // Process each deletion sequentially with proper error handling
+          const deletionResults = [];
           for (const endpoint of endpointsToDelete) {
             try {
               console.log(`Deleting ${endpoint.name}...`);
-              const response = await fetch(endpoint.url, { method: 'DELETE' });
+              const response = await fetch(endpoint.url, { 
+                method: 'DELETE',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
               
               if (!response.ok) {
-                console.warn(`Failed to delete ${endpoint.name}: ${response.status} ${response.statusText}`);
+                const errorText = await response.text().catch(() => 'Unknown error');
+                console.warn(`Failed to delete ${endpoint.name}: ${response.status} ${response.statusText} - ${errorText}`);
+                deletionResults.push({ name: endpoint.name, success: false, error: `${response.status}: ${errorText}` });
               } else {
                 console.log(`Successfully deleted ${endpoint.name}`);
-                // Add a small delay to ensure database operations complete
-                await new Promise(resolve => setTimeout(resolve, 100));
+                deletionResults.push({ name: endpoint.name, success: true });
+                // Increased delay to ensure database operations complete
+                await new Promise(resolve => setTimeout(resolve, 200));
               }
             } catch (err) {
               console.error(`Error deleting ${endpoint.name}:`, err);
+              deletionResults.push({ name: endpoint.name, success: false, error: err instanceof Error ? err.message : String(err) });
             }
+          }
+          
+          // Check if critical deletions failed
+          const failedDeletions = deletionResults.filter(r => !r.success);
+          if (failedDeletions.length > 0) {
+            console.warn('Some deletions failed:', failedDeletions);
+            // Wait additional time for any pending database operations
+            await new Promise(resolve => setTimeout(resolve, 500));
           }
           
           console.log('Deletion process completed');
         } catch (error) {
           console.error('Error during delete operations:', error);
-          // Continue with the update process even if deletions fail
-          console.warn('Proceeding with update despite deletion errors');
+          // Wait before proceeding to ensure database consistency
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          console.warn('Proceeding with update after error recovery delay');
         }
 
         // Update project basic info
@@ -956,23 +975,37 @@ function UnifiedProjectFormContent() {
             }
           }
           
-          // Create amenities sequentially
+          // Create amenities in batches for better performance
           console.log(`Creating ${validAmenities.length} amenities...`);
-          for (const amenity of validAmenities) {
-            try {
-              if (!amenity.name?.trim()) continue;
-              
-              const response = await fetch('/api/projects/amenities', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ projectId: editingProjectId, ...amenity }),
-              });
-              
-              if (!response.ok) {
-                console.warn(`Failed to create amenity: ${amenity.name}`);
+          const amenityBatchSize = 5;
+          for (let i = 0; i < validAmenities.length; i += amenityBatchSize) {
+            const batch = validAmenities.slice(i, i + amenityBatchSize);
+            const batchPromises = batch.map(async (amenity) => {
+              try {
+                if (!amenity.name?.trim()) return null;
+                
+                const response = await fetch('/api/projects/amenities', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ projectId: editingProjectId, ...amenity }),
+                });
+                
+                if (!response.ok) {
+                  const errorText = await response.text().catch(() => 'Unknown error');
+                  console.warn(`Failed to create amenity: ${amenity.name} - ${errorText}`);
+                  return { success: false, name: amenity.name, error: errorText };
+                }
+                return { success: true, name: amenity.name };
+              } catch (err) {
+                console.error('Error creating amenity:', err);
+                return { success: false, name: amenity.name, error: err instanceof Error ? err.message : String(err) };
               }
-            } catch (err) {
-              console.error('Error creating amenity:', err);
+            });
+            
+            await Promise.all(batchPromises);
+            // Small delay between batches to prevent overwhelming the database
+            if (i + amenityBatchSize < validAmenities.length) {
+              await new Promise(resolve => setTimeout(resolve, 100));
             }
           }
           

@@ -22,12 +22,24 @@ const navigation = [
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showAdminLogin, setShowAdminLogin] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const { user, isAdmin, signOut } = useAuth();
   
   const callNowButtonRef = useRef<HTMLAnchorElement | null>(null);
   const hotlineButtonRef = useRef<HTMLAnchorElement | null>(null);
   const mobileCallNowButtonRef = useRef<HTMLAnchorElement | null>(null);
   const mobileHotlineButtonRef = useRef<HTMLAnchorElement | null>(null);
+
+  // Scroll detection effect
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      setIsScrolled(scrollTop > 50);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // GSAP animation for button bounce effect
   useEffect(() => {
@@ -108,8 +120,8 @@ export default function Navbar() {
   }, []);
   
   return (
-    <nav className="bg-transparent backdrop-blur-sm fixed w-full z-50 transition-all duration-300">
-      <div className="max-w-5xl mx-auto px-2 sm:px-4 lg:px-6 bg-white/10 rounded-lg  mt-2">
+    <nav className={`${isScrolled ? 'bg-white shadow-lg' : 'bg-transparent'} backdrop-blur-sm fixed w-full z-50 transition-all duration-300`}>
+      <div className={`max-w-5xl mx-auto px-2 sm:px-4 lg:px-6 ${isScrolled ? 'bg-transparent' : 'bg-white/10'} rounded-lg mx-4 mt-2`}>
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="">
