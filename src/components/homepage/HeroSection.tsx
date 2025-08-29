@@ -8,7 +8,7 @@ import ProjectSearchBar from "../ProjectSearchBar";
 export default function HeroSection() {
   return (
     <section 
-      className="relative overflow-hidden mb-10 min-h-screen h-screen max-h-screen flex items-center py-4 sm:py-6 md:py-8 lg:py-12"
+      className="relative overflow-hidden lg:mb-10 mb-2 min-h-screen h-screen max-h-screen flex items-center  py-0 lg:py-12"
     >
      {/* Desktop Background Image */}
       <Image 
@@ -26,7 +26,7 @@ export default function HeroSection() {
         alt="Hero Background Mobile"
         fill
         quality={100}
-        className="block sm:hidden object-cover object-center mt-[-13.5vw]"
+        className="block sm:hidden object-cover object-center mt-[-10.5vw]"
         priority
       />
     
@@ -41,19 +41,19 @@ export default function HeroSection() {
       <div className="absolute top-1/3 right-1/4 w-24 h-24 bg-gradient-to-r from-brand-primary/20 to-brand-primary/20 rounded-full blur-2xl"></div> */}
 
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col justify-center h-full">
-        <div className="flex flex-col items-center justify-center text-center space-y-4 sm:space-y-6 md:space-y-8">
+        <div className="flex flex-col items-center justify-center text-center space-y-4  md:space-y-8">
           {/* Main Heading */}
           <div className="space-y-3 sm:space-y-4">
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 md:gap-4">
-              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight text-white">
+            <div className="flex flex-col sm:flex-row items-center mt-[-10vw] lg:mt-0 justify-center gap-1 sm:gap-2 md:gap-4">
+              <h1 className="text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight text-white">
                 Find Your
               </h1>
-              <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight bg-gradient-to-r from-brand-primary to-brand-primary bg-clip-text text-transparent">
+              <span className="text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight bg-gradient-to-r from-brand-primary to-brand-primary bg-clip-text text-transparent">
                 Dream Project
               </span>
             </div>
 
-            <p className="text-sm sm:text-base md:text-lg lg:text-xl text-white/90 leading-relaxed max-w-xl lg:max-w-2xl mx-auto px-2 sm:px-4">
+            <p className="text-sm sm:text-base md:text-lg lg:text-xl font-bold lg:font-semibold text-white/90 leading-relaxed max-w-xl lg:max-w-2xl mx-auto px-2 sm:px-4">
               Discover premium properties across India with our curated
               collection of residential and commercial spaces
             </p>
@@ -88,7 +88,6 @@ export default function HeroSection() {
                 // Navigate to projects page with filters
                 const params = new URLSearchParams({
                   category: filters.category,
-                  location: filters.location,
                   status: filters.status,
                   minPrice: filters.priceRange.min.toString(),
                   maxPrice: filters.priceRange.max.toString(),

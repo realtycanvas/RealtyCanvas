@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { MagnifyingGlassIcon, MapPinIcon, BuildingOfficeIcon, CurrencyDollarIcon } from '@heroicons/react/24/outline';
+import { MagnifyingGlassIcon, BuildingOfficeIcon, CurrencyDollarIcon } from '@heroicons/react/24/outline';
 import { BrandButton } from './ui/BrandButton';
 import { Menu, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
@@ -14,7 +14,6 @@ interface ProjectSearchBarProps {
 
 interface SearchFilters {
   category: string;
-  location: string;
   status: string;
   priceRange: {
     min: number;
@@ -62,7 +61,6 @@ const priceRanges = [
 ];
 
 export default function ProjectSearchBar({ onSearch, className = '', compact = false }: ProjectSearchBarProps) {
-  const [location, setLocation] = useState('');
   const [projectCategory, setProjectCategory] = useState('All Categories');
   const [projectStatus, setProjectStatus] = useState('All Status');
   const [selectedPriceRange, setSelectedPriceRange] = useState(priceRanges[0]);
@@ -70,7 +68,6 @@ export default function ProjectSearchBar({ onSearch, className = '', compact = f
   const handleSearch = () => {
     const filters: SearchFilters = {
       category: projectCategory,
-      location,
       status: projectStatus,
       priceRange: {
         min: selectedPriceRange.min,
@@ -83,20 +80,6 @@ export default function ProjectSearchBar({ onSearch, className = '', compact = f
   if (compact) {
     return (
       <div className={`space-y-3 ${className}`}>
-        {/* Location Input */}
-        <div className=''>
-          <label className="text-xs font-medium text-muted-foreground mb-1 bloc k">Location</label>
-          <div className="relative">
-            <MapPinIcon className="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <input
-              type="text"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              placeholder="Enter city or area"
-              className="w-full h-8 pl-8 pr-2  text-xs border border-input rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-ring"
-            />
-          </div>
-        </div>
 
         {/* Project Category Dropdown */}
         <div>
@@ -233,21 +216,7 @@ export default function ProjectSearchBar({ onSearch, className = '', compact = f
   return (
     <div className={`bg-white/20 dark:bg-gray-800/20 backdrop-blur-md rounded-xl sm:rounded-2xl shadow-xl p-3 sm:p-4 border border-white/30 dark:border-gray-700/30 ${className}`}>
       {/* Search Inputs */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 items-end">
-        {/* Location Input */}
-        <div className="space-y-1 sm:space-y-2">
-          <label className="text-xs font-semibold text-white">Location</label>
-          <div className="relative">
-            <MapPinIcon className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 w-4 sm:w-5 h-4 sm:h-5 text-gray-400" />
-            <input
-              type="text"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              placeholder="Enter city or area"
-              className="w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-1.5 sm:py-2 text-xs sm:text-sm border border-gray-200 dark:border-gray-600 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-brand-primary focus:border-transparent bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-200"
-            />
-          </div>
-        </div>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 items-end">
 
         {/* Project Category Dropdown */}
         <div className="space-y-1 sm:space-y-2">
