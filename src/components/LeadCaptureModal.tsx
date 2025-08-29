@@ -10,6 +10,9 @@ interface FormData {
   phone: string;
   email: string;
   timeline: string;
+  propertyType: 'COMMERCIAL' | 'RESIDENTIAL';
+  city: string;
+  state: string;
 }
 
 export default function LeadCaptureModal() {
@@ -19,6 +22,9 @@ export default function LeadCaptureModal() {
     phone: '',
     email: '',
     timeline: '',
+    propertyType: 'COMMERCIAL',
+    city: '',
+    state: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -31,7 +37,7 @@ export default function LeadCaptureModal() {
       const timer = setTimeout(() => {
         setIsOpen(true);
         localStorage.setItem('leadCaptureModalShown', 'true');
-      }, 20000);
+      }, 2000);
 
       return () => clearTimeout(timer);
     }
@@ -46,24 +52,41 @@ export default function LeadCaptureModal() {
     setIsSubmitting(true);
 
     try {
-      // Here you can add your API call to submit the form data
-      console.log('Form submitted:', formData);
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Close modal after successful submission
-      setIsOpen(false);
-      
-      // Reset form
-      setFormData({
-        name: '',
-        phone: '',
-        email: '',
-        timeline: '',
+      // Submit form data to API
+      const response = await fetch('/api/lead-capture', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
       });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        // Show success message
+        alert(result.message || 'Thank you! We will contact you soon.');
+        
+        // Close modal after successful submission
+        setIsOpen(false);
+        
+        // Reset form
+         setFormData({
+           name: '',
+           phone: '',
+           email: '',
+           timeline: '',
+           propertyType: 'COMMERCIAL',
+           city: '',
+           state: '',
+         });
+      } else {
+        // Show error message
+        alert(result.message || 'Something went wrong. Please try again.');
+      }
     } catch (error) {
       console.error('Error submitting form:', error);
+      alert('Network error. Please check your connection and try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -103,6 +126,35 @@ export default function LeadCaptureModal() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+          {/* Property Type Tabs */}
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-700">Property Type *</label>
+            <div className="flex bg-gray-100 rounded-lg p-1">
+              <button
+                type="button"
+                onClick={() => handleInputChange('propertyType', 'COMMERCIAL')}
+                className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all ${
+                  formData.propertyType === 'COMMERCIAL'
+                    ? 'bg-white text-blue-600 shadow-sm'
+                    : 'text-gray-600 hover:text-gray-800'
+                }`}
+              >
+                🏢 Commercial
+              </button>
+              <button
+                type="button"
+                onClick={() => handleInputChange('propertyType', 'RESIDENTIAL')}
+                className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all ${
+                  formData.propertyType === 'RESIDENTIAL'
+                    ? 'bg-white text-blue-600 shadow-sm'
+                    : 'text-gray-600 hover:text-gray-800'
+                }`}
+              >
+                🏠 Residential
+              </button>
+            </div>
+          </div>
+
           <div className="space-y-2">
             <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name *</label>
             <Input
@@ -140,6 +192,65 @@ export default function LeadCaptureModal() {
               required
               className="w-full"
             />
+          </div>
+
+          {/* City and State Fields */}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-2">
+              <label htmlFor="city" className="block text-sm font-medium text-gray-700">City *</label>
+              <Input
+                id="city"
+                type="text"
+                placeholder="Enter city"
+                value={formData.city}
+                onChange={(e) => handleInputChange('city', e.target.value)}
+                required
+                className="w-full"
+              />
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="state" className="block text-sm font-medium text-gray-700">State *</label>
+              <select
+                id="state"
+                value={formData.state}
+                onChange={(e) => handleInputChange('state', e.target.value)}
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+              >
+                <option value="">Select state</option>
+                <option value="Andhra Pradesh">Andhra Pradesh</option>
+                <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                <option value="Assam">Assam</option>
+                <option value="Bihar">Bihar</option>
+                <option value="Chhattisgarh">Chhattisgarh</option>
+                <option value="Goa">Goa</option>
+                <option value="Gujarat">Gujarat</option>
+                <option value="Haryana">Haryana</option>
+                <option value="Himachal Pradesh">Himachal Pradesh</option>
+                <option value="Jharkhand">Jharkhand</option>
+                <option value="Karnataka">Karnataka</option>
+                <option value="Kerala">Kerala</option>
+                <option value="Madhya Pradesh">Madhya Pradesh</option>
+                <option value="Maharashtra">Maharashtra</option>
+                <option value="Manipur">Manipur</option>
+                <option value="Meghalaya">Meghalaya</option>
+                <option value="Mizoram">Mizoram</option>
+                <option value="Nagaland">Nagaland</option>
+                <option value="Odisha">Odisha</option>
+                <option value="Punjab">Punjab</option>
+                <option value="Rajasthan">Rajasthan</option>
+                <option value="Sikkim">Sikkim</option>
+                <option value="Tamil Nadu">Tamil Nadu</option>
+                <option value="Telangana">Telangana</option>
+                <option value="Tripura">Tripura</option>
+                <option value="Uttar Pradesh">Uttar Pradesh</option>
+                <option value="Uttarakhand">Uttarakhand</option>
+                <option value="West Bengal">West Bengal</option>
+                <option value="Delhi">Delhi</option>
+                <option value="Chandigarh">Chandigarh</option>
+                <option value="Puducherry">Puducherry</option>
+              </select>
+            </div>
           </div>
 
           <div className="space-y-2">

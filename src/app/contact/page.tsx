@@ -103,7 +103,7 @@ export default function ContactPage() {
                   <div>
                     <h3 className="font-semibold text-gray-900 dark:text-white">Phone</h3>
                     <a href="tel:+919810490965" className="text-blue-600 hover:text-blue-800 transition-colors">
-                      +91 9810490965
+                      +91 9910007801
                     </a>
                   </div>
                 </div>
