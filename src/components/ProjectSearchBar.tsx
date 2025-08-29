@@ -24,18 +24,33 @@ interface SearchFilters {
 
 const projectCategories = [
   'All Categories',
-  'Commercial',
-  'Residential', 
-  'Mixed Use',
-  'Retail Only',
+  'COMMERCIAL',
+  'RESIDENTIAL', 
+  'MIXED_USE',
+  'RETAIL_ONLY',
 ];
 
 const projectStatuses = [
   'All Status',
-  'Planned',
-  'Under Construction',
-  'Ready',
+  'PLANNED',
+  'UNDER_CONSTRUCTION',
+  'READY',
 ];
+
+const categoryDisplayNames: { [key: string]: string } = {
+  'All Categories': 'All Categories',
+  'COMMERCIAL': 'Commercial',
+  'RESIDENTIAL': 'Residential',
+  'MIXED_USE': 'Mixed Use',
+  'RETAIL_ONLY': 'Retail Only',
+};
+
+const statusDisplayNames: { [key: string]: string } = {
+  'All Status': 'All Status',
+  'PLANNED': 'Planned',
+  'UNDER_CONSTRUCTION': 'Under Construction',
+  'READY': 'Ready',
+};
 
 const priceRanges = [
   { label: 'Any Price', min: 0, max: 100000000 },
@@ -89,7 +104,7 @@ export default function ProjectSearchBar({ onSearch, className = '', compact = f
           <Menu as="div" className="relative">
             <Menu.Button className="w-full flex items-center justify-between pl-8 pr-2 h-8 border border-input rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-ring text-xs">
               <BuildingOfficeIcon className="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <span className="truncate">{projectCategory}</span>
+              <span className="truncate">{categoryDisplayNames[projectCategory] || projectCategory}</span>
               <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
@@ -113,7 +128,7 @@ export default function ProjectSearchBar({ onSearch, className = '', compact = f
                           active ? 'bg-accent' : ''
                         } block w-full text-left px-3 py-1.5 text-xs hover:bg-accent transition-colors duration-150`}
                       >
-                        {category}
+                        {categoryDisplayNames[category] || category}
                       </button>
                     )}
                   </Menu.Item>
@@ -129,7 +144,7 @@ export default function ProjectSearchBar({ onSearch, className = '', compact = f
           <Menu as="div" className="relative">
             <Menu.Button className="w-full flex items-center justify-between pl-8 pr-2 h-8 border border-input rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-ring text-xs">
               <BuildingOfficeIcon className="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <span className="truncate">{projectStatus}</span>
+              <span className="truncate">{statusDisplayNames[projectStatus] || projectStatus}</span>
               <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
@@ -153,7 +168,7 @@ export default function ProjectSearchBar({ onSearch, className = '', compact = f
                           active ? 'bg-accent' : ''
                         } block w-full text-left px-3 py-1.5 text-xs hover:bg-accent transition-colors duration-150`}
                       >
-                        {status}
+                        {statusDisplayNames[status] || status}
                       </button>
                     )}
                   </Menu.Item>
@@ -216,32 +231,32 @@ export default function ProjectSearchBar({ onSearch, className = '', compact = f
   }
 
   return (
-    <div className={`bg-white/20 dark:bg-gray-800/20 backdrop-blur-md rounded-2xl shadow-xl p-4 border border-white/30 dark:border-gray-700/30 ${className}`}>
+    <div className={`bg-white/20 dark:bg-gray-800/20 backdrop-blur-md rounded-xl sm:rounded-2xl shadow-xl p-3 sm:p-4 border border-white/30 dark:border-gray-700/30 ${className}`}>
       {/* Search Inputs */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 items-end">
         {/* Location Input */}
-        <div className="space-y-2">
+        <div className="space-y-1 sm:space-y-2">
           <label className="text-xs font-semibold text-white">Location</label>
           <div className="relative">
-            <MapPinIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <MapPinIcon className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 w-4 sm:w-5 h-4 sm:h-5 text-gray-400" />
             <input
               type="text"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
               placeholder="Enter city or area"
-              className="w-full pl-10 pr-4 py-2 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-brand-primary focus:border-transparent bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-200"
+              className="w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-1.5 sm:py-2 text-xs sm:text-sm border border-gray-200 dark:border-gray-600 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-brand-primary focus:border-transparent bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-200"
             />
           </div>
         </div>
 
         {/* Project Category Dropdown */}
-        <div className="space-y-2">
-          <label className="text-sm font-semibold text-white">Category</label>
+        <div className="space-y-1 sm:space-y-2">
+          <label className="text-xs font-semibold text-white">Category</label>
           <Menu as="div" className="relative">
-            <Menu.Button className="w-full flex items-center justify-between pl-10 pr-4 py-2 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-brand-primary focus:border-transparent bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white transition-all duration-200">
-              <BuildingOfficeIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <span className="truncate">{projectCategory}</span>
-              <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <Menu.Button className="w-full flex items-center justify-between pl-8 sm:pl-10 pr-3 sm:pr-4 py-1.5 sm:py-2 text-xs sm:text-sm border border-gray-200 dark:border-gray-600 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-brand-primary focus:border-transparent bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white transition-all duration-200">
+              <BuildingOfficeIcon className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 w-4 sm:w-5 h-4 sm:h-5 text-gray-400" />
+              <span className="truncate">{categoryDisplayNames[projectCategory] || projectCategory}</span>
+              <svg className="w-4 sm:w-5 h-4 sm:h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
             </Menu.Button>
@@ -254,7 +269,7 @@ export default function ProjectSearchBar({ onSearch, className = '', compact = f
               leaveFrom="transform opacity-100 scale-100"
               leaveTo="transform opacity-0 scale-95"
             >
-              <Menu.Items className="absolute z-10 mt-1 w-full bg-white dark:bg-gray-800 shadow-lg max-h-60 rounded-2xl py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none border border-gray-200 dark:border-gray-600">
+              <Menu.Items className="absolute z-10 mt-1 w-full bg-white dark:bg-gray-800 shadow-lg max-h-60 rounded-lg sm:rounded-2xl py-1 text-xs sm:text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none border border-gray-200 dark:border-gray-600">
                 {projectCategories.map((category) => (
                   <Menu.Item key={category}>
                     {({ active }) => (
@@ -262,9 +277,9 @@ export default function ProjectSearchBar({ onSearch, className = '', compact = f
                         onClick={() => setProjectCategory(category)}
                         className={`${
                           active ? 'bg-gray-100 dark:bg-gray-700' : ''
-                        } block w-full text-left px-4 py-2 text-sm text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-150`}
+                        } block w-full text-left px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-150`}
                       >
-                        {category}
+                        {categoryDisplayNames[category] || category}
                       </button>
                     )}
                   </Menu.Item>
@@ -275,13 +290,13 @@ export default function ProjectSearchBar({ onSearch, className = '', compact = f
         </div>
 
         {/* Project Status Dropdown */}
-        <div className="space-y-2">
-          <label className="text-sm font-semibold text-white">Status</label>
+        <div className="space-y-1 sm:space-y-2">
+          <label className="text-xs font-semibold text-white">Status</label>
           <Menu as="div" className="relative">
-            <Menu.Button className="w-full flex items-center justify-between pl-10 pr-4 py-2 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-brand-primary focus:border-transparent bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white transition-all duration-200">
-              <BuildingOfficeIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <span className="truncate">{projectStatus}</span>
-              <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <Menu.Button className="w-full flex items-center justify-between pl-8 sm:pl-10 pr-3 sm:pr-4 py-1.5 sm:py-2 text-xs sm:text-sm border border-gray-200 dark:border-gray-600 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-brand-primary focus:border-transparent bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white transition-all duration-200">
+              <BuildingOfficeIcon className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 w-4 sm:w-5 h-4 sm:h-5 text-gray-400" />
+              <span className="truncate">{statusDisplayNames[projectStatus] || projectStatus}</span>
+              <svg className="w-4 sm:w-5 h-4 sm:h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
             </Menu.Button>
@@ -294,7 +309,7 @@ export default function ProjectSearchBar({ onSearch, className = '', compact = f
               leaveFrom="transform opacity-100 scale-100"
               leaveTo="transform opacity-0 scale-95"
             >
-              <Menu.Items className="absolute z-10 mt-1 w-full bg-white dark:bg-gray-800 shadow-lg max-h-60 rounded-2xl py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none border border-gray-200 dark:border-gray-600">
+              <Menu.Items className="absolute z-10 mt-1 w-full bg-white dark:bg-gray-800 shadow-lg max-h-60 rounded-lg sm:rounded-2xl py-1 text-xs sm:text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none border border-gray-200 dark:border-gray-600">
                 {projectStatuses.map((status) => (
                   <Menu.Item key={status}>
                     {({ active }) => (
@@ -302,9 +317,9 @@ export default function ProjectSearchBar({ onSearch, className = '', compact = f
                         onClick={() => setProjectStatus(status)}
                         className={`${
                           active ? 'bg-gray-100 dark:bg-gray-700' : ''
-                        } block w-full text-left px-4 py-2 text-sm text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-150`}
+                        } block w-full text-left px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-150`}
                       >
-                        {status}
+                        {statusDisplayNames[status] || status}
                       </button>
                     )}
                   </Menu.Item>
@@ -315,13 +330,13 @@ export default function ProjectSearchBar({ onSearch, className = '', compact = f
         </div>
 
         {/* Price Range Dropdown */}
-        <div className="space-y-2">
-          <label className="text-sm font-semibold text-white">Budget</label>
+        <div className="space-y-1 sm:space-y-2">
+          <label className="text-xs font-semibold text-white">Budget</label>
           <Menu as="div" className="relative">
-            <Menu.Button className="w-full flex items-center justify-between pl-10 pr-4 py-2 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-brand-primary focus:border-transparent bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white transition-all duration-200">
-              <CurrencyDollarIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <Menu.Button className="w-full flex items-center justify-between pl-8 sm:pl-10 pr-3 sm:pr-4 py-1.5 sm:py-2 text-xs sm:text-sm border border-gray-200 dark:border-gray-600 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-brand-primary focus:border-transparent bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white transition-all duration-200">
+              <CurrencyDollarIcon className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 w-4 sm:w-5 h-4 sm:h-5 text-gray-400" />
               <span className="truncate">{selectedPriceRange.label}</span>
-              <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 sm:w-5 h-4 sm:h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
             </Menu.Button>
@@ -334,7 +349,7 @@ export default function ProjectSearchBar({ onSearch, className = '', compact = f
               leaveFrom="transform opacity-100 scale-100"
               leaveTo="transform opacity-0 scale-95"
             >
-              <Menu.Items className="absolute z-10 mt-1 w-full bg-white dark:bg-gray-800 shadow-lg max-h-60 rounded-2xl py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none border border-gray-200 dark:border-gray-600">
+              <Menu.Items className="absolute z-10 mt-1 w-full bg-white dark:bg-gray-800 shadow-lg max-h-60 rounded-lg sm:rounded-2xl py-1 text-xs sm:text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none border border-gray-200 dark:border-gray-600">
                 {priceRanges.map((range) => (
                   <Menu.Item key={range.label}>
                     {({ active }) => (
@@ -342,7 +357,7 @@ export default function ProjectSearchBar({ onSearch, className = '', compact = f
                         onClick={() => setSelectedPriceRange(range)}
                         className={`${
                           active ? 'bg-gray-100 dark:bg-gray-700' : ''
-                        } block w-full text-left px-4 py-2 text-sm text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-150`}
+                        } block w-full text-left px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-150`}
                       >
                         {range.label}
                       </button>
@@ -356,14 +371,14 @@ export default function ProjectSearchBar({ onSearch, className = '', compact = f
       </div>
 
       {/* Search Button */}
-      <div className="mt-4 flex justify-center">
+      <div className="mt-3 sm:mt-4 flex justify-center">
         <BrandButton
           onClick={handleSearch}
           variant="primary"
           size="lg"
-          className="rounded-2xl px-8 py-3 font-semibold text-sm shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+          className="rounded-xl sm:rounded-2xl px-4 sm:px-8 py-2 sm:py-3 font-semibold text-xs sm:text-sm shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 w-full sm:w-auto"
         >
-          <MagnifyingGlassIcon className="w-6 h-6 mr-3" />
+          <MagnifyingGlassIcon className="w-4 sm:w-6 h-4 sm:h-6 mr-2 sm:mr-3" />
           Search Projects
         </BrandButton>
       </div>

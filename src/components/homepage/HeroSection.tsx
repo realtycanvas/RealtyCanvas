@@ -8,14 +8,26 @@ import ProjectSearchBar from "../ProjectSearchBar";
 export default function HeroSection() {
   return (
     <section 
-      className="relative overflow-hidden mb-10 h-screen flex items-center lg:py-6 py-8">
-     <Image 
-      src="/home.png"
-      alt="Hero Background"
-      objectFit="cover"
-      fill
-      quality={100}
-      className="mt-[-1.5vw] "
+      className="relative overflow-hidden mb-10 min-h-screen h-screen max-h-screen flex items-center py-4 sm:py-6 md:py-8 lg:py-12"
+    >
+     {/* Desktop Background Image */}
+      <Image 
+        src="/home.png"
+        alt="Hero Background"
+        fill
+        quality={100}
+        className="hidden sm:block object-cover object-center"
+        priority
+      />
+      
+      {/* Mobile Background Image */}
+      <Image 
+        src="/home_page_banner_phone.png"
+        alt="Hero Background Mobile"
+        fill
+        quality={100}
+        className="block sm:hidden object-cover object-center mt-[-13.5vw]"
+        priority
       />
     
       {/* Background overlay for better text readability */}
@@ -28,113 +40,64 @@ export default function HeroSection() {
       <div className="absolute bottom-32 right-16 w-40 h-40 bg-gradient-to-r from-brand-primary/20 to-brand-primary/20 rounded-full blur-3xl"></div>
       <div className="absolute top-1/3 right-1/4 w-24 h-24 bg-gradient-to-r from-brand-primary/20 to-brand-primary/20 rounded-full blur-2xl"></div> */}
 
-      <div className="max-w-5xl mx-auto py-6 px-4 sm:px-6 lg:px-8 relative z-10 rounded-3xl">
-        {/* <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center"> */}
-        <div className=" gap-12 items-center">
-          {/* Left Content */}
-          <div className="text-center lg:text-left">
-            <div className="mb-6 lg:mb-4 max-w-5xl mx-auto flex flex-col items-center justify-center">
-              <div className="flex flex-col lg:flex-row items-center justify-center lg:gap-4 gap-2 text-center lg:text-left">
-                <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold leading-tight text-white">
-                  Find Your
-                </h1>
-                <span className="text-4xl sm:text-5xl md:text-6xl font-bold leading-tight bg-gradient-to-r from-brand-primary to-brand-primary bg-clip-text text-transparent">
-                  Dream Project
-                </span>
-              </div>
-
-              <p className="text-sm md:text-lg mt-4 text-white text-center  mx-auto lg:mx-0 leading-relaxed max-w-xl">
-                Discover premium properties across India with our curated
-                collection of residential and commercial spaces
-              </p>
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col justify-center h-full">
+        <div className="flex flex-col items-center justify-center text-center space-y-4 sm:space-y-6 md:space-y-8">
+          {/* Main Heading */}
+          <div className="space-y-3 sm:space-y-4">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 md:gap-4">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight text-white">
+                Find Your
+              </h1>
+              <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight bg-gradient-to-r from-brand-primary to-brand-primary bg-clip-text text-transparent">
+                Dream Project
+              </span>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center  items-center mb-8">
-              <Link href="/projects">
-                <BrandButton
-                  variant="primary"
-                  size="lg"
-                  className="rounded-2xl text-sm "
-                >
-                  Explore Projects
-                </BrandButton>
-              </Link>
-              <Link href="/contact">
-                  <BrandButton
-                  variant="primary"
-                  size="lg"
-                  className="rounded-2xl text-sm "
-                >
-                Get In Touch
-                 </BrandButton>
-              </Link>
-            </div>
-
-            {/* Stats */}
-            {/* <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-2xl mx-auto lg:mx-0">
-              <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl p-4 border border-white/20 dark:border-gray-700/50">
-                <div className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
-                  500+
-                </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">
-                  Properties
-                </div>
-              </div>
-              <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl p-4 border border-white/20 dark:border-gray-700/50">
-                <div className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
-                  1000+
-                </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">
-                  Happy Clients
-                </div>
-              </div>
-              <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl p-4 border border-white/20 dark:border-gray-700/50">
-                <div className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
-                  50+
-                </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">
-                  Cities
-                </div>
-              </div>
-              <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl p-4 border border-white/20 dark:border-gray-700/50">
-                <div className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
-                  24/7
-                </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">
-                  Support
-                </div>
-              </div>
-            </div> */}
+            <p className="text-sm sm:text-base md:text-lg lg:text-xl text-white/90 leading-relaxed max-w-xl lg:max-w-2xl mx-auto px-2 sm:px-4">
+              Discover premium properties across India with our curated
+              collection of residential and commercial spaces
+            </p>
           </div>
 
-          {/* Right Image */}
-          {/* <div className="relative">
-            <div className="relative w-full h-96 lg:h-[500px] rounded-3xl overflow-hidden shadow-2xl">
-              <Image
-                src="https://images.pexels.com/photos/323705/pexels-photo-323705.jpeg"
-                alt="Modern Real Estate"
-                fill
-                className="object-cover"
-                priority
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
-
-            </div>
-          </div> */}
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 md:gap-4 justify-center items-center w-full max-w-md sm:max-w-none">
+            <Link href="/projects" className="w-full sm:w-auto">
+              <BrandButton
+                variant="primary"
+                size="lg"
+                className="rounded-xl sm:rounded-2xl text-xs sm:text-sm md:text-base px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 w-full sm:w-auto min-w-[140px] sm:min-w-[160px]"
+              >
+                Explore Projects
+              </BrandButton>
+            </Link>
+            <Link href="/contact" className="w-full sm:w-auto">
+              <BrandButton
+                variant="primary"
+                size="lg"
+                className="rounded-xl sm:rounded-2xl text-xs sm:text-sm md:text-base px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 w-full sm:w-auto min-w-[140px] sm:min-w-[160px]"
+              >
+                Get In Touch
+              </BrandButton>
+            </Link>
+          </div>
+          
+          {/* Search Bar */}
+          <div className="w-full max-w-sm sm:max-w-2xl md:max-w-3xl lg:max-w-4xl mx-auto mt-3 sm:mt-4 md:mt-6 lg:mt-8 px-2 sm:px-0">
+            <ProjectSearchBar
+              onSearch={(filters) => {
+                // Navigate to projects page with filters
+                const params = new URLSearchParams({
+                  category: filters.category,
+                  location: filters.location,
+                  status: filters.status,
+                  minPrice: filters.priceRange.min.toString(),
+                  maxPrice: filters.priceRange.max.toString(),
+                });
+                window.location.href = `/projects?${params.toString()}`;
+              }}
+            />
+          </div>
         </div>
-        <ProjectSearchBar
-          onSearch={(filters) => {
-            // Navigate to projects page with filters
-            const params = new URLSearchParams({
-              category: filters.category,
-              location: filters.location,
-              status: filters.status,
-              minPrice: filters.priceRange.min.toString(),
-              maxPrice: filters.priceRange.max.toString(),
-            });
-            window.location.href = `/projects?${params.toString()}`;
-          }}
-        />
       </div>
     </section>
   );

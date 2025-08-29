@@ -107,14 +107,14 @@ export default function LeadCaptureModal() {
       />
       
       {/* Modal */}
-      <div className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 p-6">
-        <div className="flex items-center justify-between mb-4">
+      <div className="relative bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 p-4">
+        <div className="flex items-center justify-between mb-3">
           <div>
-            <h2 className="text-xl font-bold text-gray-900">
+            <h2 className="text-lg font-bold text-gray-900">
               Find Your Dream Property
             </h2>
-            <p className="text-gray-600 mt-1 text-sm">
-              Get personalized property recommendations from Realty Canvas
+            <p className="text-gray-600 mt-0.5 text-xs">
+              Get personalized recommendations
             </p>
           </div>
           <button
@@ -125,38 +125,38 @@ export default function LeadCaptureModal() {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+        <form onSubmit={handleSubmit} className="space-y-3 mt-3">
           {/* Property Type Tabs */}
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">Property Type *</label>
+          <div className="space-y-1.5">
+            <label className="block text-xs font-medium text-gray-700">Property Type *</label>
             <div className="flex bg-gray-100 rounded-lg p-1">
               <button
-                type="button"
-                onClick={() => handleInputChange('propertyType', 'COMMERCIAL')}
-                className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all ${
-                  formData.propertyType === 'COMMERCIAL'
-                    ? 'bg-white text-blue-600 shadow-sm'
-                    : 'text-gray-600 hover:text-gray-800'
-                }`}
-              >
-                🏢 Commercial
-              </button>
-              <button
-                type="button"
-                onClick={() => handleInputChange('propertyType', 'RESIDENTIAL')}
-                className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all ${
-                  formData.propertyType === 'RESIDENTIAL'
-                    ? 'bg-white text-blue-600 shadow-sm'
-                    : 'text-gray-600 hover:text-gray-800'
-                }`}
-              >
-                🏠 Residential
-              </button>
+                 type="button"
+                 onClick={() => handleInputChange('propertyType', 'COMMERCIAL')}
+                 className={`flex-1 py-1.5 px-3 rounded-md text-xs font-medium transition-all ${
+                   formData.propertyType === 'COMMERCIAL'
+                     ? 'bg-white text-blue-600 shadow-sm'
+                     : 'text-gray-600 hover:text-gray-800'
+                 }`}
+               >
+                 🏢 Commercial
+               </button>
+               <button
+                 type="button"
+                 onClick={() => handleInputChange('propertyType', 'RESIDENTIAL')}
+                 className={`flex-1 py-1.5 px-3 rounded-md text-xs font-medium transition-all ${
+                   formData.propertyType === 'RESIDENTIAL'
+                     ? 'bg-white text-blue-600 shadow-sm'
+                     : 'text-gray-600 hover:text-gray-800'
+                 }`}
+               >
+                 🏠 Residential
+               </button>
             </div>
           </div>
 
-          <div className="space-y-2">
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name *</label>
+          <div className="space-y-1.5">
+            <label htmlFor="name" className="block text-xs font-medium text-gray-700">Name *</label>
             <Input
               id="name"
               type="text"
@@ -164,12 +164,12 @@ export default function LeadCaptureModal() {
               value={formData.name}
               onChange={(e) => handleInputChange('name', e.target.value)}
               required
-              className="w-full"
+              className="w-full h-8 text-sm"
             />
           </div>
 
-          <div className="space-y-2">
-            <label htmlFor="phone" className="block text-sm font-medium text-gray-700">Phone Number *</label>
+          <div className="space-y-1.5">
+            <label htmlFor="phone" className="block text-xs font-medium text-gray-700">Phone Number *</label>
             <Input
               id="phone"
               type="tel"
@@ -177,12 +177,12 @@ export default function LeadCaptureModal() {
               value={formData.phone}
               onChange={(e) => handleInputChange('phone', e.target.value)}
               required
-              className="w-full"
+              className="w-full h-8 text-sm"
             />
           </div>
 
-          <div className="space-y-2">
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email ID *</label>
+          <div className="space-y-1.5">
+            <label htmlFor="email" className="block text-xs font-medium text-gray-700">Email ID *</label>
             <Input
               id="email"
               type="email"
@@ -190,14 +190,14 @@ export default function LeadCaptureModal() {
               value={formData.email}
               onChange={(e) => handleInputChange('email', e.target.value)}
               required
-              className="w-full"
+              className="w-full h-8 text-sm"
             />
           </div>
 
           {/* City and State Fields */}
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-2">
-              <label htmlFor="city" className="block text-sm font-medium text-gray-700">City *</label>
+          <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-1.5">
+              <label htmlFor="city" className="block text-xs font-medium text-gray-700">City *</label>
               <Input
                 id="city"
                 type="text"
@@ -205,17 +205,17 @@ export default function LeadCaptureModal() {
                 value={formData.city}
                 onChange={(e) => handleInputChange('city', e.target.value)}
                 required
-                className="w-full"
+                className="w-full h-8 text-sm"
               />
             </div>
-            <div className="space-y-2">
-              <label htmlFor="state" className="block text-sm font-medium text-gray-700">State *</label>
+            <div className="space-y-1.5">
+              <label htmlFor="state" className="block text-xs font-medium text-gray-700">State *</label>
               <select
                 id="state"
                 value={formData.state}
                 onChange={(e) => handleInputChange('state', e.target.value)}
                 required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                className="w-full h-8 px-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
               >
                 <option value="">Select state</option>
                 <option value="Andhra Pradesh">Andhra Pradesh</option>
@@ -253,14 +253,14 @@ export default function LeadCaptureModal() {
             </div>
           </div>
 
-          <div className="space-y-2">
-            <label htmlFor="timeline" className="block text-sm font-medium text-gray-700">By when are you planning to buy the property? *</label>
+          <div className="space-y-1.5">
+            <label htmlFor="timeline" className="block text-xs font-medium text-gray-700">Purchase Timeline *</label>
             <select
               id="timeline"
               value={formData.timeline}
               onChange={(e) => handleInputChange('timeline', e.target.value)}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+              className="w-full h-8 px-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
             >
               <option value="">Select your timeline</option>
               <option value="1-month">1 Month</option>
@@ -270,21 +270,21 @@ export default function LeadCaptureModal() {
             </select>
           </div>
 
-          <div className="flex gap-3 pt-4">
+          <div className="flex gap-2 pt-3">
             <Button
               type="button"
               variant="outline"
               onClick={handleClose}
-              className="flex-1"
+              className="flex-1 h-8 text-sm"
             >
-              Maybe Later
+              Cancel
             </Button>
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 bg-brand-primary hover:bg-brand-primary/90"
+              className="flex-1 h-8 text-sm bg-blue-600 hover:bg-blue-700 text-white"
             >
-              {isSubmitting ? 'Submitting...' : 'Get Started'}
+              {isSubmitting ? 'Submitting...' : 'Submit'}
             </Button>
           </div>
         </form>
