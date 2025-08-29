@@ -1,9 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
+    const { searchParams } = new URL(req.url);
+    const page = parseInt(searchParams.get('page') || '1');
+    const limit = parseInt(searchParams.get('limit') || '20');
+    const skip = (page - 1) * limit;
+    
+    console.log(`Fetching units for project ${id}, page ${page}, limit ${limit}`);
     
     // Find the actual project ID using the slug
     const project = await prisma.project.findUnique({
@@ -15,11 +21,50 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
       return NextResponse.json({ error: 'Project not found' }, { status: 404 });
     }
 
-    const units = await prisma.unit.findMany({
-      where: { projectId: project.id },
-      orderBy: [{ floor: 'asc' }, { unitNumber: 'asc' }],
+    // Get units with pagination
+    const [units, totalCount] = await Promise.all([
+      prisma.unit.findMany({
+        where: { projectId: project.id },
+        select: {
+          id: true,
+          unitNumber: true,
+          type: true,
+          floor: true,
+          areaSqFt: true,
+          ratePsf: true,
+          priceTotal: true,
+          availability: true,
+          notes: true
+        },
+        orderBy: [{ floor: 'asc' }, { unitNumber: 'asc' }],
+        skip,
+        take: limit
+      }),
+      prisma.unit.count({
+        where: { projectId: project.id }
+      })
+    ]);
+    
+    const totalPages = Math.ceil(totalCount / limit);
+    const hasMore = page < totalPages;
+    
+    console.log(`Fetched ${units.length} units, total: ${totalCount}, page ${page}/${totalPages}`);
+    
+    return NextResponse.json({
+      units,
+      pagination: {
+        page,
+        limit,
+        totalCount,
+        totalPages,
+        hasMore
+      }
+    }, {
+      headers: {
+        'Cache-Control': 'public, max-age=300, stale-while-revalidate=600',
+        'X-Response-Time': Date.now().toString()
+      }
     });
-    return NextResponse.json(units);
   } catch (error) {
     console.error('List units error:', error);
     return NextResponse.json({ error: 'Failed to fetch units' }, { status: 500 });

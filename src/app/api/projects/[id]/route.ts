@@ -2,11 +2,38 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withDatabaseRetry, periodicHealthCheck } from '@/middleware/database';
 
+// In-memory cache for frequently accessed projects
+const projectCache = new Map<string, { data: any; timestamp: number; etag: string }>();
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+// Helper function to get cached project
+function getCachedProject(id: string) {
+  const cached = projectCache.get(id);
+  if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+    return cached;
+  }
+  return null;
+}
+
+// Helper function to set cached project
+function setCachedProject(id: string, data: any, etag: string) {
+  projectCache.set(id, {
+    data,
+    timestamp: Date.now(),
+    etag
+  });
+  
+  // Clean up old cache entries
+  if (projectCache.size > 100) {
+    const oldestKey = projectCache.keys().next().value;
+    if (oldestKey) {
+      projectCache.delete(oldestKey);
+    }
+  }
+}
+
 async function getProjectHandler(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    // Perform periodic health check
-    await periodicHealthCheck();
-    
     const { id } = await params;
     console.log(`Fetching project with ID: ${id}`);
     
@@ -17,7 +44,36 @@ async function getProjectHandler(req: NextRequest, { params }: { params: Promise
 
     // Check for ETag caching
     const ifNoneMatch = req.headers.get('if-none-match');
-    const cacheKey = `project-${id}`;
+    
+    // Check in-memory cache first
+    const cached = getCachedProject(id);
+    if (cached) {
+      console.log(`Serving project from cache: ${id}`);
+      
+      // Check if client has cached version
+      if (ifNoneMatch === cached.etag) {
+        return new NextResponse(null, { 
+          status: 304,
+          headers: {
+            'Cache-Control': 'public, max-age=300, stale-while-revalidate=600',
+            'ETag': cached.etag,
+            'X-Cache': 'HIT-304'
+          }
+        });
+      }
+      
+      return NextResponse.json(cached.data, {
+        headers: {
+          'Cache-Control': 'public, max-age=300, stale-while-revalidate=600',
+          'ETag': cached.etag,
+          'X-Cache': 'HIT',
+          'X-Response-Time': Date.now().toString()
+        }
+      });
+    }
+    
+    // Perform health check only if not in cache
+    await periodicHealthCheck();
     
     // Optimized query using slug with better performance and reduced data transfer
     const project = await prisma.project.findUnique({
@@ -36,7 +92,7 @@ async function getProjectHandler(req: NextRequest, { params }: { params: Promise
             notes: true
           },
           orderBy: [{ floor: 'asc' }, { unitNumber: 'asc' }],
-          take: 50 // Increased but still limited for performance
+          take: 20 // Reduced for faster initial load
         },
         highlights: {
           select: {
@@ -131,13 +187,17 @@ async function getProjectHandler(req: NextRequest, { params }: { params: Promise
     // Generate ETag based on project data
     const etag = `"${Buffer.from(JSON.stringify({ id: project.id, updatedAt: project.updatedAt })).toString('base64')}"`;
     
+    // Store in cache
+    setCachedProject(id, project, etag);
+    
     // Check if client has cached version
     if (ifNoneMatch === etag) {
       return new NextResponse(null, { 
         status: 304,
         headers: {
           'Cache-Control': 'public, max-age=300, stale-while-revalidate=600',
-          'ETag': etag
+          'ETag': etag,
+          'X-Cache': 'MISS-304'
         }
       });
     }
@@ -148,6 +208,7 @@ async function getProjectHandler(req: NextRequest, { params }: { params: Promise
       headers: {
         'Cache-Control': 'public, max-age=300, stale-while-revalidate=600',
         'ETag': etag,
+        'X-Cache': 'MISS',
         'X-Response-Time': Date.now().toString()
       }
     });

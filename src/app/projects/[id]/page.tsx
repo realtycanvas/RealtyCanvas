@@ -189,12 +189,13 @@ export default function ProjectDetailPage() {
         setLoading(true);
         setError(null);
         
-        // Add timestamp to prevent caching
         console.log(`Fetching project with ID/slug: ${id}`);
         
-        const res = await fetch(`/api/projects/${encodeURIComponent(id)}`, { 
-          cache: "force-cache",
-          next: { revalidate: 300 } // Revalidate every 5 minutes
+        // Optimized fetch with proper caching headers
+        const res = await fetch(`/api/projects/${encodeURIComponent(id)}`, {
+          headers: {
+            'Cache-Control': 'max-age=300'
+          }
         });
         
         if (!res.ok) {
@@ -357,17 +358,62 @@ export default function ProjectDetailPage() {
 
   if (loading) {
     return (
-      <main className="py-20 px-6 max-w-6xl mx-auto">
-        <div className="animate-pulse">
-          <div className="h-8 bg-gray-200 rounded w-1/3 mb-4"></div>
-          <div className="h-64 bg-gray-200 rounded mb-6"></div>
-          <div className="space-y-3">
-            <div className="h-4 bg-gray-200 rounded w-full"></div>
-            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="animate-pulse">
+            {/* Back button skeleton */}
+            <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-32 mb-4 mt-10"></div>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {/* Left Column - Main Content */}
+              <div className="lg:col-span-2 space-y-8">
+                {/* Hero Image Skeleton */}
+                <div className="relative h-[70vh] bg-gray-200 dark:bg-gray-700 rounded-3xl"></div>
+                
+                {/* Title Skeleton */}
+                <div className="space-y-4">
+                  <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+                  <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+                </div>
+                
+                {/* Content Cards Skeleton */}
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg">
+                    <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/3 mb-6"></div>
+                    <div className="space-y-3">
+                      <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+                      <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+                      <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              {/* Right Column - Sidebar Skeleton */}
+              <div className="lg:col-span-1">
+                <div className="sticky top-14 space-y-6">
+                  <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg animate-pulse">
+                    <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mx-auto mb-4"></div>
+                    <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded mb-4"></div>
+                    <div className="grid grid-cols-3 gap-4 mb-4">
+                      {[1, 2, 3].map((i) => (
+                        <div key={i} className="text-center">
+                          <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
+                          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="space-y-3">
+                      <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                      <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </main>
+      </div>
     );
   }
 
