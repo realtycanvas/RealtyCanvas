@@ -37,7 +37,7 @@ export default function LeadCaptureModal() {
       const timer = setTimeout(() => {
         setIsOpen(true);
         localStorage.setItem('leadCaptureModalShown', 'true');
-      }, 2000);
+      }, 5000);
 
       return () => clearTimeout(timer);
     }
