@@ -44,7 +44,7 @@ export default function ComingSoonPage() {
           </h1>
           
           <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto leading-relaxed">
-            We're working hard to bring you something amazing. This page will be available soon with exciting new features and content.
+            We&apos;re working hard to bring you something amazing. This page will be available soon with exciting new features and content.
           </p>
 
           {/* Features Preview */}
@@ -118,7 +118,7 @@ export default function ComingSoonPage() {
 
         {/* Footer Note */}
         <p className="mt-8 text-gray-500 dark:text-gray-400 text-sm">
-          Thank you for your patience. We're working to make this experience even better for you.
+          Thank you for your patience. We&apos;re working to make this experience even better for you.
         </p>
       </div>
     </div>
