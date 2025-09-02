@@ -145,6 +145,8 @@ export async function GET(request: NextRequest) {
     const status = searchParams.get('status') || '';
     const city = searchParams.get('city') || '';
     const state = searchParams.get('state') || '';
+    const minPrice = searchParams.get('minPrice');
+    const maxPrice = searchParams.get('maxPrice');
     
     console.log(`Pagination: page=${page}, limit=${limit}, skip=${skip}`);
     console.log(`Filters: search=${search}, category=${category}, status=${status}, city=${city}, state=${state}`);
@@ -184,6 +186,35 @@ export async function GET(request: NextRequest) {
     // Add state filter
     if (state) {
       whereClause.state = { contains: state, mode: 'insensitive' };
+    }
+    
+    // Add price range filter
+    if (minPrice || maxPrice) {
+      const priceConditions = [];
+      
+      if (minPrice) {
+        const minPriceNum = parseFloat(minPrice);
+        priceConditions.push({
+          OR: [
+            { minRatePsf: { gte: minPriceNum.toString() } },
+            { maxRatePsf: { gte: minPriceNum.toString() } }
+          ]
+        });
+      }
+      
+      if (maxPrice) {
+        const maxPriceNum = parseFloat(maxPrice);
+        priceConditions.push({
+          OR: [
+            { minRatePsf: { lte: maxPriceNum.toString() } },
+            { maxRatePsf: { lte: maxPriceNum.toString() } }
+          ]
+        });
+      }
+      
+      if (priceConditions.length > 0) {
+        whereClause.AND = (whereClause.AND || []).concat(priceConditions);
+      }
     }
     
     // Get total count for pagination info with filters
@@ -231,9 +262,11 @@ export async function GET(request: NextRequest) {
       }
     };
 
-    // Set cache control headers
+    // Set cache control headers for immediate updates
     const response = NextResponse.json(responseData);
-    response.headers.set('Cache-Control', 'public, max-age=300, stale-while-revalidate=600');
+    response.headers.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+    response.headers.set('Pragma', 'no-cache');
+    response.headers.set('Expires', '0');
     response.headers.set('X-Response-Time', Date.now().toString());
 
     return response;

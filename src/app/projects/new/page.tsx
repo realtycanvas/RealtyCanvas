@@ -1258,6 +1258,59 @@ function UnifiedProjectFormContent() {
           });
           }
         }
+
+      // Add FAQs
+      for (const faq of faqs.filter(f => f.question && f.answer)) {
+        await fetch('/api/projects/faqs', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            projectId: projectResult.id,
+            question: faq.question,
+            answer: faq.answer,
+          }),
+        });
+      }
+
+      // Add floor plans
+      for (const floorPlan of floorPlans.filter(fp => fp.level && fp.imageUrl)) {
+        await fetch('/api/projects/floorPlans', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            projectId: projectResult.id,
+            level: floorPlan.level,
+            title: floorPlan.title || null,
+            imageUrl: floorPlan.imageUrl,
+            details: floorPlan.details || null,
+          }),
+        });
+      }
+
+      // Add pricing table
+      for (const pricingRow of pricingTable.filter(pr => pr.unitType)) {
+        await fetch('/api/projects/pricingTable', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            projectId: projectResult.id,
+            ...pricingRow,
+          }),
+        });
+      }
+
+      // Add location data (nearby points)
+      const validNearbyPoints = (locationData.nearbyPoints || []).filter((np: any) => np.name?.trim() && np.type?.trim());
+      for (const nearbyPoint of validNearbyPoints) {
+        await fetch('/api/projects/nearbyPoints', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            projectId: projectResult.id,
+            ...nearbyPoint,
+          }),
+        });
+      }
       }
 
       router.push(`/projects/${projectResult.slug}`);
