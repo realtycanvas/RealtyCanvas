@@ -391,7 +391,7 @@ export default function ContactPage() {
                 Get Directions
               </a>
               <a
-                href="tel:+919810490965"
+                href="tel:+91 9910007801"
                 className="inline-flex items-center px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition-colors shadow-md hover:shadow-lg"
               >
                 <PhoneIcon className="w-4 h-4 mr-2" />
