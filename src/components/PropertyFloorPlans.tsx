@@ -35,9 +35,7 @@ const PropertyFloorPlans: React.FC<PropertyFloorPlansProps> = ({
   // Ensure floorPlans is an array before mapping
   const floorPlansArray = Array.isArray(floorPlans) ? floorPlans : [];
   
-  // Debug logging (remove in production)
-  // console.log('PropertyFloorPlans - floorPlans:', floorPlans);
-  // console.log('PropertyFloorPlans - floorPlansArray:', floorPlansArray);
+
   
   if (floorPlansArray.length === 0) return null;
 
