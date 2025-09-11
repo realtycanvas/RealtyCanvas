@@ -64,7 +64,7 @@ export default function HeroSection() {
               <BrandButton
                 variant="primary"
                 size="lg"
-                className="rounded-xl sm:rounded-2xl text-xs sm:text-sm md:text-base px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 w-full sm:w-auto min-w-[140px] sm:min-w-[160px]"
+                className="rounded-xl sm:rounded-2xl text-xs sm:text-sm md:text-base px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 w-full sm:w-auto sm:min-w-[160px]"
               >
                 Explore Projects
               </BrandButton>
@@ -73,7 +73,7 @@ export default function HeroSection() {
               <BrandButton
                 variant="primary"
                 size="lg"
-                className="rounded-xl sm:rounded-2xl text-xs sm:text-sm md:text-base px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 w-full sm:w-auto min-w-[140px] sm:min-w-[160px]"
+                className="rounded-xl sm:rounded-2xl text-xs sm:text-sm md:text-base px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 w-full sm:w-auto sm:min-w-[160px]"
               >
                 Get In Touch
               </BrandButton>

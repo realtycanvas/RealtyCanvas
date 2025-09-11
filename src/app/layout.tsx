@@ -66,6 +66,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        {/* Viewport meta tag for proper mobile rendering */}
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        
         {/* Critical font preloading for faster LCP */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

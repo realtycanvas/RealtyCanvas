@@ -49,7 +49,7 @@ const PropertyFloorPlans: React.FC<PropertyFloorPlansProps> = ({
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Floor plan tabs */}
         <div className="lg:w-1/4">
-          <div className="flex flex-row lg:flex-col gap-2 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0">
+          <div className="flex flex-row lg:flex-col gap-2 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 w-full max-w-full">
             {floorPlansArray.map((plan, index) => (
               <button
                 key={index}
