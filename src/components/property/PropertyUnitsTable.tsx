@@ -41,10 +41,21 @@ export default function PropertyUnitsTable({ units, className = '' }: PropertyUn
     return () => window.removeEventListener('resize', checkIfMobile);
   }, []);
 
-  const totalUnits = units?.length ?? 0;
+  // Sort units numerically by unitNumber
+  const sortedUnits = units?.sort((a, b) => {
+    const aNum = parseInt(a.unitNumber) || 0;
+    const bNum = parseInt(b.unitNumber) || 0;
+    if (aNum !== bNum) {
+      return aNum - bNum;
+    }
+    // If unit numbers are the same, sort by floor
+    return a.floor.localeCompare(b.floor);
+  }) ?? [];
+
+  const totalUnits = sortedUnits.length;
   const startIndex = (currentPage - 1) * unitsPerPage;
   const endIndex = currentPage * unitsPerPage;
-  const currentUnits = units?.slice(startIndex, endIndex) ?? [];
+  const currentUnits = sortedUnits.slice(startIndex, endIndex);
 
   return (
     <div className={`bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg ${className}`}>

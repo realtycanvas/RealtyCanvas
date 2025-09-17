@@ -232,7 +232,10 @@ async function getProjectData(slug: string) {
             availability: true,
             notes: true
           },
-          orderBy: [{ floor: 'asc' }, { unitNumber: 'asc' }],
+          orderBy: [
+            { floor: 'asc' },
+            { unitNumber: 'asc' }
+          ],
         },
         highlights: {
           select: {

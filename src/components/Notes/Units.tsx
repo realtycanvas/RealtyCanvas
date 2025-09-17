@@ -53,10 +53,21 @@ export default function UnitsSection({ project }: UnitsSectionProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const unitsPerPage = 10;
 
-  const totalUnits = project.units?.length ?? 0;
+  // Sort units numerically by unitNumber
+  const sortedUnits = project.units?.sort((a, b) => {
+    const aNum = parseInt(a.unitNumber) || 0;
+    const bNum = parseInt(b.unitNumber) || 0;
+    if (aNum !== bNum) {
+      return aNum - bNum;
+    }
+    // If unit numbers are the same, sort by floor
+    return a.floor.localeCompare(b.floor);
+  }) ?? [];
+
+  const totalUnits = sortedUnits.length;
   const startIndex = (currentPage - 1) * unitsPerPage;
   const endIndex = currentPage * unitsPerPage;
-  const currentUnits = project.units?.slice(startIndex, endIndex) ?? [];
+  const currentUnits = sortedUnits.slice(startIndex, endIndex);
 
   // Only show units table for residential projects
   const isResidential = project.category?.toUpperCase() === 'RESIDENTIAL';
