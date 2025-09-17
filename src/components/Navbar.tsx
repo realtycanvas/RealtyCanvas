@@ -14,6 +14,7 @@ import gsap from 'gsap';
 
 const navigation = [
   // { name: 'Properties', href: '/properties' },
+  { name: 'Home', href: '/' },
   { name: 'Projects', href: '/projects' },
   // { name: 'About', href: '/about' },
   { name: 'Contact', href: '/contact' },

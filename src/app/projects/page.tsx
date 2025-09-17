@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   Squares2X2Icon,
   ListBulletIcon,
@@ -53,21 +54,41 @@ type Project = {
 function ProjectsContent() {
   const { isAdmin } = useAuth();
   const { open, setOpen } = useSidebar();
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [projects, setProjects] = useState<Project[]>([]);
   const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [toast, setToast] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-  const [filters, setFilters] = useState({
-    category: "ALL",
-    status: "ALL",
-    city: "",
-    state: "",
-    priceRange: { min: 0, max: 10000000 },
-  });
+  // Initialize filters from URL parameters
+  const [filters, setFilters] = useState(() => {
+    const categoryParam = searchParams.get('category');
+    const statusParam = searchParams.get('status');
+    const minPriceParam = searchParams.get('minPrice');
+    const maxPriceParam = searchParams.get('maxPrice');
+    const cityParam = searchParams.get('city');
+    const stateParam = searchParams.get('state');
+    
+    return {
+      category: categoryParam && categoryParam !== 'All Categories' ? categoryParam : "ALL",
+      status: statusParam && statusParam !== 'All Status' ? statusParam : "ALL",
+      city: cityParam || "",
+      state: stateParam || "",
+      priceRange: { 
+        min: minPriceParam ? parseInt(minPriceParam, 10) : 0, 
+        max: maxPriceParam ? parseInt(maxPriceParam, 10) : 10000000 
+      },
+    };
+   });
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [currentPage, setCurrentPage] = useState(1);
+  
+  // Initialize currentPage from URL parameters
+  const [currentPage, setCurrentPage] = useState(() => {
+    const pageParam = searchParams.get('page');
+    return pageParam ? parseInt(pageParam, 10) : 1;
+  });
   const [pagination, setPagination] = useState({
     page: 1,
     limit: 6,
@@ -81,11 +102,54 @@ function ProjectsContent() {
   const [searchLoading, setSearchLoading] = useState(false);
   const [hasConnectionError, setHasConnectionError] = useState(false);
 
+  // Function to update page and URL
+  const updatePage = (newPage: number) => {
+    setCurrentPage(newPage);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('page', newPage.toString());
+    router.push(`/projects?${params.toString()}`, { scroll: false });
+  };
+
   // Toast notification helper
   const showToast = (message: string) => {
     setToast(message);
     setTimeout(() => setToast(""), 2200);
   };
+
+  // Sync currentPage with URL parameters
+  useEffect(() => {
+    const pageParam = searchParams.get('page');
+    const urlPage = pageParam ? parseInt(pageParam, 10) : 1;
+    if (urlPage !== currentPage) {
+      setCurrentPage(urlPage);
+    }
+  }, [searchParams]);
+
+  // Sync filters with URL parameters
+  useEffect(() => {
+    const categoryParam = searchParams.get('category');
+    const statusParam = searchParams.get('status');
+    const minPriceParam = searchParams.get('minPrice');
+    const maxPriceParam = searchParams.get('maxPrice');
+    const cityParam = searchParams.get('city');
+    const stateParam = searchParams.get('state');
+    
+    const urlFilters = {
+      category: categoryParam && categoryParam !== 'All Categories' ? categoryParam : "ALL",
+      status: statusParam && statusParam !== 'All Status' ? statusParam : "ALL",
+      city: cityParam || "",
+      state: stateParam || "",
+      priceRange: { 
+        min: minPriceParam ? parseInt(minPriceParam, 10) : 0, 
+        max: maxPriceParam ? parseInt(maxPriceParam, 10) : 10000000 
+      },
+    };
+    
+    // Only update if filters have actually changed
+    if (JSON.stringify(urlFilters) !== JSON.stringify(filters)) {
+      setFilters(urlFilters);
+    }
+  }, [searchParams]);
 
   // Handle sidebar state changes with toast notifications
   useEffect(() => {
@@ -965,7 +1029,7 @@ function ProjectsContent() {
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() =>
-                      setCurrentPage((prev) => Math.max(1, prev - 1))
+                      updatePage(Math.max(1, currentPage - 1))
                     }
                     disabled={!pagination.hasPrevious || loading}
                     className="px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
@@ -1002,7 +1066,7 @@ function ProjectsContent() {
                               </span>
                             )}
                             <button
-                              onClick={() => setCurrentPage(pageNum)}
+                              onClick={() => updatePage(pageNum)}
                               disabled={loading}
                               className={`px-3 py-2 text-sm rounded-lg transition-colors ${
                                 pageNum === pagination.page
@@ -1019,9 +1083,7 @@ function ProjectsContent() {
 
                   <button
                     onClick={() =>
-                      setCurrentPage((prev) =>
-                        Math.min(pagination.totalPages, prev + 1)
-                      )
+                      updatePage(Math.min(pagination.totalPages, currentPage + 1))
                     }
                     disabled={!pagination.hasMore || loading}
                     className="px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"

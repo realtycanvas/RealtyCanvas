@@ -2,6 +2,7 @@
 
 import { useRef, useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import {
   HeartIcon,
@@ -151,7 +152,19 @@ interface ProjectDetailClientProps {
 }
 
 export default function ProjectDetailClient({ project, slug }: ProjectDetailClientProps) {
+  const router = useRouter();
   const callNowButtonRef = useRef<HTMLAnchorElement | null>(null);
+
+  // Handle back navigation to preserve pagination state
+  const handleBackToProjects = () => {
+    // Check if there's a referrer from the projects page
+    if (document.referrer && document.referrer.includes('/projects')) {
+      router.back();
+    } else {
+      // Fallback to projects page
+      router.push('/projects');
+    }
+  };
   
   const [isLiked, setIsLiked] = useState(false);
   const [viewAllPhotos, setViewAllPhotos] = useState(false);
@@ -281,9 +294,12 @@ export default function ProjectDetailClient({ project, slug }: ProjectDetailClie
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex justify-between items-center mb-4 mt-10">
-          <Link href="/projects" className="flex items-center text-blue-600 hover:text-blue-800">
+          <button 
+            onClick={handleBackToProjects}
+            className="flex items-center text-blue-600 hover:text-blue-800 transition-colors"
+          >
             <ArrowLeftIcon className="w-4 h-4 mr-1" /> Back to Projects
-          </Link>
+          </button>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - Main Content */}
