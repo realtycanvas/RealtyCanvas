@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { PlusIcon, XMarkIcon, CodeBracketIcon, EyeIcon } from '@heroicons/react/24/outline';
-import Image from 'next/image';
+import SmartImage from '@/components/ui/SmartImage';
 
 interface FloorPlan {
   name: string;
@@ -263,14 +263,11 @@ export default function PropertyFloorPlansEditor({
                     {floorPlan.image && (
                       <div className="mt-2">
                         <div className="relative w-full h-48 bg-gray-100 dark:bg-gray-600 rounded-lg overflow-hidden">
-                          <Image
+                          <SmartImage
                             src={floorPlan.image}
                             alt={floorPlan.name || 'Floor Plan'}
                             fill
                             className="object-contain"
-                            onError={() => {
-                              // Handle image error
-                            }}
                           />
                         </div>
                       </div>

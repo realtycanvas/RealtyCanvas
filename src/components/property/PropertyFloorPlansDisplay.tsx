@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { ChevronLeftIcon, ChevronRightIcon, BuildingOfficeIcon } from '@heroicons/react/24/outline';
-import Image from 'next/image';
+import SmartImage from '@/components/ui/SmartImage';
 
 interface FloorPlan {
   id: string;
@@ -57,7 +57,7 @@ export default function PropertyFloorPlansDisplay({ floorPlans, className = '' }
             onClick={() => setSelectedFloor(index)}
           >
             <div className="aspect-square relative">
-              <Image
+              <SmartImage
                 src={floor.imageUrl}
                 alt={`${floor.level} Floor Plan`}
                 fill
@@ -78,7 +78,7 @@ export default function PropertyFloorPlansDisplay({ floorPlans, className = '' }
       <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
         <div className="relative">
           <div className="aspect-video relative">
-            <Image
+            <SmartImage
               src={currentFloor.imageUrl}
               alt={`${currentFloor.level} Floor Plan`}
               fill

@@ -1,6 +1,7 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import SmartImage from "@/components/ui/SmartImage";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -544,16 +545,14 @@ export default function ProjectDetailClient({
                       Location Map
                     </h3>
                     <div className="rounded-xl overflow-hidden shadow-lg border border-gray-200 dark:border-gray-700 relative aspect-video">
-                      <img
+                      <SmartImage
                         src={project.sitePlanImage}
                         alt="Project Location Map"
-                        className="w-full h-auto object-cover"
+                        fill
+                        className="object-cover"
                         loading="lazy"
                         onLoad={() =>
                           console.log("✅ Site plan image loaded successfully")
-                        }
-                        onError={(e) =>
-                          (e.currentTarget.style.display = "none")
                         }
                       />
                     </div>
@@ -582,18 +581,16 @@ export default function ProjectDetailClient({
                       >
                         {plan.imageUrl && (
                           <div className="aspect-video relative">
-                            <img
+                            <SmartImage
                               src={plan.imageUrl}
                               alt={`${plan.level} floor plan`}
-                              className="w-full h-full object-cover"
+                              fill
+                              className="object-cover"
                               loading="lazy"
                               onLoad={() =>
                                 console.log(
-                                  "✅ Floor plan image loaded successfully"
+                                  `✅ Floor plan image loaded: ${plan.level}`
                                 )
-                              }
-                              onError={(e) =>
-                                (e.currentTarget.style.display = "none")
                               }
                             />
                           </div>
