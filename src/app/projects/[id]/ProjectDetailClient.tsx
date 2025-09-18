@@ -314,7 +314,7 @@ export default function ProjectDetailClient({
           {/* Left Column - Main Content */}
           <div className="lg:col-span-2 space-y-8">
             <div className="relative h-[70vh] overflow-hidden max-w-7xl mx-auto rounded-3xl">
-              <Image
+              <SmartImage
                 src={
                   (project.galleryImages &&
                     project.galleryImages[activeImageIndex]) ||
@@ -324,11 +324,7 @@ export default function ProjectDetailClient({
                 fill
                 className="object-cover"
                 priority
-                fetchPriority="high"
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
-                quality={85}
-                placeholder="blur"
-                blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
                 onLoad={() => {
                   // Mark LCP image as loaded for performance tracking
                   if (typeof window !== "undefined" && window.performance) {
@@ -374,7 +370,7 @@ export default function ProjectDetailClient({
                       }`}
                       aria-label={`Show image ${index + 1}`}
                     >
-                      <Image
+                      <SmartImage
                         src={image}
                         alt={`Gallery ${index + 1}`}
                         width={64}
@@ -581,10 +577,10 @@ export default function ProjectDetailClient({
                       >
                         {plan.imageUrl && (
                           <div className="aspect-video relative">
-                            <SmartImage
+                            <img
                               src={plan.imageUrl}
                               alt={`${plan.level} floor plan`}
-                              fill
+                             
                               className="object-cover"
                               loading="lazy"
                               onLoad={() =>
@@ -953,7 +949,7 @@ export default function ProjectDetailClient({
               <div className="flex-1 grid grid-rows-[1fr_auto]">
                 {/* Large preview */}
                 <div className="relative bg-black">
-                  <Image
+                  <SmartImage
                     src={project.galleryImages[activeImageIndex]}
                     alt={`Photo ${activeImageIndex + 1}`}
                     fill
@@ -998,7 +994,7 @@ export default function ProjectDetailClient({
                             : "border-gray-200 dark:border-gray-700"
                         }`}
                       >
-                        <Image
+                        <SmartImage
                           src={img}
                           alt={`Thumb ${i + 1}`}
                           width={96}
