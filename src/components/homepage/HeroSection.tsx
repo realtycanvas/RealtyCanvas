@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
+import SmartImage from "@/components/ui/SmartImage";
 import { BrandButton } from "../ui/BrandButton";
 import ProjectSearchBar from "../ProjectSearchBar";
 
@@ -11,7 +11,7 @@ export default function HeroSection() {
       className="relative overflow-hidden lg:mb-10 mb-2 min-h-screen h-screen max-h-screen flex items-center  py-0 lg:py-12"
     >
      {/* Desktop Background Image */}
-      <Image 
+      <SmartImage 
         src="/home.png"
         alt="Hero Background"
         fill
@@ -21,7 +21,7 @@ export default function HeroSection() {
       />
       
       {/* Mobile Background Image */}
-      <Image 
+      <SmartImage 
         src="/home_page_banner_phone.png"
         alt="Hero Background Mobile"
         fill

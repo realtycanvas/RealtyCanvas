@@ -1,12 +1,12 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
+import SmartImage from '@/components/ui/SmartImage';
 import { useState, useEffect, useRef } from 'react';
 import { Bars3Icon, XMarkIcon, ChevronDownIcon, UserIcon, ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
 import { Menu, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
-// Theme toggle removed - using light mode only
+// Import the auth context
 import { useAuth } from '@/contexts/AuthContext';
 import { BrandButton } from './ui/BrandButton';
 import AdminLogin from './AdminLogin';
@@ -128,7 +128,7 @@ export default function Navbar() {
           <div className="">
             <Link href="/" className="flex items-center no-underline hover:no-underline focus:no-underline">
               {/* Logo - Light version only */}
-              <Image 
+              <SmartImage 
                 src="/logo1.webp" 
                 alt="Reality Canvas" 
                 width={1200} 

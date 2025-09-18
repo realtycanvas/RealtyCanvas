@@ -74,6 +74,10 @@ export default function SmartImage({
 
   // Use Next.js Image optimization if available
   if (useOptimization) {
+    // Check if it's a local image (starts with /) or external
+    const isLocalImage = src.startsWith('/');
+    const shouldUnoptimize = process.env.NODE_ENV === 'production' && !isLocalImage;
+    
     return (
       <Image
         src={src}
@@ -89,7 +93,7 @@ export default function SmartImage({
         style={style}
         sizes={sizes}
         quality={quality}
-        unoptimized={false}
+        unoptimized={shouldUnoptimize}
       />
     );
   }
