@@ -338,7 +338,6 @@ export default function ProjectDetailClient({
 
               {/* Overlay */}
               <div className="absolute inset-0 bg-black/30"></div>
-
               {/* Action Buttons - Top Right */}
               <div className="absolute top-6 right-6 flex items-center space-x-3">
                 <button
