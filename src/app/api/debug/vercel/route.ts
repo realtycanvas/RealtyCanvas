@@ -75,7 +75,7 @@ export async function GET(request: NextRequest) {
         where: {
           OR: [
             { featuredImage: { not: "" } },
-            { galleryImages: { not: "" } },
+            { galleryImages: { isEmpty: false } },
             { sitePlanImage: { not: "" } }
           ]
         },
@@ -90,13 +90,8 @@ export async function GET(request: NextRequest) {
 
       if (sampleProject) {
         let galleryCount = 0;
-        if (sampleProject.galleryImages) {
-          try {
-            const galleryArray = JSON.parse(sampleProject.galleryImages);
-            galleryCount = Array.isArray(galleryArray) ? galleryArray.length : 0;
-          } catch {
-            galleryCount = 0;
-          }
+        if (sampleProject.galleryImages && sampleProject.galleryImages.length > 0) {
+          galleryCount = sampleProject.galleryImages.length;
         }
 
         debugInfo.tests.sample_project = {
@@ -105,7 +100,7 @@ export async function GET(request: NextRequest) {
             id: sampleProject.id,
             title: sampleProject.title,
             has_featured_image: !!sampleProject.featuredImage,
-            has_gallery_images: !!sampleProject.galleryImages,
+            has_gallery_images: !!(sampleProject.galleryImages && sampleProject.galleryImages.length > 0),
             has_site_plan: !!sampleProject.sitePlanImage,
             featured_image_url: sampleProject.featuredImage,
             gallery_count: galleryCount
