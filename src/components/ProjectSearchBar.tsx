@@ -30,7 +30,7 @@ const projectCategories = [
 
 const projectStatuses = [
   'All Status',
-  'PLANNED',
+
   'UNDER_CONSTRUCTION',
   'READY',
 ];
@@ -43,7 +43,7 @@ const categoryDisplayNames: { [key: string]: string } = {
 
 const statusDisplayNames: { [key: string]: string } = {
   'All Status': 'All Status',
-  'PLANNED': 'Planned',
+
   'UNDER_CONSTRUCTION': 'Under Construction',
   'READY': 'Ready',
 };

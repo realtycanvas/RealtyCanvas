@@ -34,7 +34,6 @@ export default function ProjectFilterSidebar({
 
   const statuses = [
     'ALL',
-    'PLANNED',
     'UNDER_CONSTRUCTION',
     'READY'
   ];
