@@ -129,6 +129,11 @@ type Project = {
   latitude?: number | null;
   longitude?: number | null;
   sitePlanImage?: string | null;
+  // Commercial project specific fields
+
+  numberOfFloors?: number | string | null;
+
+  features?: string | null;
   units: Unit[];
   highlights: Highlight[];
   amenities: Amenity[];
@@ -151,21 +156,24 @@ interface ProjectDetailClientProps {
   slug: string;
 }
 
-export default function ProjectDetailClient({ project, slug }: ProjectDetailClientProps) {
+export default function ProjectDetailClient({
+  project,
+  slug,
+}: ProjectDetailClientProps) {
   const router = useRouter();
   const callNowButtonRef = useRef<HTMLAnchorElement | null>(null);
 
   // Handle back navigation to preserve pagination state
   const handleBackToProjects = () => {
     // Check if there's a referrer from the projects page
-    if (document.referrer && document.referrer.includes('/projects')) {
+    if (document.referrer && document.referrer.includes("/projects")) {
       router.back();
     } else {
       // Fallback to projects page
-      router.push('/projects');
+      router.push("/projects");
     }
   };
-  
+
   const [isLiked, setIsLiked] = useState(false);
   const [viewAllPhotos, setViewAllPhotos] = useState(false);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
@@ -182,7 +190,7 @@ export default function ProjectDetailClient({ project, slug }: ProjectDetailClie
   // FAQ expanded state
   const [expandedFaq, setExpandedFaq] = useState<string | null>(null);
   const [showAllFeatures, setShowAllFeatures] = useState(false);
-  
+
   // Units pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const [unitsPerPage] = useState(7);
@@ -200,7 +208,7 @@ export default function ProjectDetailClient({ project, slug }: ProjectDetailClie
 
   // Initialize like state from localStorage on client side
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       try {
         const raw = localStorage.getItem("likedProjects");
         if (raw) {
@@ -290,11 +298,11 @@ export default function ProjectDetailClient({ project, slug }: ProjectDetailClie
           {toast}
         </div>
       )}
-      
+
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex justify-between items-center mb-4 mt-10">
-          <button 
+          <button
             onClick={handleBackToProjects}
             className="flex items-center text-blue-600 hover:text-blue-800 transition-colors"
           >
@@ -322,8 +330,8 @@ export default function ProjectDetailClient({ project, slug }: ProjectDetailClie
                 blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
                 onLoad={() => {
                   // Mark LCP image as loaded for performance tracking
-                  if (typeof window !== 'undefined' && window.performance) {
-                    window.performance.mark('hero-image-loaded');
+                  if (typeof window !== "undefined" && window.performance) {
+                    window.performance.mark("hero-image-loaded");
                   }
                 }}
               />
@@ -333,7 +341,6 @@ export default function ProjectDetailClient({ project, slug }: ProjectDetailClie
 
               {/* Action Buttons - Top Right */}
               <div className="absolute top-6 right-6 flex items-center space-x-3">
-               
                 <button
                   onClick={handleShare}
                   className="w-12 h-12 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center hover:bg-white transition-colors"
@@ -394,7 +401,7 @@ export default function ProjectDetailClient({ project, slug }: ProjectDetailClie
                   {project.state ? `, ${project.state}` : ""}
                 </span>
               </div>
-              
+
               {project.subtitle && (
                 <p className="text-xl text-gray-600 dark:text-gray-300 mb-6">
                   {/* {project.subtitle} */}
@@ -507,99 +514,108 @@ export default function ProjectDetailClient({ project, slug }: ProjectDetailClie
                 ref={locationRef}
                 className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg"
               >
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-                Location & Connectivity
-              </h2>
-
-              {/* Project Location */}
-              <div className="mb-8">
-                <div className="flex items-start space-x-4 p-6 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-xl">
-                  <MapPinIcon className="w-8 h-8 text-blue-500 mt-1" />
-                  <div>
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
-                      Project Location
-                    </h3>
-                    <p className="text-gray-700 dark:text-gray-300 mb-2">
-                      {project.address}
-                    </p>
-                    {project.city && project.state && (
-                      <p className="text-gray-600 dark:text-gray-400">
-                        {project.city}, {project.state}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              {/* Location Map */}
-              {project.sitePlanImage && (
-                <div className="mb-8">
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
-                    Location Map
-                  </h3>
-                  <div className="rounded-xl overflow-hidden shadow-lg border border-gray-200 dark:border-gray-700 relative aspect-video">
-                    <img
-                      src={project.sitePlanImage}
-                      alt="Project Location Map"
-                      className="w-full h-auto object-cover"
-                      loading="lazy"
-                      onLoad={() => console.log('✅ Site plan image loaded successfully')}
-                      onError={(e) => e.currentTarget.style.display = 'none'}
-                    />
-                  </div>
-                </div>
-              )}
-
-              {/* Nearby Points */}
-              
-               </div>
-             </LazySection>
-
-             {/* Floor Plans Section - Lazy Loaded */}
-             {project.floorPlans && project.floorPlans.length > 0 ? (
-               <LazySection>
-                 <div
-                   ref={floorPlansRef}
-                   className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg"
-                 >
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-                  Floor Plans
+                  Location & Connectivity
                 </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {project.floorPlans.map((plan) => (
-                    <div
-                      key={plan.id}
-                      className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden hover:shadow-lg transition-shadow"
-                    >
-                      {plan.imageUrl && (
-                        <div className="aspect-video relative">
-                          <img
-                            src={plan.imageUrl}
-                            alt={`${plan.level} floor plan`}
-                            className="w-full h-full object-cover"
-                            loading="lazy"
-                            onLoad={() => console.log('✅ Floor plan image loaded successfully')}
-                            onError={(e) => e.currentTarget.style.display = 'none'}
-                          />
-                        </div>
+
+                {/* Project Location */}
+                <div className="mb-8">
+                  <div className="flex items-start space-x-4 p-6 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-xl">
+                    <MapPinIcon className="w-8 h-8 text-blue-500 mt-1" />
+                    <div>
+                      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
+                        Project Location
+                      </h3>
+                      <p className="text-gray-700 dark:text-gray-300 mb-2">
+                        {project.address}
+                      </p>
+                      {project.city && project.state && (
+                        <p className="text-gray-600 dark:text-gray-400">
+                          {project.city}, {project.state}
+                        </p>
                       )}
-                      <div className="p-6">
-                        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
-                          {plan.level}
-                          {plan.title && (
-                            <span className="text-blue-600 ml-2">
-                              • {plan.title}
-                            </span>
-                          )}
-                        </h3>
-                        {plan.details && (
-                          <p className="text-gray-600 dark:text-gray-400 text-sm">
-                            {plan.details}
-                          </p>
-                        )}
-                      </div>
                     </div>
-                  ))}
+                  </div>
+                </div>
+
+                {/* Location Map */}
+                {project.sitePlanImage && (
+                  <div className="mb-8">
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
+                      Location Map
+                    </h3>
+                    <div className="rounded-xl overflow-hidden shadow-lg border border-gray-200 dark:border-gray-700 relative aspect-video">
+                      <img
+                        src={project.sitePlanImage}
+                        alt="Project Location Map"
+                        className="w-full h-auto object-cover"
+                        loading="lazy"
+                        onLoad={() =>
+                          console.log("✅ Site plan image loaded successfully")
+                        }
+                        onError={(e) =>
+                          (e.currentTarget.style.display = "none")
+                        }
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {/* Nearby Points */}
+              </div>
+            </LazySection>
+
+            {/* Floor Plans Section - Lazy Loaded */}
+            {project.floorPlans && project.floorPlans.length > 0 ? (
+              <LazySection>
+                <div
+                  ref={floorPlansRef}
+                  className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg"
+                >
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+                    Floor Plans
+                  </h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {project.floorPlans.map((plan) => (
+                      <div
+                        key={plan.id}
+                        className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden hover:shadow-lg transition-shadow"
+                      >
+                        {plan.imageUrl && (
+                          <div className="aspect-video relative">
+                            <img
+                              src={plan.imageUrl}
+                              alt={`${plan.level} floor plan`}
+                              className="w-full h-full object-cover"
+                              loading="lazy"
+                              onLoad={() =>
+                                console.log(
+                                  "✅ Floor plan image loaded successfully"
+                                )
+                              }
+                              onError={(e) =>
+                                (e.currentTarget.style.display = "none")
+                              }
+                            />
+                          </div>
+                        )}
+                        <div className="p-6">
+                          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
+                            {plan.level}
+                            {plan.title && (
+                              <span className="text-blue-600 ml-2">
+                                • {plan.title}
+                              </span>
+                            )}
+                          </h3>
+                          {plan.details && (
+                            <p className="text-gray-600 dark:text-gray-400 text-sm">
+                              {plan.details}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </LazySection>
@@ -613,8 +629,18 @@ export default function ProjectDetailClient({ project, slug }: ProjectDetailClie
                     Floor Plans
                   </h2>
                   <div className="text-center py-8">
-                    <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H3m2 0h2M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    <svg
+                      className="w-16 h-16 text-gray-400 mx-auto mb-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H3m2 0h2M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                      />
                     </svg>
                     <p className="text-gray-500 dark:text-gray-400">
                       Floor plans will be available soon.
@@ -630,64 +656,68 @@ export default function ProjectDetailClient({ project, slug }: ProjectDetailClie
                 ref={videoRef}
                 className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg"
               >
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-                Property Videos
-              </h2>
-              
-              {(project.videoUrl || (project.videoUrls && project.videoUrls.length > 0)) ? (
-                <div className="space-y-6">
-                  {/* Main Video */}
-                  {project.videoUrl && (
-                    <div className="aspect-video relative rounded-xl overflow-hidden bg-black">
-                      <video 
-                        controls
-                        className="w-full h-full"
-                        poster={project.featuredImage}
-                      >
-                        <source src={project.videoUrl} type="video/mp4" />
-                        Your browser does not support the video tag.
-                      </video>
-                    </div>
-                  )}
-                  
-                  {/* Additional Videos */}
-                  {project.videoUrls && project.videoUrls.length > 0 && (
-                    <div>
-                      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-                        More Videos
-                      </h3>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {project.videoUrls.map((video, index) => (
-                          <div key={index} className="aspect-video relative rounded-lg overflow-hidden bg-black">
-                            <video 
-                              controls
-                              className="w-full h-full"
-                              poster={project.featuredImage}
-                            >
-                              <source src={video} type="video/mp4" />
-                              Your browser does not support the video tag.
-                            </video>
-                          </div>
-                        ))}
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+                  Property Videos
+                </h2>
+
+                {project.videoUrl ||
+                (project.videoUrls && project.videoUrls.length > 0) ? (
+                  <div className="space-y-6">
+                    {/* Main Video */}
+                    {project.videoUrl && (
+                      <div className="aspect-video relative rounded-xl overflow-hidden bg-black">
+                        <video
+                          controls
+                          className="w-full h-full"
+                          poster={project.featuredImage}
+                        >
+                          <source src={project.videoUrl} type="video/mp4" />
+                          Your browser does not support the video tag.
+                        </video>
                       </div>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <div className="text-center py-8">
-                  <VideoCameraIcon className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-500 dark:text-gray-400">
-                    Property videos will be available soon.
-                  </p>
-                </div>
-              )}
+                    )}
+
+                    {/* Additional Videos */}
+                    {project.videoUrls && project.videoUrls.length > 0 && (
+                      <div>
+                        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+                          More Videos
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {project.videoUrls.map((video, index) => (
+                            <div
+                              key={index}
+                              className="aspect-video relative rounded-lg overflow-hidden bg-black"
+                            >
+                              <video
+                                controls
+                                className="w-full h-full"
+                                poster={project.featuredImage}
+                              >
+                                <source src={video} type="video/mp4" />
+                                Your browser does not support the video tag.
+                              </video>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <VideoCameraIcon className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                    <p className="text-gray-500 dark:text-gray-400">
+                      Property videos will be available soon.
+                    </p>
+                  </div>
+                )}
               </div>
             </LazySection>
 
             {/* About the Builder */}
             <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg">
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-                 RERA ID
+                RERA ID
               </h2>
               <div className="flex items-start space-x-6">
                 <div>
@@ -703,11 +733,13 @@ export default function ProjectDetailClient({ project, slug }: ProjectDetailClie
             {/* FAQ Section - Lazy Loaded */}
             <LazySection>
               <div ref={faqRef}>
-                <PropertyFAQ 
-                  faqs={project.faqs?.map(faq => ({
-                    question: faq.question,
-                    answer: faq.answer || ''
-                  })) || []}
+                <PropertyFAQ
+                  faqs={
+                    project.faqs?.map((faq) => ({
+                      question: faq.question,
+                      answer: faq.answer || "",
+                    })) || []
+                  }
                   title="Frequently Asked Questions"
                 />
               </div>
@@ -722,7 +754,7 @@ export default function ProjectDetailClient({ project, slug }: ProjectDetailClie
                 <h3 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-4">
                   {project.title}
                 </h3>
-                
+
                 <div className="space-y-4">
                   {/* Price Information */}
                   <div className="border-b border-gray-200 dark:border-gray-700 pb-4">
@@ -731,7 +763,9 @@ export default function ProjectDetailClient({ project, slug }: ProjectDetailClie
                         <div className="text-3xl font-bold text-blue-600 mb-1">
                           ₹{project.basePrice}
                         </div>
-                        <div className="text-sm text-gray-500">Starting Price</div>
+                        <div className="text-sm text-gray-500">
+                          Starting Price
+                        </div>
                       </div>
                     ) : project.priceRange ? (
                       <div className="text-center">
@@ -751,52 +785,67 @@ export default function ProjectDetailClient({ project, slug }: ProjectDetailClie
 
                   {/* Key Stats */}
                   <div className="grid grid-cols-3 gap-4">
-                    {project.category?.toLowerCase() === 'residential' ? (
+                    {project.category?.toLowerCase() === "residential" ? (
                       // Residential Project Stats
                       <>
                         <div>
                           <div className="text-2xl font-bold text-gray-900 dark:text-white">
-                            {project.landArea || '2.5 '} <span className="text-sm text-blue-500">Acres</span>
+                            {project.landArea || "2.5 "}{" "}
+                            <span className="text-sm text-blue-500">Acres</span>
                           </div>
-                          <div className="text-sm text-red-500 font-semibold">Land Area</div>
+                          <div className="text-sm text-red-500 font-semibold">
+                            Land Area
+                          </div>
                         </div>
                         <div>
                           <div className="text-2xl font-bold text-black">
-                            {project.numberOfTowers || Math.max(1, Math.ceil(project.units.length / 50))}
+                            {project.numberOfTowers ||
+                              Math.max(1, Math.ceil(project.units.length / 50))}
                           </div>
-                          <div className="text-sm font-semibold text-green-600">Towers</div>
+                          <div className="text-sm font-semibold text-green-600">
+                            Towers
+                          </div>
                         </div>
                         <div>
                           <div className="text-2xl font-bold text-black">
-                            {project.numberOfApartments || project.units.filter(unit => 
-                              unit.type.toLowerCase().includes('apartment') || 
-                              unit.type.toLowerCase().includes('studio') ||
-                              unit.type.toLowerCase().includes('bhk')
-                            ).length || project.units.length}
+                            {project.numberOfApartments ||
+                              project.units.filter(
+                                (unit) =>
+                                  unit.type
+                                    .toLowerCase()
+                                    .includes("apartment") ||
+                                  unit.type.toLowerCase().includes("studio") ||
+                                  unit.type.toLowerCase().includes("bhk")
+                              ).length ||
+                              project.units.length}
                           </div>
-                          <div className="text-sm font-semibold text-blue-700">Apartments</div>
+                          <div className="text-sm font-semibold text-blue-700">
+                            Apartments
+                          </div>
                         </div>
                       </>
                     ) : (
-                      // Commercial Project Stats (unchanged)
+                      // Commercial Project Stats - Land Area/No. of Floors/Category
                       <>
                         <div>
                           <div className="text-2xl font-bold text-gray-900 dark:text-white">
-                            {project.units.length}
+                            {project.landArea || "N/A"}
                           </div>
-                          <div className="text-sm text-gray-500">Total Units</div>
+                          <div className="text-sm text-gray-500">Land Area</div>
                         </div>
                         <div>
                           <div className="text-2xl font-bold text-green-600">
-                            {project.units.filter(unit => unit.availability === 'AVAILABLE').length}
+                            {project.numberOfFloors || "N/A"}
                           </div>
-                          <div className="text-sm text-gray-500">Available</div>
+                          <div className="text-sm text-gray-500">
+                            No. of Floors
+                          </div>
                         </div>
                         <div>
-                          <div className="text-2xl font-bold text-purple-600">
-                            {project.amenities.length}
+                          <div className="text-lg font-bold text-purple-600">
+                            {project.features || "N/A"}
                           </div>
-                          <div className="text-sm text-gray-500">Amenities</div>
+                          <div className="text-sm text-gray-500">Features</div>
                         </div>
                       </>
                     )}
@@ -804,28 +853,37 @@ export default function ProjectDetailClient({ project, slug }: ProjectDetailClie
 
                   {/* Status Badge */}
                   <div className="flex justify-center">
-                    <span className={`inline-flex px-3 py-1 text-sm font-semibold rounded-full ${
-                      project.status === 'READY' ? 'bg-green-100 text-green-800' :
-                      project.status === 'UNDER_CONSTRUCTION' ? 'bg-yellow-100 text-yellow-800' :
-                      'bg-blue-100 text-blue-800'
-                    }`}>
-                      {project.status.replace('_', ' ')}
+                    <span
+                      className={`inline-flex px-3 py-1 text-sm font-semibold rounded-full ${
+                        project.status === "READY"
+                          ? "bg-green-100 text-green-800"
+                          : project.status === "UNDER_CONSTRUCTION"
+                          ? "bg-yellow-100 text-yellow-800"
+                          : "bg-blue-100 text-blue-800"
+                      }`}
+                    >
+                      {project.status.replace("_", " ")}
                     </span>
                   </div>
 
                   {/* Key Features */}
                   {project.highlights.length > 0 && (
                     <div>
-                      <h4 className="font-semibold text-gray-900 dark:text-white mb-2">Key Features</h4>
+                      <h4 className="font-semibold text-gray-900 dark:text-white mb-2">
+                        Key Features
+                      </h4>
                       <ul className="space-y-1">
-                        {project.highlights.slice(0, 2).map(highlight => (
-                          <li key={highlight.id} className="flex items-center text-sm text-gray-600 dark:text-gray-400">
+                        {project.highlights.slice(0, 2).map((highlight) => (
+                          <li
+                            key={highlight.id}
+                            className="flex items-center text-sm text-gray-600 dark:text-gray-400"
+                          >
                             <span className="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
                             {highlight.label}
                           </li>
                         ))}
                         {project.highlights.length > 2 && (
-                          <button 
+                          <button
                             onClick={() => setShowAllFeatures(true)}
                             className="text-sm text-blue-600 font-medium hover:text-blue-700 transition-colors"
                           >
@@ -848,12 +906,17 @@ export default function ProjectDetailClient({ project, slug }: ProjectDetailClie
                 </p>
 
                 <div className="space-y-3">
-                  <Link 
+                  <Link
                     href="tel:9910007801"
                     ref={callNowButtonRef}
                     className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-medium px-4 py-2 rounded-full transition-all duration-300 transform hover:scale-105 animate-pulse hover:animate-none"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
                       <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
                     </svg>
                     Call Now
@@ -873,86 +936,88 @@ export default function ProjectDetailClient({ project, slug }: ProjectDetailClie
       </div>
 
       {/* Gallery Modal */}
-      {viewAllPhotos && project.galleryImages && project.galleryImages.length > 0 && (
-        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-7xl h-[90vh] flex flex-col overflow-hidden">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                Photo Gallery
-              </h3>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => setViewAllPhotos(false)}
-                  className="px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
-                >
-                  Close
-                </button>
+      {viewAllPhotos &&
+        project.galleryImages &&
+        project.galleryImages.length > 0 && (
+          <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-7xl h-[90vh] flex flex-col overflow-hidden">
+              <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  Photo Gallery
+                </h3>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setViewAllPhotos(false)}
+                    className="px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+                  >
+                    Close
+                  </button>
+                </div>
               </div>
-            </div>
-            <div className="flex-1 grid grid-rows-[1fr_auto]">
-              {/* Large preview */}
-              <div className="relative bg-black">
-                <Image
-                  src={project.galleryImages[activeImageIndex]}
-                  alt={`Photo ${activeImageIndex + 1}`}
-                  fill
-                  className="object-contain"
-                  priority={activeImageIndex === 0}
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
-                />
-                <button
-                  onClick={() => {
-                    setActiveImageIndex(
-                      (activeImageIndex - 1 + project.galleryImages.length) %
-                        project.galleryImages.length
-                    );
-                  }}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full w-10 h-10 flex items-center justify-center"
-                  aria-label="Previous image"
-                >
-                  ‹
-                </button>
-                <button
-                  onClick={() => {
-                    setActiveImageIndex(
-                      (activeImageIndex + 1) % project.galleryImages.length
-                    );
-                  }}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full w-10 h-10 flex items-center justify-center"
-                  aria-label="Next image"
-                >
-                  ›
-                </button>
-              </div>
-              {/* Thumbnails */}
-              <div className="p-4 overflow-x-auto bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
-                <div className="flex gap-3 min-w-full">
-                  {project.galleryImages.map((img, i) => (
-                    <button
-                      key={i}
-                      onClick={() => setActiveImageIndex(i)}
-                      className={`rounded-lg border ${
-                        i === activeImageIndex
-                          ? "border-blue-500"
-                          : "border-gray-200 dark:border-gray-700"
-                      }`}
-                    >
-                      <Image
-                        src={img}
-                        alt={`Thumb ${i + 1}`}
-                        width={96}
-                        height={80}
-                        className="w-24 h-20 object-cover rounded-lg"
-                        sizes="96px"
-                      />
-                    </button>
-                  ))}
+              <div className="flex-1 grid grid-rows-[1fr_auto]">
+                {/* Large preview */}
+                <div className="relative bg-black">
+                  <Image
+                    src={project.galleryImages[activeImageIndex]}
+                    alt={`Photo ${activeImageIndex + 1}`}
+                    fill
+                    className="object-contain"
+                    priority={activeImageIndex === 0}
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
+                  />
+                  <button
+                    onClick={() => {
+                      setActiveImageIndex(
+                        (activeImageIndex - 1 + project.galleryImages.length) %
+                          project.galleryImages.length
+                      );
+                    }}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full w-10 h-10 flex items-center justify-center"
+                    aria-label="Previous image"
+                  >
+                    ‹
+                  </button>
+                  <button
+                    onClick={() => {
+                      setActiveImageIndex(
+                        (activeImageIndex + 1) % project.galleryImages.length
+                      );
+                    }}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full w-10 h-10 flex items-center justify-center"
+                    aria-label="Next image"
+                  >
+                    ›
+                  </button>
+                </div>
+                {/* Thumbnails */}
+                <div className="p-4 overflow-x-auto bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
+                  <div className="flex gap-3 min-w-full">
+                    {project.galleryImages.map((img, i) => (
+                      <button
+                        key={i}
+                        onClick={() => setActiveImageIndex(i)}
+                        className={`rounded-lg border ${
+                          i === activeImageIndex
+                            ? "border-blue-500"
+                            : "border-gray-200 dark:border-gray-700"
+                        }`}
+                      >
+                        <Image
+                          src={img}
+                          alt={`Thumb ${i + 1}`}
+                          width={96}
+                          height={80}
+                          className="w-24 h-20 object-cover rounded-lg"
+                          sizes="96px"
+                        />
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
       {/* Contact Modal */}
       {contactOpen && (
@@ -1003,7 +1068,12 @@ export default function ProjectDetailClient({ project, slug }: ProjectDetailClie
                   href="tel:9910007801"
                   className="w-full bg-yellow-600 hover:bg-green-700 text-white font-medium py-3 rounded-lg text-center flex items-center justify-center gap-2"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
                     <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
                   </svg>
                   Call Now: 9910007801
@@ -1032,9 +1102,14 @@ export default function ProjectDetailClient({ project, slug }: ProjectDetailClie
             <div className="p-6 overflow-y-auto max-h-[60vh]">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {project.highlights.map((highlight, index) => (
-                  <div key={highlight.id} className="flex items-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                  <div
+                    key={highlight.id}
+                    className="flex items-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg"
+                  >
                     <span className="w-3 h-3 bg-blue-500 rounded-full mr-3 flex-shrink-0"></span>
-                    <span className="text-sm text-gray-700 dark:text-gray-300">{highlight.label}</span>
+                    <span className="text-sm text-gray-700 dark:text-gray-300">
+                      {highlight.label}
+                    </span>
                   </div>
                 ))}
               </div>

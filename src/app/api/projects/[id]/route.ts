@@ -236,8 +236,9 @@ async function putProjectHandler(request: NextRequest, { params }: { params: Pro
       title,
       subtitle,
       description,
-      category,
+      features,
       status,
+      category,
       reraId,
       developerName,
       developerLogo,
@@ -275,54 +276,79 @@ async function putProjectHandler(request: NextRequest, { params }: { params: Pro
       landArea,
       numberOfTowers,
       numberOfApartments,
+      // Commercial project specific fields
+      numberOfFloors,
     } = body;
+
+    // Get current project to check category if not provided in update
+    const currentProject = await prisma.project.findUnique({
+      where: { slug: id },
+      select: { category: true }
+    });
+
+    if (!currentProject) {
+      return NextResponse.json({ error: 'Project not found' }, { status: 404 });
+    }
+
+    // Determine the project category (use provided category or existing one)
+    const projectCategory = category || currentProject.category;
+
+    // Prepare update data - only include features for commercial projects
+    const updateData: any = {
+      title: title || undefined,
+      subtitle: subtitle || null,
+      description: description || undefined,
+      status: status || undefined,
+      category: category || undefined,
+      reraId: reraId || null,
+      developerName: developerName || null,
+      developerLogo: developerLogo || null,
+      possessionDate: possessionDate ? new Date(possessionDate) : null,
+      launchDate: launchDate ? new Date(launchDate) : null,
+      address: address || undefined,
+      locality: locality || null,
+      city: city || null,
+      state: state || null,
+      latitude: typeof latitude === 'number' ? latitude : null,
+      longitude: typeof longitude === 'number' ? longitude : null,
+      currency: currency || undefined,
+      featuredImage: featuredImage || undefined,
+      galleryImages: Array.isArray(galleryImages) ? galleryImages : undefined,
+      videoUrl: videoUrl || null,
+      videoUrls: Array.isArray(videoUrls) ? videoUrls : undefined,
+      basePrice: basePrice || null,
+      priceRange: priceRange || null,
+      bannerTitle: bannerTitle || null,
+      bannerSubtitle: bannerSubtitle || null,
+      bannerDescription: bannerDescription || null,
+      aboutTitle: aboutTitle || null,
+      aboutDescription: aboutDescription || null,
+      sitePlanImage: sitePlanImage || null,
+      sitePlanTitle: sitePlanTitle || null,
+      sitePlanDescription: sitePlanDescription || null,
+      minRatePsf: minRatePsf || null,
+      maxRatePsf: maxRatePsf || null,
+      minUnitArea: typeof minUnitArea === 'number' ? minUnitArea : null,
+      maxUnitArea: typeof maxUnitArea === 'number' ? maxUnitArea : null,
+      totalUnits: typeof totalUnits === 'number' ? totalUnits : null,
+      soldUnits: typeof soldUnits === 'number' ? soldUnits : null,
+      availableUnits: typeof availableUnits === 'number' ? availableUnits : null,
+      // Residential project specific fields
+      landArea: landArea || null,
+      numberOfTowers: typeof numberOfTowers === 'number' ? numberOfTowers : null,
+      numberOfApartments: typeof numberOfApartments === 'number' ? numberOfApartments : null,
+      // Commercial project specific fields
+      numberOfFloors: typeof numberOfFloors === 'number' ? numberOfFloors : null,
+    };
+
+    // Only include features for commercial projects
+    if (projectCategory === 'COMMERCIAL') {
+      updateData.features = features || null;
+    }
 
     const updated = await prisma.project.update({
       where: { slug: id },
-      data: {
-        title: title || undefined,
-        subtitle: subtitle || null,
-        description: description || undefined,
-        category: category || undefined,
-        status: status || undefined,
-        reraId: reraId || null,
-        developerName: developerName || null,
-        developerLogo: developerLogo || null,
-        possessionDate: possessionDate ? new Date(possessionDate) : null,
-        launchDate: launchDate ? new Date(launchDate) : null,
-        address: address || undefined,
-        locality: locality || null,
-        city: city || null,
-        state: state || null,
-        latitude: typeof latitude === 'number' ? latitude : null,
-        longitude: typeof longitude === 'number' ? longitude : null,
-        currency: currency || undefined,
-        featuredImage: featuredImage || undefined,
-        galleryImages: Array.isArray(galleryImages) ? galleryImages : undefined,
-        videoUrl: videoUrl || null,
-        videoUrls: Array.isArray(videoUrls) ? videoUrls : undefined,
-        basePrice: basePrice || null,
-        priceRange: priceRange || null,
-        bannerTitle: bannerTitle || null,
-        bannerSubtitle: bannerSubtitle || null,
-        bannerDescription: bannerDescription || null,
-        aboutTitle: aboutTitle || null,
-        aboutDescription: aboutDescription || null,
-        sitePlanImage: sitePlanImage || null,
-        sitePlanTitle: sitePlanTitle || null,
-        sitePlanDescription: sitePlanDescription || null,
-        minRatePsf: minRatePsf || null,
-        maxRatePsf: maxRatePsf || null,
-        minUnitArea: typeof minUnitArea === 'number' ? minUnitArea : null,
-        maxUnitArea: typeof maxUnitArea === 'number' ? maxUnitArea : null,
-        totalUnits: typeof totalUnits === 'number' ? totalUnits : null,
-        soldUnits: typeof soldUnits === 'number' ? soldUnits : null,
-        availableUnits: typeof availableUnits === 'number' ? availableUnits : null,
-        // Residential project specific fields
-        landArea: landArea || null,
-        numberOfTowers: typeof numberOfTowers === 'number' ? numberOfTowers : null,
-        numberOfApartments: typeof numberOfApartments === 'number' ? numberOfApartments : null,
-      },
+      data: updateData,
     });
     
     // Clear cache for this project

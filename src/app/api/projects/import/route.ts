@@ -78,6 +78,11 @@ export async function POST(request: NextRequest) {
           totalUnits: typeof project.totalUnits === 'number' ? project.totalUnits : null,
           soldUnits: typeof project.soldUnits === 'number' ? project.soldUnits : null,
           availableUnits: typeof project.availableUnits === 'number' ? project.availableUnits : null,
+          // Commercial project specific fields
+          numberOfFloors: typeof project.numberOfFloors === 'number' ? project.numberOfFloors : null,
+          numberOfTowers: typeof project.numberOfTowers === 'number' ? project.numberOfTowers : null,
+          numberOfApartments: typeof project.numberOfApartments === 'number' ? project.numberOfApartments : null,
+          features: project.features || null,
         },
       });
 

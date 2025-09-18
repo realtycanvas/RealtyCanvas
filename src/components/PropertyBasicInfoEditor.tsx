@@ -33,6 +33,10 @@ interface PropertyFormData {
   area: number;
   bannerTitle: string;
   aboutTitle: string;
+  // Commercial project fields
+  landArea?: string;
+  numberOfFloors?: number;
+  category?: string;
 }
 
 interface PropertyBasicInfoEditorProps {
@@ -45,7 +49,7 @@ export default function PropertyBasicInfoEditor({ formData, onFormDataChange }: 
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    const newValue = (name === 'price' || name === 'beds' || name === 'baths' || name === 'area') 
+    const newValue = (name === 'price' || name === 'beds' || name === 'baths' || name === 'area' || name === 'numberOfFloors') 
       ? parseInt(value) || 0 
       : value;
     
@@ -75,6 +79,13 @@ export default function PropertyBasicInfoEditor({ formData, onFormDataChange }: 
     { code: 'CAD', symbol: 'C$', name: 'Canadian Dollar' },
     { code: 'JPY', symbol: '¥', name: 'Japanese Yen' },
     { code: 'CNY', symbol: '¥', name: 'Chinese Yuan' }
+  ];
+
+  const projectCategories = [
+    { value: 'COMMERCIAL', label: 'Commercial', icon: '🏢' },
+    { value: 'RESIDENTIAL', label: 'Residential', icon: '🏠' },
+    { value: 'MIXED_USE', label: 'Mixed Use', icon: '🏬' },
+    { value: 'RETAIL_ONLY', label: 'Retail Only', icon: '🛍️' }
   ];
 
   const testPropertyData = {
@@ -488,6 +499,81 @@ export default function PropertyBasicInfoEditor({ formData, onFormDataChange }: 
                   <strong>Property Summary:</strong> {' '}
                   {formData.beds === 0 ? 'Studio' : `${formData.beds} bed`}
                   {formData.beds > 1 ? 's' : ''} • {formData.baths} bath{formData.baths > 1 ? 's' : ''} • {formData.area > 0 ? `${formData.area.toLocaleString()} sq ft` : 'Area TBD'}
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Commercial Project Details */}
+        <div className="col-span-2">
+          <div className="bg-teal-50 dark:bg-teal-900/20 p-4 rounded-lg border border-teal-200 dark:border-teal-800">
+            <h4 className="font-semibold text-teal-900 dark:text-teal-100 mb-4 flex items-center">
+              <HomeIcon className="w-5 h-5 mr-2" />
+              🏢 Commercial Project Details
+            </h4>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div>
+                <label htmlFor="landArea" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Land Area
+                </label>
+                <input
+                  type="text"
+                  id="landArea"
+                  name="landArea"
+                  value={formData.landArea || ''}
+                  onChange={handleChange}
+                  placeholder="e.g., 2.5 Acres, 10,000 sq ft"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500 dark:bg-gray-800 dark:text-white"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="numberOfFloors" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  No. of Floors
+                </label>
+                <input
+                  type="number"
+                  id="numberOfFloors"
+                  name="numberOfFloors"
+                  value={formData.numberOfFloors || ''}
+                  onChange={handleChange}
+                  placeholder="e.g., 5"
+                  min="1"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500 dark:bg-gray-800 dark:text-white"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="category" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Category
+                </label>
+                <select
+                  id="category"
+                  name="category"
+                  value={formData.category || 'COMMERCIAL'}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500 dark:bg-gray-800 dark:text-white"
+                >
+                  {projectCategories.map((category) => (
+                    <option key={category.value} value={category.value}>
+                      {category.icon} {category.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {(formData.landArea || formData.numberOfFloors || formData.category) && (
+              <div className="mt-4 p-3 bg-teal-100 dark:bg-teal-800/30 rounded-lg">
+                <p className="text-sm text-teal-800 dark:text-teal-200">
+                  <strong>Commercial Project Summary:</strong> {' '}
+                  {formData.landArea && `${formData.landArea} land area`}
+                  {formData.landArea && formData.numberOfFloors && ' • '}
+                  {formData.numberOfFloors && `${formData.numberOfFloors} floors`}
+                  {(formData.landArea || formData.numberOfFloors) && formData.category && ' • '}
+                  {formData.category && `${projectCategories.find(c => c.value === formData.category)?.label || formData.category} project`}
                 </p>
               </div>
             )}

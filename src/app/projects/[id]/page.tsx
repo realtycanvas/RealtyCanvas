@@ -169,6 +169,12 @@ type Project = {
   nearbyPoints: NearbyPoint[];
   videoUrl?: string | null;
   videoUrls?: string[];
+  // Commercial project specific fields
+  landArea?: string | null;
+  numberOfTowers?: number | null;
+  numberOfApartments?: number | null;
+  numberOfFloors?: number | null;
+  features?: string | null;
 };
 
 // Server component that fetches data and renders the client component
@@ -218,6 +224,8 @@ async function getProjectData(slug: string) {
         landArea: true,
         numberOfTowers: true,
         numberOfApartments: true,
+        numberOfFloors: true,
+        features: true,
         createdAt: true,
         updatedAt: true,
         units: {

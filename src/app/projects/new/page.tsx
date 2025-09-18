@@ -132,7 +132,7 @@ function UnifiedProjectFormContent() {
     bannerDescription: '',
     aboutTitle: '',
     aboutDescription: '',
-    category: 'COMMERCIAL' as 'COMMERCIAL' | 'RESIDENTIAL' | 'MIXED_USE',
+    category: 'COMMERCIAL' as 'COMMERCIAL' | 'RESIDENTIAL' | 'MIXED_USE' | 'RETAIL_ONLY',
     status: 'PLANNED' as 'PLANNED' | 'UNDER_CONSTRUCTION' | 'READY',
     basePrice: '',
     priceRange: '',
@@ -144,6 +144,9 @@ function UnifiedProjectFormContent() {
     landArea: '',
     numberOfTowers: '',
     numberOfApartments: '',
+    // Commercial project specific fields
+    numberOfFloors: '',
+    features: '',
   });
 
   // Video state
@@ -255,6 +258,9 @@ function UnifiedProjectFormContent() {
         landArea: projectData.landArea || '',
         numberOfTowers: projectData.numberOfTowers?.toString() || '',
         numberOfApartments: projectData.numberOfApartments?.toString() || '',
+        // Commercial project specific fields
+        numberOfFloors: projectData.numberOfFloors?.toString() || '',
+        features: projectData.features || '',
       });
 
       // Load video URLs
@@ -413,6 +419,9 @@ function UnifiedProjectFormContent() {
             landArea: project.landArea || null,
             numberOfTowers: project.numberOfTowers ? parseInt(project.numberOfTowers) : null,
             numberOfApartments: project.numberOfApartments ? parseInt(project.numberOfApartments) : null,
+            // Add commercial project specific fields
+            numberOfFloors: project.numberOfFloors ? parseInt(project.numberOfFloors) : null,
+            features: project.features || null,
           };
 
           // Update project basic info without recreating nested data
@@ -619,6 +628,9 @@ function UnifiedProjectFormContent() {
         landArea: projectData.landArea || '',
         numberOfTowers: projectData.numberOfTowers?.toString() || '',
         numberOfApartments: projectData.numberOfApartments?.toString() || '',
+        // Commercial project specific fields
+        numberOfFloors: projectData.numberOfFloors?.toString() || '',
+        features: projectData.features || '',
       });
 
       // Import video URLs
@@ -826,6 +838,9 @@ function UnifiedProjectFormContent() {
         landArea: project.landArea || null,
         numberOfTowers: project.numberOfTowers ? parseInt(project.numberOfTowers) : null,
         numberOfApartments: project.numberOfApartments ? parseInt(project.numberOfApartments) : null,
+        // Add commercial project specific fields
+        numberOfFloors: project.numberOfFloors ? parseInt(project.numberOfFloors) : null,
+        features: project.features || null,
       };
 
       let projectResult;
@@ -1489,26 +1504,7 @@ function UnifiedProjectFormContent() {
         </div>
       </div>
 
-            {/* Project Category Selection */}
-            <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg border border-yellow-200 dark:border-yellow-800">
-              <h4 className="text-sm font-medium text-gray-900 dark:text-white mb-3">Project Category</h4>
-              <div className="grid grid-cols-3 gap-3">
-                {['COMMERCIAL', 'RESIDENTIAL', 'MIXED_USE'].map((cat) => (
-                  <button
-                    key={cat}
-                    type="button"
-                    onClick={() => setProject(prev => ({ ...prev, category: cat as any }))}
-                    className={`p-3 rounded-lg border-2 text-sm font-medium transition-all ${
-                      project.category === cat
-                        ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
-                        : 'border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500'
-                    }`}
-                  >
-                    {cat.replace('_', ' ')}
-                  </button>
-                ))}
-              </div>
-            </div>
+
 
             {/* Project Status Selection */}
             <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
@@ -1674,6 +1670,37 @@ function UnifiedProjectFormContent() {
                     className="border border-gray-300 dark:border-gray-600 rounded-lg p-4 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     value={project.numberOfApartments}
                     onChange={e => setProject(prev => ({ ...prev, numberOfApartments: e.target.value }))}
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Commercial Project Specific Fields */}
+            {(project.category === 'COMMERCIAL' || project.category === 'MIXED_USE' || project.category === 'RETAIL_ONLY') && (
+              <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
+                <h4 className="text-sm font-medium text-green-900 dark:text-green-100 mb-4">
+                  🏢 Commercial Project Details
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <input
+                    placeholder="Land Area (e.g., 2.5 Acres, 10,000 sq ft)"
+                    className="border border-gray-300 dark:border-gray-600 rounded-lg p-4 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    value={project.landArea}
+                    onChange={e => setProject(prev => ({ ...prev, landArea: e.target.value }))}
+                  />
+                  <input
+                    type="number"
+                    placeholder="Number of Floors"
+                    className="border border-gray-300 dark:border-gray-600 rounded-lg p-4 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    value={project.numberOfFloors}
+                    onChange={e => setProject(prev => ({ ...prev, numberOfFloors: e.target.value }))}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Features (e.g., Hybrid Mall, Premium Retail, Office Complex)"
+                    className="border border-gray-300 dark:border-gray-600 rounded-lg p-4 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    value={project.features}
+                    onChange={e => setProject(prev => ({ ...prev, features: e.target.value }))}
                   />
                 </div>
               </div>
@@ -2538,7 +2565,7 @@ function UnifiedProjectFormContent() {
   }
 
   return (
-      <div className="pt-16">
+      <div className="pt-32 pb-20">
         {/* Header with JSON Import/Export */}
         <div className="max-w-4xl mx-auto px-4 mb-8">
           <div className="flex items-center justify-between">

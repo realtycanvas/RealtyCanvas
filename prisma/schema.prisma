@@ -86,12 +86,13 @@ model Project {
   totalUnits          Int?
   soldUnits           Int?
   availableUnits      Int?
-  // Residential project specific fields
-  landArea            String?                 // e.g., "2.5 Acres", "10,000 sq ft"
-  numberOfTowers      Int?
-  numberOfApartments  Int?
   isTrending          Boolean                 @default(false)
   totalClicks         Int                     @default(0)
+  landArea            String?
+  numberOfApartments  Int?
+  numberOfTowers      Int?
+  numberOfFloors      Int?
+  features            String?
   amenities           Amenity[]
   anchors             AnchorTenant[]
   configurations      ConfigurationType[]
