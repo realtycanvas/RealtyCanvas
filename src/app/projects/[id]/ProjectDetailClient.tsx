@@ -958,14 +958,14 @@ export default function ProjectDetailClient({
                     <ShareIcon className="w-4 h-4 mr-2" />
                     Share
                   </button>
-                  <div className="mt-2">
+                  {/* <div className="mt-2">
                     <JsonImportExport 
                       onImport={() => {}} 
                       exportData={getFormattedExportData()} 
                       className="w-full" 
                       title="Project JSON Manager"
                     />
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>
