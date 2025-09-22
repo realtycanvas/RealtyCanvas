@@ -5,6 +5,7 @@ import Navbar from "../components/Navbar";
 import { ThemeProvider } from "../contexts/ThemeContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import Footer from "@/components/Footer";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 // Import client components directly (dynamic imports causing issues)
 import ScrollToTop from '@/components/ScrollToTop';
 import Chatbot from '@/components/Chatbot';
@@ -66,6 +67,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        {/* Viewport meta tag for proper mobile rendering */}
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        
         {/* Critical font preloading for faster LCP */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -126,6 +130,7 @@ export default function RootLayout({
       <body
         className={`${geistSansVariable} ${geistMonoVariable} antialiased min-h-screen bg-gray-50 dark:bg-gray-900`}
       >
+        <SpeedInsights/>
         <ThemeProvider>
           <AuthProvider>
             <ClientLayout>
