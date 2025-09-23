@@ -81,15 +81,14 @@ export default function HeroSection() {
           </div>
           
           {/* Search Bar */}
-          <div className="w-full max-w-sm sm:max-w-2xl md:max-w-3xl lg:max-w-4xl mx-auto mt-3 sm:mt-4 md:mt-6 lg:mt-8 px-2 sm:px-0">
+          <div className="w-full max-w-sm sm:max-w-2xl md:max-w-xl mx-auto mt-3 sm:mt-4 md:mt-6 lg:mt-8 px-2 sm:px-0">
             <ProjectSearchBar
               onSearch={(filters) => {
                 // Navigate to projects page with filters
                 const params = new URLSearchParams({
                   category: filters.category,
                   status: filters.status,
-                  minPrice: filters.priceRange.min.toString(),
-                  maxPrice: filters.priceRange.max.toString(),
+                
                 });
                 window.location.href = `/projects?${params.toString()}`;
               }}

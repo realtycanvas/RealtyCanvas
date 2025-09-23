@@ -159,7 +159,7 @@ export default function ProjectSearchBar({ onSearch, className = '', compact = f
         </div>
 
         {/* Price Range Dropdown */}
-        <div>
+        {/* <div>
           <label className="text-xs font-medium text-muted-foreground mb-1 block">Budget</label>
           <Menu as="div" className="relative">
             <Menu.Button className="w-full flex items-center justify-between pl-8 pr-2 h-8 border border-input rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-ring text-xs">
@@ -196,7 +196,7 @@ export default function ProjectSearchBar({ onSearch, className = '', compact = f
               </Menu.Items>
             </Transition>
           </Menu>
-        </div>
+        </div> */}
 
         {/* Search Button */}
         <button
@@ -213,7 +213,7 @@ export default function ProjectSearchBar({ onSearch, className = '', compact = f
   return (
     <div className={`bg-white/20 dark:bg-gray-800/20 backdrop-blur-md rounded-xl sm:rounded-2xl shadow-xl p-3 sm:p-4 border border-white/30 dark:border-gray-700/30 ${className}`}>
       {/* Search Inputs */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 items-end">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 items-end">
 
         {/* Project Category Dropdown */}
         <div className="space-y-1 sm:space-y-2">
@@ -296,7 +296,7 @@ export default function ProjectSearchBar({ onSearch, className = '', compact = f
         </div>
 
         {/* Price Range Dropdown */}
-        <div className="space-y-1 sm:space-y-2">
+        {/* <div className="space-y-1 sm:space-y-2">
           <label className="text-xs font-semibold text-white">Budget</label>
           <Menu as="div" className="relative">
             <Menu.Button className="w-full flex items-center justify-between pl-8 sm:pl-10 pr-3 sm:pr-4 py-1.5 sm:py-2 text-xs sm:text-sm border border-gray-200 dark:border-gray-600 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-brand-primary focus:border-transparent bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white transition-all duration-200">
@@ -333,7 +333,7 @@ export default function ProjectSearchBar({ onSearch, className = '', compact = f
               </Menu.Items>
             </Transition>
           </Menu>
-        </div>
+        </div> */}
       </div>
 
       {/* Search Button */}
