@@ -88,7 +88,6 @@ export default function HeroSection() {
                 const params = new URLSearchParams({
                   category: filters.category,
                   status: filters.status,
-                
                 });
                 window.location.href = `/projects?${params.toString()}`;
               }}
