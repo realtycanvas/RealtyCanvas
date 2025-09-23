@@ -861,7 +861,7 @@ export default function ProjectDetailClient({
                           <div className="text-2xl font-bold text-red-500 dark:text-white">
                             {project.landArea || "N/A"}
                           </div>
-                          <div className="text-sm text-gray-500">Land Area</div>
+                          <div className="text-sm text-gray-500">Acres</div>
                         </div>
                         <div>
                           <div className="text-2xl font-bold text-green-600">
