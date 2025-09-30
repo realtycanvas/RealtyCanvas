@@ -164,12 +164,20 @@ function ProjectsContent() {
   // Load projects only when needed (for ISR optimization)
   useEffect(() => {
     const fetchProjects = async () => {
-      // Only fetch if no search query is active
-      if (searchQuery) return;
-
       try {
         setLoading(true);
-        const res = await fetch(`/api/projects?page=${currentPage}&limit=6`, {
+        
+        // Build query parameters
+        const params = new URLSearchParams();
+        params.set("page", currentPage.toString());
+        params.set("limit", "6");
+        
+        // Add search query if present
+        if (searchQuery && searchQuery.trim()) {
+          params.set("search", searchQuery.trim());
+        }
+
+        const res = await fetch(`/api/projects?${params.toString()}`, {
           cache: "no-store",
           headers: {
             "Cache-Control": "no-cache, no-store, must-revalidate",
@@ -183,7 +191,8 @@ function ProjectsContent() {
         }
 
         const data = await res.json();
-        console.log("ProjISR witsPa ehpoe daalidatioa;per od   ")  // Handnext: { revalidetew 60 }, // Revalidaae eveey 60 sdcondsesponse format
+        console.log("Fetched projects:", data);
+        
         if (data.projects && Array.isArray(data.projects)) {
           setProjects(data.projects);
           setFilteredProjects(data.projects);
@@ -218,8 +227,8 @@ function ProjectsContent() {
   // Fetch filtered projects from database when filters change
   useEffect(() => {
     const fetchFilteredProjects = async () => {
-      // Skip if search is active (search handles its own filtering)
-      if (searchQuery) return;
+      // Skip if search is active (search is handled by main fetchProjects)
+      if (searchQuery && searchQuery.trim()) return;
 
       // Check if any filters are active
       const hasActiveFilters =
@@ -230,50 +239,8 @@ function ProjectsContent() {
         filters.priceRange.min > 0 ||
         filters.priceRange.max < 10000000;
 
-      // If no filters are active, trigger regular project loading to show all projects
+      // If no filters are active, let the main fetchProjects handle it
       if (!hasActiveFilters) {
-        // Fetch all projects when no filters are active
-        try {
-          setLoading(true);
-          const res = await fetch(`/api/projects?page=${currentPage}&limit=6`, {
-            cache: "no-store",
-            headers: {
-              "Cache-Control": "no-cache, no-store, must-revalidate",
-              Pragma: "no-cache",
-              Expires: "0",
-            },
-          });
-
-          if (!res.ok) {
-            throw new Error(`HTTP error! status: ${res.status}`);
-          }
-
-          const data = await res.json();
-          if (data.projects && Array.isArray(data.projects)) {
-            setProjects(data.projects);
-            setFilteredProjects(data.projects);
-            setPagination(data.pagination);
-            setHasConnectionError(false);
-          } else {
-            console.error("API did not return expected format:", data);
-            setProjects([]);
-            setFilteredProjects([]);
-          }
-        } catch (error) {
-          console.error("Failed to fetch all projects:", error);
-          setProjects([]);
-          setFilteredProjects([]);
-          if (
-            error instanceof Error &&
-            (error.message.includes("fetch") ||
-              error.message.includes("network") ||
-              error.message.includes("connection"))
-          ) {
-            setHasConnectionError(true);
-          }
-        } finally {
-          setLoading(false);
-        }
         return;
       }
 
@@ -349,29 +316,12 @@ function ProjectsContent() {
     };
 
     fetchFilteredProjects();
-  }, [filters, currentPage, searchQuery]); // Added filters and removed projects dependency
+  }, [filters, currentPage]); // Removed searchQuery from dependencies
 
   // Simple client-side filtering for search results (keeps search fast)
   useEffect(() => {
-    if (!searchQuery || !projects.length) {
-      if (!searchQuery) setFilteredProjects(projects);
-      return;
-    }
-
-    // Apply search filtering on loaded projects (fast client-side)
-    let filtered = [...projects];
-
-    const query = searchQuery.toLowerCase();
-    filtered = filtered.filter(
-      (project) =>
-        project.title.toLowerCase().includes(query) ||
-        (project.subtitle && project.subtitle.toLowerCase().includes(query)) ||
-        project.address.toLowerCase().includes(query) ||
-        (project.city && project.city.toLowerCase().includes(query)) ||
-        (project.state && project.state.toLowerCase().includes(query))
-    );
-
-    setFilteredProjects(filtered);
+    // This effect is no longer needed since search is handled server-side
+    // Keeping it empty to avoid breaking existing functionality
   }, [projects, searchQuery]);
 
   // Add a refresh button function
