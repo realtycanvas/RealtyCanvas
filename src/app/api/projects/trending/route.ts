@@ -1,8 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { prisma, ensureDatabaseConnection } from '@/lib/prisma';
 
 export async function GET(request: NextRequest) {
   try {
+    // Ensure database connection is available
+    const isConnected = await ensureDatabaseConnection(3);
+    if (!isConnected) {
+      console.error('Database connection failed for trending projects');
+      // Return fallback data when database is unavailable
+      return NextResponse.json([]);
+    }
+
     const { searchParams } = new URL(request.url);
     const limit = parseInt(searchParams.get('limit') || '6');
     const days = parseInt(searchParams.get('days') || '7'); // Default to last 7 days

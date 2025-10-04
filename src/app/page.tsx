@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/prisma';
+import { prisma, ensureDatabaseConnection } from '@/lib/prisma';
 // Homepage Components
 import {
   HeroSection,
@@ -34,6 +34,16 @@ type Project = {
 // Server-side data fetching with ISR
 async function getHomePageData() {
   try {
+    // Check database connection first
+    const isConnected = await ensureDatabaseConnection(3);
+    if (!isConnected) {
+      console.error('Database connection failed for homepage data');
+      return {
+        featuredProjects: [],
+        trendingProjects: []
+      };
+    }
+
     // Featured project titles to keep
     const featuredProjectTitles = [
       'Elan The Presidential',
