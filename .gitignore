@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+/sanity/node_modules
 /.pnp
 .pnp.*
 .yarn/*
@@ -39,5 +40,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Sanity
+/sanity/.sanity
+/sanity/dist
+/sanity/node_modules
+/sanity/package-lock.json
 
 /src/generated/prisma
