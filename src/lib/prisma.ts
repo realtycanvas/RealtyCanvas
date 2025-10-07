@@ -1,13 +1,11 @@
 import { PrismaClient } from '@prisma/client';
 
-// PrismaClient is attached to the `global` object in development to prevent
-// exhausting your database connection limit.
-const globalForPrisma = global as unknown as { prisma: PrismaClient };
+// Import connection monitor
+import './connection-monitor';
 
-// Ensure DATABASE_URL is available
-if (!process.env.DATABASE_URL) {
-  throw new Error('DATABASE_URL environment variable is not set');
-}
+const globalForPrisma = globalThis as unknown as {
+  prisma: PrismaClient | undefined;
+};
 
 // Enhanced Prisma configuration with connection pooling and timeouts
 export const prisma =

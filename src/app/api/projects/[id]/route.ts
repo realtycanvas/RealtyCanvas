@@ -1,35 +1,72 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { withDatabaseRetry, periodicHealthCheck } from '@/middleware/database';
+import { withDatabaseConnection, periodicHealthCheck } from '@/middleware/database';
+import { revalidatePath } from 'next/cache';
 
-// In-memory cache for frequently accessed projects
-const projectCache = new Map<string, { data: any; timestamp: number; etag: string }>();
-const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+// Enhanced in-memory cache with better TTL management
+const projectCache = new Map<string, { 
+  data: any; 
+  timestamp: number; 
+  etag: string;
+  // Add cache metadata
+  accessCount: number;
+  lastAccessed: number;
+}>();
+
+const CACHE_TTL = 2 * 60 * 1000; // Reduced to 2 minutes for fresher data
+const MAX_CACHE_SIZE = 100; // Limit cache size to prevent memory issues
+
+// Cache cleanup function
+function cleanupCache() {
+  const now = Date.now();
+  const entries = Array.from(projectCache.entries());
+  
+  // Remove expired entries
+  entries.forEach(([key, value]) => {
+    if (now - value.timestamp > CACHE_TTL) {
+      projectCache.delete(key);
+    }
+  });
+  
+  // If still too large, remove least recently accessed
+  if (projectCache.size > MAX_CACHE_SIZE) {
+    const sortedEntries = entries
+      .sort((a, b) => a[1].lastAccessed - b[1].lastAccessed)
+      .slice(0, projectCache.size - MAX_CACHE_SIZE);
+    
+    sortedEntries.forEach(([key]) => projectCache.delete(key));
+  }
+}
 
 // Helper function to get cached project
 function getCachedProject(id: string) {
   const cached = projectCache.get(id);
   if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+    // Update access metadata
+    cached.accessCount++;
+    cached.lastAccessed = Date.now();
     return cached;
+  }
+  
+  // Remove expired cache entry
+  if (cached) {
+    projectCache.delete(id);
   }
   return null;
 }
 
 // Helper function to set cached project
 function setCachedProject(id: string, data: any, etag: string) {
+  // Run cleanup before adding new entry
+  cleanupCache();
+  
   projectCache.set(id, {
     data,
     timestamp: Date.now(),
-    etag
+    etag,
+    accessCount: 1,
+    lastAccessed: Date.now()
   });
-  
-  // Clean up old cache entries
-  if (projectCache.size > 100) {
-    const oldestKey = projectCache.keys().next().value;
-    if (oldestKey) {
-      projectCache.delete(oldestKey);
-    }
-  }
 }
 
 async function getProjectHandler(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -386,6 +423,7 @@ async function deleteProjectHandler(_req: NextRequest, { params }: { params: Pro
 }
 
 // Export wrapped handlers with database retry logic
-export const GET = withDatabaseRetry(getProjectHandler);
-export const PUT = withDatabaseRetry(putProjectHandler);
-export const DELETE = withDatabaseRetry(deleteProjectHandler);
+// Export handlers with proper database connection middleware
+export const GET = withDatabaseConnection(getProjectHandler);
+export const PUT = withDatabaseConnection(putProjectHandler);
+export const DELETE = withDatabaseConnection(deleteProjectHandler);
