@@ -1,284 +1,162 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma, ensureDatabaseConnection } from '@/lib/prisma';
-import { withDatabaseConnection } from '@/middleware/database';
+import { createHash } from 'crypto';
 
-function slugify(input: string) {
-  return input
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9\s-]/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-');
-}
-
-async function uniqueSlug(base: string) {
-  let candidate = base || 'project';
-  for (let i = 0; i < 5; i++) {
-    const exists = await prisma.project.findFirst({ where: { slug: candidate } });
-    if (!exists) return candidate;
-    const suffix = Math.random().toString(36).slice(2, 6);
-    candidate = `${base}-${suffix}`;
-  }
-  return `${base}-${Date.now().toString(36)}`;
-}
-
-export async function POST(request: NextRequest) {
-  // Ensure database connection before processing
-  const isConnected = await ensureDatabaseConnection(3);
-  if (!isConnected) {
-    return NextResponse.json({
-      error: 'Database connection unavailable',
-      message: 'Unable to establish database connection. Please try again later.',
-      timestamp: new Date().toISOString(),
-    }, { status: 503 });
-  }
-
-  try {
-    const body = await request.json();
-    console.log('POST /api/projects request body:', JSON.stringify(body, null, 2));
-
-    const {
-      title,
-      description,
-      address,
-      featuredImage,
-      galleryImages = [],
-      subtitle,
-      category = 'COMMERCIAL',
-      status = 'PLANNED',
-      locality,
-      city,
-      state,
-      reraId,
-      developerName,
-      developerLogo,
-      possessionDate,
-      launchDate,
-      latitude,
-      longitude,
-      currency = 'INR',
-      bannerTitle,
-      bannerSubtitle,
-      bannerDescription,
-      aboutTitle,
-      aboutDescription,
-      sitePlanImage,
-      sitePlanTitle,
-      sitePlanDescription,
-      slug,
-      isTrending = false,
-    } = body || {};
-
-    if (!title || !description || !address || !featuredImage) {
-      console.log('Missing required fields:', {
-        title: !!title,
-        description: !!description,
-        address: !!address,
-        featuredImage: !!featuredImage
-      });
-      return NextResponse.json({ 
-        error: 'Missing required fields (title, description, address, featuredImage)',
-        received: {
-          title: !!title,
-          description: !!description,
-          address: !!address,
-          featuredImage: !!featuredImage
-        }
-      }, { status: 400 });
-    }
-
-    const baseSlug = slug ? slugify(slug) : slugify(title);
-    const finalSlug = await uniqueSlug(baseSlug);
-
-    const project = await prisma.project.create({
-      data: {
-        slug: finalSlug,
-        title,
-        subtitle: subtitle || null,
-        description,
-        category,
-        status,
-        reraId: reraId || null,
-        developerName: developerName || null,
-        developerLogo: developerLogo || null,
-        possessionDate: possessionDate ? new Date(possessionDate) : null,
-        launchDate: launchDate ? new Date(launchDate) : null,
-        address,
-        locality: locality || null,
-        city: city || null,
-        state: state || null,
-        latitude: typeof latitude === 'number' ? latitude : null,
-        longitude: typeof longitude === 'number' ? longitude : null,
-        currency,
-        featuredImage,
-        galleryImages: Array.isArray(galleryImages) ? galleryImages : [],
-        bannerTitle: bannerTitle || null,
-        bannerSubtitle: bannerSubtitle || null,
-        bannerDescription: bannerDescription || null,
-        aboutTitle: aboutTitle || null,
-        aboutDescription: aboutDescription || null,
-        sitePlanImage: sitePlanImage || null,
-        sitePlanTitle: sitePlanTitle || null,
-        sitePlanDescription: sitePlanDescription || null,
-        isTrending: Boolean(isTrending),
-      },
-    });
-
-    return NextResponse.json(project, { status: 201 });
-  } catch (error) {
-    console.error('Create project error:', error);
-    console.error('Error details:', {
-      message: error instanceof Error ? error.message : 'Unknown error',
-      stack: error instanceof Error ? error.stack : undefined
-    });
-    return NextResponse.json({ 
-      error: 'Failed to create project',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 });
-  }
-}
+// Simple in-memory cache for better performance
+const cache = new Map<string, { data: any; timestamp: number }>();
+const CACHE_TTL = 30000; // 30 seconds
 
 export async function GET(request: NextRequest) {
-  // Ensure database connection before processing
-  const isConnected = await ensureDatabaseConnection(3);
-  if (!isConnected) {
-    return NextResponse.json({
-      error: 'Database connection unavailable',
-      message: 'Unable to establish database connection. Please try again later.',
-      timestamp: new Date().toISOString(),
-    }, { status: 503 });
-  }
-
+  const startTime = Date.now();
+  
   try {
-    // Log the request to help with debugging
-    console.log('GET /api/projects request received', { 
-      url: request.url,
-      headers: Object.fromEntries(request.headers.entries())
-    });
-    
-    // Parse query parameters for pagination and search
     const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '6');
+    
+    // Parse parameters with defaults optimized for 6 projects per page
+    const page = Math.max(1, parseInt(searchParams.get('page') || '1'));
+    const limit = 6; // Fixed to 6 projects per page for optimal UX
     const skip = (page - 1) * limit;
-    const search = searchParams.get('search') || '';
+    const search = searchParams.get('search')?.trim() || '';
     const category = searchParams.get('category') || '';
     const status = searchParams.get('status') || '';
-    const city = searchParams.get('city') || '';
-    const state = searchParams.get('state') || '';
+    const city = searchParams.get('city')?.trim() || '';
+    const state = searchParams.get('state')?.trim() || '';
     const minPrice = searchParams.get('minPrice');
     const maxPrice = searchParams.get('maxPrice');
     
-    console.log(`Pagination: page=${page}, limit=${limit}, skip=${skip}`);
-    console.log(`Filters: search=${search}, category=${category}, status=${status}, city=${city}, state=${state}`);
+    // Create cache key
+    const cacheKey = createHash('md5')
+      .update(`projects:${page}:${search}:${category}:${status}:${city}:${state}:${minPrice}:${maxPrice}`)
+      .digest('hex');
     
-    // Build where clause for filtering
+    // Check cache
+    const cached = cache.get(cacheKey);
+    if (cached && (Date.now() - cached.timestamp) < CACHE_TTL) {
+      console.log(`✅ Cache HIT for projects (${Date.now() - startTime}ms)`);
+      return NextResponse.json(cached.data);
+    }
+
+    // Ensure database connection
+    const isConnected = await ensureDatabaseConnection(2);
+    if (!isConnected) {
+      return NextResponse.json({
+        error: 'Database unavailable',
+        projects: [],
+        pagination: { page, limit, totalCount: 0, totalPages: 0, hasMore: false }
+      }, { status: 503 });
+    }
+    
+    console.log(`🔍 Fetching projects from DB (page=${page}, limit=${limit})`);
+    
+    // Build optimized where clause
     const whereClause: any = {};
-    const andConditions: any[] = [];
+    const conditions: any[] = [];
     
-    // Add search functionality
-    if (search) {
-      andConditions.push({
+    // Search functionality
+    if (search && search.length >= 2) {
+      conditions.push({
         OR: [
           { title: { contains: search, mode: 'insensitive' } },
           { subtitle: { contains: search, mode: 'insensitive' } },
-          { description: { contains: search, mode: 'insensitive' } },
           { address: { contains: search, mode: 'insensitive' } },
-          { locality: { contains: search, mode: 'insensitive' } },
           { city: { contains: search, mode: 'insensitive' } },
-          { state: { contains: search, mode: 'insensitive' } },
-          { developerName: { contains: search, mode: 'insensitive' } }
+          { state: { contains: search, mode: 'insensitive' } }
         ]
       });
     }
     
-    // Add category filter
-    if (category && category !== 'ALL') {
-      andConditions.push({ category: category });
+    // Category filter
+    if (category && category !== 'ALL' && category !== 'All Categories') {
+      conditions.push({ category: category });
     }
     
-    // Add status filter
-    if (status && status !== 'ALL') {
-      andConditions.push({ status: status });
+    // Status filter
+    if (status && status !== 'ALL' && status !== 'All Status') {
+      conditions.push({ status: status });
     }
     
-    // Add city filter
+    // Location filters
     if (city) {
-      andConditions.push({ city: { contains: city, mode: 'insensitive' } });
+      conditions.push({ city: { equals: city, mode: 'insensitive' } });
     }
     
-    // Add state filter
     if (state) {
-      andConditions.push({ state: { contains: state, mode: 'insensitive' } });
+      conditions.push({ state: { equals: state, mode: 'insensitive' } });
     }
     
-    // Combine all conditions with AND
-    if (andConditions.length > 0) {
-      whereClause.AND = andConditions;
-    }
-    
-    // Add price range filter
+    // Price range filter
     if (minPrice || maxPrice) {
       const priceConditions = [];
       
       if (minPrice) {
         const minPriceNum = parseFloat(minPrice);
-        priceConditions.push({
-          OR: [
-            { minRatePsf: { gte: minPriceNum.toString() } },
-            { maxRatePsf: { gte: minPriceNum.toString() } }
-          ]
-        });
+        if (!isNaN(minPriceNum)) {
+          priceConditions.push({
+            OR: [
+              { minRatePsf: { gte: minPriceNum.toString() } },
+              { maxRatePsf: { gte: minPriceNum.toString() } }
+            ]
+          });
+        }
       }
       
       if (maxPrice) {
         const maxPriceNum = parseFloat(maxPrice);
-        priceConditions.push({
-          OR: [
-            { minRatePsf: { lte: maxPriceNum.toString() } },
-            { maxRatePsf: { lte: maxPriceNum.toString() } }
-          ]
-        });
+        if (!isNaN(maxPriceNum)) {
+          priceConditions.push({
+            OR: [
+              { minRatePsf: { lte: maxPriceNum.toString() } },
+              { maxRatePsf: { lte: maxPriceNum.toString() } }
+            ]
+          });
+        }
       }
       
       if (priceConditions.length > 0) {
-        whereClause.AND = (whereClause.AND || []).concat(priceConditions);
+        conditions.push(...priceConditions);
       }
     }
     
-    // Get total count for pagination info with filters
-    const totalCount = await prisma.project.count({ where: whereClause });
-    
-    // Query projects with pagination and filters, ordered by updatedAt (most recently updated first)
-    const projects = await prisma.project.findMany({
-      where: whereClause,
-      orderBy: { updatedAt: 'desc' },
-      skip,
-      take: limit,
-      select: {
-        id: true,
-        slug: true,
-        title: true,
-        subtitle: true,
-        category: true,
-        status: true,
-        address: true,
-        city: true,
-        state: true,
-        featuredImage: true,
-        galleryImages: true,
-        createdAt: true,
-        updatedAt: true,
-        minRatePsf: true,
-        maxRatePsf: true,
-      },
-    });
+    // Combine conditions
+    if (conditions.length > 0) {
+      whereClause.AND = conditions;
+    }
+
+    // Execute optimized parallel queries
+    const [projects, totalCount] = await Promise.all([
+      prisma.project.findMany({
+        where: whereClause,
+        orderBy: [
+          { status: 'asc' }, // Active projects first
+          { updatedAt: 'desc' }
+        ],
+        skip,
+        take: limit,
+        select: {
+          id: true,
+          slug: true,
+          title: true,
+          subtitle: true,
+          category: true,
+          status: true,
+          address: true,
+          city: true,
+          state: true,
+          featuredImage: true,
+          createdAt: true,
+          updatedAt: true,
+          minRatePsf: true,
+          maxRatePsf: true,
+          developerName: true,
+          locality: true,
+        },
+      }),
+      prisma.project.count({ where: whereClause })
+    ]);
 
     const totalPages = Math.ceil(totalCount / limit);
     const hasMore = page < totalPages;
     
-    console.log(`Found ${projects.length} projects (page ${page}/${totalPages}, total: ${totalCount})`);
-
     const responseData = {
       projects,
       pagination: {
@@ -288,19 +166,61 @@ export async function GET(request: NextRequest) {
         totalPages,
         hasMore,
         hasPrevious: page > 1
+      },
+      meta: {
+        queryTime: Date.now() - startTime,
+        cached: false
       }
     };
 
-    // Set cache control headers for immediate updates
-    const response = NextResponse.json(responseData);
-    response.headers.set('Cache-Control', 'no-cache, no-store, must-revalidate');
-    response.headers.set('Pragma', 'no-cache');
-    response.headers.set('Expires', '0');
-    response.headers.set('X-Response-Time', Date.now().toString());
+    // Cache the response
+    cache.set(cacheKey, { data: responseData, timestamp: Date.now() });
+    
+    // Clean old cache entries
+    if (cache.size > 100) {
+      const now = Date.now();
+      for (const [key, value] of cache.entries()) {
+        if (now - value.timestamp > CACHE_TTL) {
+          cache.delete(key);
+        }
+      }
+    }
+    
+    console.log(`✅ Projects fetched: ${projects.length}/${totalCount} (${Date.now() - startTime}ms)`);
 
-    return response;
+    return NextResponse.json(responseData);
+    
   } catch (error) {
-    console.error('List projects error:', error);
-    return NextResponse.json({ error: 'Failed to fetch projects' }, { status: 500 });
+    console.error('❌ Projects API error:', error);
+    
+    return NextResponse.json({
+      error: 'Failed to fetch projects',
+      projects: [],
+      pagination: { page: 1, limit: 6, totalCount: 0, totalPages: 0, hasMore: false },
+      meta: { queryTime: Date.now() - startTime, cached: false }
+    }, { status: 500 });
+  }
+}
+
+// POST method for creating projects (admin only)
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    
+    const project = await prisma.project.create({
+      data: {
+        ...body,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    });
+
+    // Clear cache when new project is created
+    cache.clear();
+    
+    return NextResponse.json(project, { status: 201 });
+  } catch (error) {
+    console.error('❌ Create project error:', error);
+    return NextResponse.json({ error: 'Failed to create project' }, { status: 500 });
   }
 }

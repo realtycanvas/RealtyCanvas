@@ -70,9 +70,11 @@ function setCachedProject(id: string, data: any, etag: string) {
 }
 
 async function getProjectHandler(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const startTime = Date.now();
+  
   try {
     const { id } = await params;
-    console.log(`Fetching project with ID: ${id}`);
+    console.log(`🔍 Fetching project with ID: ${id}`);
     
     // Check if ID is valid
     if (!id) {
@@ -85,7 +87,7 @@ async function getProjectHandler(req: NextRequest, { params }: { params: Promise
     // Check in-memory cache first
     const cached = getCachedProject(id);
     if (cached) {
-      console.log(`Serving project from cache: ${id}`);
+      console.log(`✅ Cache HIT for project: ${id} (${Date.now() - startTime}ms)`);
       
       // Check if client has cached version
       if (ifNoneMatch === cached.etag) {
@@ -94,7 +96,8 @@ async function getProjectHandler(req: NextRequest, { params }: { params: Promise
           headers: {
             'Cache-Control': 'public, max-age=300, stale-while-revalidate=600',
             'ETag': cached.etag,
-            'X-Cache': 'HIT-304'
+            'X-Cache': 'HIT-304',
+            'X-Response-Time': (Date.now() - startTime).toString()
           }
         });
       }
@@ -104,18 +107,51 @@ async function getProjectHandler(req: NextRequest, { params }: { params: Promise
           'Cache-Control': 'public, max-age=300, stale-while-revalidate=600',
           'ETag': cached.etag,
           'X-Cache': 'HIT',
-          'X-Response-Time': Date.now().toString()
+          'X-Response-Time': (Date.now() - startTime).toString()
         }
       });
     }
     
+    console.log(`🔍 Cache MISS for project: ${id} - fetching from DB`);
+    
     // Perform health check only if not in cache
     await periodicHealthCheck();
     
-    // Optimized query using slug with better performance and reduced data transfer
+    // Optimized query with selective data loading for better performance
     const project = await prisma.project.findUnique({
       where: { slug: id },
-      include: {
+      select: {
+        // Core project data
+        id: true,
+        slug: true,
+        title: true,
+        subtitle: true,
+        description: true,
+        category: true,
+        status: true,
+        address: true,
+        locality: true,
+        city: true,
+        state: true,
+        // pincode: true,
+        
+        // Media (optimized)
+        featuredImage: true,
+        galleryImages: true,
+        
+        // Pricing
+        minRatePsf: true,
+        maxRatePsf: true,
+        
+        // Developer info
+        developerName: true,
+        developerLogo: true,
+        
+        // Timestamps
+        createdAt: true,
+        updatedAt: true,
+        
+        // Related data with optimized selects
         units: {
           select: {
             id: true,
@@ -129,16 +165,19 @@ async function getProjectHandler(req: NextRequest, { params }: { params: Promise
             notes: true
           },
           orderBy: [{ floor: 'asc' }, { unitNumber: 'asc' }],
-          take: 20 // Reduced for faster initial load
+          take: 15 // Reduced for faster initial load
         },
+        
         highlights: {
           select: {
             id: true,
             label: true,
             icon: true
           },
-          orderBy: { id: 'asc' }
+          orderBy: { id: 'asc' },
+          take: 10 // Limit highlights
         },
+        
         amenities: {
           select: {
             id: true,
@@ -146,16 +185,20 @@ async function getProjectHandler(req: NextRequest, { params }: { params: Promise
             name: true,
             details: true
           },
-          orderBy: [{ category: 'asc' }, { name: 'asc' }]
+          orderBy: [{ category: 'asc' }, { name: 'asc' }],
+          take: 20 // Limit amenities
         },
+        
         faqs: {
           select: {
             id: true,
             question: true,
             answer: true
           },
-          orderBy: { id: 'asc' }
+          orderBy: { id: 'asc' },
+          take: 10 // Limit FAQs for initial load
         },
+        
         floorPlans: {
           select: {
             id: true,
@@ -165,8 +208,10 @@ async function getProjectHandler(req: NextRequest, { params }: { params: Promise
             details: true,
             sortOrder: true
           },
-          orderBy: [{ sortOrder: 'asc' }, { level: 'asc' }]
+          orderBy: [{ sortOrder: 'asc' }, { level: 'asc' }],
+          take: 8 // Limit floor plans
         },
+        
         anchors: {
           select: {
             id: true,
@@ -176,8 +221,10 @@ async function getProjectHandler(req: NextRequest, { params }: { params: Promise
             areaSqFt: true,
             status: true
           },
-          orderBy: [{ status: 'asc' }, { name: 'asc' }]
+          orderBy: [{ status: 'asc' }, { name: 'asc' }],
+          take: 15 // Limit anchors
         },
+        
         pricingPlans: {
           select: {
             id: true,
@@ -188,8 +235,10 @@ async function getProjectHandler(req: NextRequest, { params }: { params: Promise
             charges: true,
             notes: true
           },
-          orderBy: { id: 'asc' }
+          orderBy: { id: 'asc' },
+          take: 5 // Limit pricing plans
         },
+        
         pricingTable: {
           select: {
             id: true,
@@ -201,8 +250,10 @@ async function getProjectHandler(req: NextRequest, { params }: { params: Promise
             floorNumbers: true,
             features: true
           },
-          orderBy: { id: 'asc' }
+          orderBy: { id: 'asc' },
+          take: 10 // Limit pricing table entries
         },
+        
         nearbyPoints: {
           select: {
             id: true,
@@ -211,14 +262,19 @@ async function getProjectHandler(req: NextRequest, { params }: { params: Promise
             distanceKm: true,
             travelTimeMin: true
           },
-          orderBy: [{ type: 'asc' }, { distanceKm: 'asc' }]
+          orderBy: [{ type: 'asc' }, { distanceKm: 'asc' }],
+          take: 20 // Limit nearby points
         }
       },
     });
     
     if (!project) {
-      console.log(`Project with ID/slug ${id} not found`);
-      return NextResponse.json({ error: 'Project not found' }, { status: 404 });
+      console.log(`❌ Project with ID/slug ${id} not found`);
+      return NextResponse.json({ 
+        error: 'Project not found',
+        message: 'The requested project could not be found.',
+        timestamp: new Date().toISOString()
+      }, { status: 404 });
     }
 
     // Generate ETag based on project data
@@ -234,24 +290,35 @@ async function getProjectHandler(req: NextRequest, { params }: { params: Promise
         headers: {
           'Cache-Control': 'public, max-age=300, stale-while-revalidate=600',
           'ETag': etag,
-          'X-Cache': 'MISS-304'
+          'X-Cache': 'MISS-304',
+          'X-Response-Time': (Date.now() - startTime).toString()
         }
       });
     }
 
-    console.log(`Successfully fetched project: ${project.title}`);
+    console.log(`✅ Project fetched: ${project.title} (${Date.now() - startTime}ms)`);
     
     return NextResponse.json(project, {
       headers: {
         'Cache-Control': 'public, max-age=300, stale-while-revalidate=600',
         'ETag': etag,
         'X-Cache': 'MISS',
-        'X-Response-Time': Date.now().toString()
+        'X-Response-Time': (Date.now() - startTime).toString(),
+        'X-Project-Id': project.id,
+        // Add compression hint
+        'Content-Encoding': 'gzip'
       }
     });
   } catch (error) {
-    console.error('Get project error:', error);
-    return NextResponse.json({ error: 'Failed to fetch project' }, { status: 500 });
+    console.error('❌ Get project error:', error);
+    const errorResponse = {
+      error: 'Failed to fetch project',
+      message: 'An error occurred while fetching the project. Please try again.',
+      timestamp: new Date().toISOString(),
+      queryTime: Date.now() - startTime
+    };
+    
+    return NextResponse.json(errorResponse, { status: 500 });
   }
 }
 
