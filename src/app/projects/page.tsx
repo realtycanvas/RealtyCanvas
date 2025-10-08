@@ -288,9 +288,11 @@ export default function ProjectsPage() {
   // State
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchLoading, setSearchLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
 
   // Initialize filters from URL
   const [filters, setFilters] = useState<Filters>(() => ({
@@ -324,8 +326,8 @@ export default function ProjectsPage() {
       params.set("page", pagination.page.toString());
       params.set("limit", "6");
 
-      if (searchQuery.trim()) {
-        params.set("search", searchQuery.trim());
+      if (debouncedSearchQuery.trim()) {
+        params.set("search", debouncedSearchQuery.trim());
       }
 
       if (filters.category !== "ALL") {
@@ -382,8 +384,9 @@ export default function ProjectsPage() {
       setProjects([]);
     } finally {
       setLoading(false);
+      setSearchLoading(false);
     }
-  }, [pagination.page, searchQuery, filters]);
+  }, [pagination.page, debouncedSearchQuery, filters]);
 
   // Update URL when filters change
   const updateURL = useCallback(() => {
@@ -437,6 +440,7 @@ export default function ProjectsPage() {
       priceRange: { min: 0, max: 10000000 }
     });
     setSearchQuery("");
+    setDebouncedSearchQuery("");
     setPagination(prev => ({ ...prev, page: 1 }));
   }, []);
 
@@ -449,14 +453,28 @@ export default function ProjectsPage() {
   // Handle search
   const handleSearch = useCallback((e: React.FormEvent) => {
     e.preventDefault();
+    setSearchLoading(true);
+    setDebouncedSearchQuery(searchQuery);
     setPagination(prev => ({ ...prev, page: 1 }));
-    fetchProjects();
-  }, [fetchProjects]);
+  }, [searchQuery]);
 
   // Effects
   useEffect(() => {
     fetchProjects();
   }, [fetchProjects]);
+
+  // Debounce search query
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (searchQuery !== debouncedSearchQuery) {
+        setSearchLoading(true);
+        setDebouncedSearchQuery(searchQuery);
+        setPagination(prev => ({ ...prev, page: 1 }));
+      }
+    }, 500); // 500ms debounce delay
+
+    return () => clearTimeout(timer);
+  }, [searchQuery, debouncedSearchQuery]);
 
   useEffect(() => {
     updateURL();
@@ -528,9 +546,14 @@ export default function ProjectsPage() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search projects..."
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-full pl-10 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 />
                 <MagnifyingGlassIcon className="absolute left-3 bottom-4 w-4 h-4 text-gray-400" />
+                {searchLoading && (
+                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                  </div>
+                )}
               </div>
             </form>
 
@@ -579,6 +602,11 @@ export default function ProjectsPage() {
         {/* Content */}
         {loading || authLoading ? (
           <ProjectSkeleton viewMode={viewMode} />
+        ) : searchLoading ? (
+          <div className="flex flex-col items-center justify-center py-16">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
+            <p className="text-gray-600 dark:text-gray-400">Searching projects...</p>
+          </div>
         ) : error ? (
           <div className="text-center py-12">
             <div className="text-red-600 dark:text-red-400 mb-4">
