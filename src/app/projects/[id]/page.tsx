@@ -19,8 +19,8 @@ type Unit = {
 };
 
 // Generate dynamic metadata for Open Graph sharing
-export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
-  const { id } = params;
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
   
   try {
     const project = await getProjectData(id);
@@ -181,8 +181,8 @@ type Project = {
 };
 
 // Server component that fetches data and renders the client component
-export default async function ProjectDetailPage({ params }: { params: { id: string } }) {
-  const { id: slug } = params;
+export default async function ProjectDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id: slug } = await params;
   
   // Fetch project data on the server
   const project = await getProjectData(slug);
