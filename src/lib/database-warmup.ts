@@ -58,10 +58,22 @@ export class DatabaseWarmup {
       this.isWarmedUp = true;
       const duration = Date.now() - startTime;
       console.log(`✅ Database warmup completed in ${duration}ms`);
+
+      // IMPORTANT: Disconnect warmup client so it doesn't hold a connection
+      try {
+        await warmupPrisma.$disconnect();
+        console.log('🔌 Warmup Prisma client disconnected');
+      } catch (disconnectError) {
+        console.warn('Warmup disconnect warning:', disconnectError);
+      }
       return true;
 
     } catch (error) {
       console.error('❌ Database warmup failed:', error);
+      // Ensure we disconnect on failure as well
+      try {
+        await warmupPrisma.$disconnect();
+      } catch {}
       this.warmupPromise = null; // Reset so it can be retried
       return false;
     }
