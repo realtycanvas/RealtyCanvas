@@ -378,6 +378,4 @@ export async function generateStaticParams() {
   }
 }
 
-// Enable static generation with revalidation
-export const dynamic = 'force-dynamic'; // Force dynamic rendering for fresh data
-export const revalidate = 0; // Disable caching for immediate updates
+// Enable static generation with ISR (revalidate is set at the top of the file)
