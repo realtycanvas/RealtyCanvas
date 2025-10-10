@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
+import React, { useState, memo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { HeartIcon, MapPinIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
@@ -28,7 +28,7 @@ type ProjectCardProps = {
   project: Project;
 };
 
-export default function ProjectCard({ project }: ProjectCardProps) {
+function ProjectCardComponent({ project }: ProjectCardProps) {
   const [isFavorited, setIsFavorited] = useState(false);
   const { isAdmin } = useAuth();
 
@@ -122,14 +122,16 @@ export default function ProjectCard({ project }: ProjectCardProps) {
   };
 
   return (
-    <Link href={`/projects/${project.slug}`} onClick={handleProjectClick} className="block h-full no-underline hover:no-underline focus:no-underline">
+    <Link href={`/projects/${project.slug}`} prefetch className="block h-full no-underline hover:no-underline focus:no-underline" onClick={handleProjectClick}>
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300 h-full group cursor-pointer flex flex-col">
         {/* Image Section */}
         <div className="relative h-48 overflow-hidden flex-shrink-0">
-          <img
+          <Image
             src={project.featuredImage || '/placeholder-property.svg'}
             alt={project.title}
-           
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            priority={false}
             className="object-cover group-hover:scale-105 transition-transform duration-300"
           />
           
@@ -212,3 +214,6 @@ export default function ProjectCard({ project }: ProjectCardProps) {
     </Link>
   );
 }
+
+const ProjectCard = memo(ProjectCardComponent);
+export default ProjectCard;

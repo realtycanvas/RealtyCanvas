@@ -69,11 +69,11 @@ function setCachedProject(id: string, data: any, etag: string) {
   });
 }
 
-async function getProjectHandler(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+async function getProjectHandler(req: NextRequest, { params }: { params: { id: string } }) {
   const startTime = Date.now();
   
   try {
-    const { id } = await params;
+    const { id } = params;
     console.log(`🔍 Fetching project with ID: ${id}`);
     
     // Check if ID is valid
@@ -322,9 +322,9 @@ async function getProjectHandler(req: NextRequest, { params }: { params: Promise
   }
 }
 
-async function putProjectHandler(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+async function putProjectHandler(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const { id } = await params;
+    const { id } = params;
     const body = await request.json();
 
     if (body.slug) {
@@ -478,9 +478,9 @@ async function putProjectHandler(request: NextRequest, { params }: { params: Pro
   }
 }
 
-async function deleteProjectHandler(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+async function deleteProjectHandler(_req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const { id } = await params;
+    const { id } = params;
     await prisma.project.delete({ where: { slug: id } });
     return NextResponse.json({ message: 'Project deleted' });
   } catch (error) {

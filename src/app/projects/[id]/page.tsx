@@ -3,6 +3,9 @@ import { Metadata } from "next";
 import { prisma } from '@/lib/prisma';
 import ProjectDetailClient from '@/app/projects/[id]/ProjectDetailClient';
 
+// Revalidate project detail pages every 5 minutes (ISR)
+export const revalidate = 300;
+
 type Unit = {
   id: string;
   unitNumber: string;

@@ -5,7 +5,7 @@ import { createHash } from 'crypto';
 
 // Simple in-memory cache for better performance
 const cache = new Map<string, { data: any; timestamp: number }>();
-const CACHE_TTL = 30000; // 30 seconds
+const CACHE_TTL = 90000; // 90 seconds
 
 export async function GET(request: NextRequest) {
   const startTime = Date.now();
@@ -41,11 +41,28 @@ export async function GET(request: NextRequest) {
       .update(`projects:${page}:${search}:${category}:${status}:${city}:${state}:${minPrice}:${maxPrice}`)
       .digest('hex');
     
-    // Check cache
+    // Check cache with ETag support
     const cached = cache.get(cacheKey);
+    const ifNoneMatch = request.headers.get('if-none-match');
     if (cached && (Date.now() - cached.timestamp) < CACHE_TTL) {
       console.log(`✅ Cache HIT for projects (${Date.now() - startTime}ms)`);
-      return NextResponse.json(cached.data);
+      const etag = createHash('md5').update(JSON.stringify(cached.data)).digest('hex');
+      if (ifNoneMatch === etag) {
+        return new NextResponse(null, {
+          status: 304,
+          headers: {
+            'Cache-Control': 'public, max-age=60, stale-while-revalidate=120',
+            'ETag': etag,
+          },
+        });
+      }
+      return NextResponse.json(cached.data, {
+        headers: {
+          'Cache-Control': 'public, max-age=60, stale-while-revalidate=120',
+          'ETag': etag,
+          'X-Cache': 'HIT'
+        }
+      });
     }
 
     // Ensure database connection
@@ -200,7 +217,14 @@ export async function GET(request: NextRequest) {
     
     console.log(`✅ Projects fetched: ${projects.length}/${totalCount} (${Date.now() - startTime}ms)`);
 
-    return NextResponse.json(responseData);
+    const etag = createHash('md5').update(JSON.stringify(responseData)).digest('hex');
+    return NextResponse.json(responseData, {
+      headers: {
+        'Cache-Control': 'public, max-age=60, stale-while-revalidate=120',
+        'ETag': etag,
+        'X-Cache': 'MISS'
+      }
+    });
     
   } catch (error) {
     console.error('❌ Projects API error:', error);
