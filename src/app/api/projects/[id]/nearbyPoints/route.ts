@@ -4,8 +4,16 @@ import { prisma } from '@/lib/prisma';
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
+    // Map slug to actual project ID
+    const project = await prisma.project.findUnique({
+      where: { slug: id },
+      select: { id: true },
+    });
+    if (!project) {
+      return NextResponse.json({ error: 'Project not found' }, { status: 404 });
+    }
     const nearbyPoints = await prisma.nearbyPoint.findMany({
-      where: { projectId: id }
+      where: { projectId: project.id }
     });
     return NextResponse.json(nearbyPoints);
   } catch (error) {

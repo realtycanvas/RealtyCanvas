@@ -1,4 +1,5 @@
 import { prisma, ensureDatabaseConnection } from '@/lib/prisma';
+import { FeaturedDiagnostics } from '@/components/homepage';
 // Homepage Components
 import {
   HeroSection,
@@ -31,6 +32,11 @@ type Project = {
   totalClicks?: number;
 };
 
+type FeaturedDiagnosticsData = {
+  missingSlugs: string[];
+  mismatchedTitles: { slug: string; title: string }[];
+};
+
 // Server-side data fetching with ISR
 async function getHomePageData() {
   try {
@@ -40,11 +46,13 @@ async function getHomePageData() {
       console.error('Database connection failed for homepage data');
       return {
         featuredProjects: [],
-        trendingProjects: []
+        trendingProjects: [],
+        // Always return diagnostics to keep a consistent shape
+        diagnostics: { missingSlugs: [], mismatchedTitles: [] },
       };
     }
 
-    // Featured project titles to keep
+    // Featured project titles to keep (editorial curation)
     const featuredProjectTitles = [
       'Elan The Presidential',
       'Elan The Emperor',
@@ -56,23 +64,25 @@ async function getHomePageData() {
       'SPJ Vedatam',
       'AIPL Joy District'
     ];
+    // Prefer selecting by curated slugs to avoid title mismatches
+    const curatedSlugs = [
+      'elan-the-presidential',
+      'elan-the-emperor',
+      'dlf-privana-north',
+      'dlf-privana-south',
+      'dlf-privana-west',
+      'whiteland-westin-residences',
+      'tarc-ishva-gurgaon',
+      'spj-vedatam',
+      'aipl-joy-district',
+    ];
     
-    // Fetch specified featured projects first by title OR fallback flags
-    console.log("Fetching featured projects:", featuredProjectTitles);
+    // Fetch curated featured projects by slug first
+    console.log('Fetching curated featured projects by slug:', curatedSlugs);
     let featuredProjectsRaw = await prisma.project.findMany({
-      where: {
-        OR: [
-          { title: { in: featuredProjectTitles } },
-          // Fallback: projects marked trending or with recent updates
-          { isTrending: true },
-        ],
-      },
-      orderBy: [
-        // Prioritize explicit titles, then trending, then recent updates
-        { isTrending: 'desc' },
-        { updatedAt: 'desc' },
-      ],
-      take: 8,
+      where: { slug: { in: curatedSlugs } },
+      orderBy: [{ updatedAt: 'desc' }],
+      take: 12,
       select: {
         id: true,
         slug: true,
@@ -92,9 +102,18 @@ async function getHomePageData() {
       },
     });
 
-    // If still empty (titles mismatch), hard fallback to latest projects
+    // Diagnostics for admin: missing curated slugs and title mismatches
+    const missingSlugs = curatedSlugs.filter(
+      (slug) => !featuredProjectsRaw.some((p) => p.slug === slug)
+    );
+    const mismatchedTitles = featuredProjectsRaw
+      .filter((p) => !featuredProjectTitles.includes(p.title))
+      .map((p) => ({ slug: p.slug, title: p.title }));
+
+    // If still empty (no curated matches), fallback to trending/recents
     if (featuredProjectsRaw.length === 0) {
       featuredProjectsRaw = await prisma.project.findMany({
+        where: { OR: [{ isTrending: true }] },
         orderBy: [{ updatedAt: 'desc' }],
         take: 8,
         select: {
@@ -169,15 +188,18 @@ async function getHomePageData() {
       ? trendingProjects 
       : featuredProjects.slice(0, 6);
 
+    const diagnostics: FeaturedDiagnosticsData = { missingSlugs, mismatchedTitles };
     return {
       featuredProjects,
       trendingProjects: finalTrendingProjects,
+      diagnostics,
     };
   } catch (error) {
     console.error('Error fetching homepage data:', error);
     return {
       featuredProjects: [],
       trendingProjects: [],
+      diagnostics: { missingSlugs: [], mismatchedTitles: [] },
     };
   }
 }
@@ -185,7 +207,7 @@ async function getHomePageData() {
 // Server component with ISR
 export default async function Home() {
   // Fetch data on the server with ISR
-  const { featuredProjects, trendingProjects } = await getHomePageData();
+  const { featuredProjects, trendingProjects, diagnostics } = await getHomePageData();
 
   return (
     <main className="flex min-h-screen flex-col pt-16 bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
@@ -194,6 +216,9 @@ export default async function Home() {
 
       {/* Benefits Section */}
       <BenefitsSection />
+
+      {/* Admin-only diagnostics banner */}
+      <FeaturedDiagnostics diagnostics={diagnostics} />
 
       {/* Featured Projects Section - Server-side rendered with ISR */}
       <FeaturedProjectsSection projects={featuredProjects} loading={false} />

@@ -304,9 +304,7 @@ async function getProjectHandler(req: NextRequest, { params }: { params: { id: s
         'ETag': etag,
         'X-Cache': 'MISS',
         'X-Response-Time': (Date.now() - startTime).toString(),
-        'X-Project-Id': project.id,
-        // Add compression hint
-        'Content-Encoding': 'gzip'
+        'X-Project-Id': project.id
       }
     });
   } catch (error) {

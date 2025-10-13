@@ -18,12 +18,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Define admin emails - you can move this to environment variables
-  const adminEmails = [
-    'sudhanshu@digitallynext.com'
-  ];
+  // Define admin emails via environment variable fallback
+  const adminEmailsEnv = (process.env.NEXT_PUBLIC_ADMIN_EMAILS || 'sudhanshu@digitallynext.com')
+    .split(',')
+    .map(e => e.trim().toLowerCase())
+    .filter(Boolean);
 
-  const isAdmin = user ? adminEmails.includes(user.email || '') : false;
+  // Also allow Supabase user_metadata role flag
+  const isAdmin = !!(user && (
+    adminEmailsEnv.includes((user.email || '').toLowerCase()) ||
+    (user.user_metadata && (user.user_metadata.role === 'admin' || user.user_metadata.isAdmin === true))
+  ));
 
   useEffect(() => {
     // Get initial session
