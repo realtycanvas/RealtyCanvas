@@ -47,7 +47,6 @@ async function getHomePageData() {
       return {
         featuredProjects: [],
         trendingProjects: [],
-        // Always return diagnostics to keep a consistent shape
         diagnostics: { missingSlugs: [], mismatchedTitles: [] },
       };
     }
