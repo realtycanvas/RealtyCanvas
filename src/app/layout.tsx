@@ -155,7 +155,7 @@ export default function RootLayout({
                 "target": `${baseUrl}/projects?q={search_term_string}`,
                 "query-input": "required name=search_term_string"
               }
-            })
+            }, null, 2)
           }}
         />
 
@@ -169,7 +169,7 @@ export default function RootLayout({
               "url": baseUrl,
               "name": "Realty Canvas",
               "logo": `${baseUrl}/logo.webp`
-            })
+            }, null, 2)
           }}
         />
       </head>
