@@ -64,6 +64,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.realtycanvas.in";
   return (
     <html lang="en">
       <head>
@@ -139,6 +140,38 @@ export default function RootLayout({
             }
           `
         }} />
+
+        {/* Global JSON-LD: WebSite with SearchAction */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              "url": baseUrl,
+              "name": "Realty Canvas",
+              "potentialAction": {
+                "@type": "SearchAction",
+                "target": `${baseUrl}/projects?q={search_term_string}`,
+                "query-input": "required name=search_term_string"
+              }
+            })
+          }}
+        />
+
+        {/* Global JSON-LD: Organization */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              "url": baseUrl,
+              "name": "Realty Canvas",
+              "logo": `${baseUrl}/logo.webp`
+            })
+          }}
+        />
       </head>
       <body
         className={`${geistSansVariable} ${geistMonoVariable} antialiased min-h-screen bg-gray-50 dark:bg-gray-900`}

@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { prisma, ensureDatabaseConnection } from '@/lib/prisma';
 import { FeaturedDiagnostics } from '@/components/homepage';
 // Homepage Components
@@ -35,6 +36,40 @@ type Project = {
 type FeaturedDiagnosticsData = {
   missingSlugs: string[];
   mismatchedTitles: { slug: string; title: string }[];
+};
+
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.realtycanvas.in';
+
+export const metadata: Metadata = {
+  title: 'Realty Canvas | Premium Real Estate Projects in Gurgaon',
+  description: 'Discover premium residential and commercial projects across Gurgaon. Verified properties, quick process, transparent pricing, and post-purchase support for maximum ROI.',
+  alternates: { canonical: `${baseUrl}/` },
+  openGraph: {
+    title: 'Realty Canvas | Premium Real Estate Projects in Gurgaon',
+    description: 'Discover premium residential and commercial projects across Gurgaon. Verified properties, quick process, transparent pricing, and post-purchase support for maximum ROI.',
+    url: `${baseUrl}/`,
+    siteName: 'Realty Canvas',
+    images: [
+      {
+        url: `${baseUrl}/logo.webp`,
+        width: 1200,
+        height: 630,
+        alt: 'Realty Canvas'
+      }
+    ],
+    type: 'website',
+    locale: 'en_US'
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Realty Canvas | Premium Real Estate Projects in Gurgaon',
+    description: 'Discover premium residential and commercial projects across Gurgaon.',
+    images: [`${baseUrl}/logo.webp`]
+  },
+  robots: {
+    index: true,
+    follow: true
+  }
 };
 
 // Server-side data fetching with ISR

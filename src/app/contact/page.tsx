@@ -1,4 +1,5 @@
 'use client';
+import JsonLd from '@/components/SEO/JsonLd';
 
 import { useState } from 'react';
 import Link from 'next/link';
@@ -15,6 +16,7 @@ import {
 import { FaFacebookF, FaInstagram, FaLinkedinIn, FaYoutube } from 'react-icons/fa';
 
 export default function ContactPage() {
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.realtycanvas.in';
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -57,6 +59,41 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-900 pt-20">
+      <JsonLd data={{
+        "@context": "https://schema.org",
+        "@type": "ContactPage",
+        "url": `${baseUrl}/contact`,
+        "name": "Contact Realty Canvas",
+        "isPartOf": {"@type": "WebSite", "url": baseUrl}
+      }} />
+      <JsonLd data={{
+        "@context": "https://schema.org",
+        "@type": "RealEstateAgent",
+        "name": "Realty Canvas",
+        "url": baseUrl,
+        "telephone": "+91 9910007801",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "1st Floor, Landmark Cyber Park, Sector 67",
+          "addressLocality": "Gurugram",
+          "postalCode": "122102",
+          "addressRegion": "Haryana",
+          "addressCountry": "IN"
+        },
+        "openingHoursSpecification": [
+          {"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"], "opens": "09:00", "closes": "19:00"},
+          {"@type": "OpeningHoursSpecification", "dayOfWeek": ["Saturday"], "opens": "10:00", "closes": "18:00"},
+          {"@type": "OpeningHoursSpecification", "dayOfWeek": ["Sunday"], "opens": "11:00", "closes": "18:00"}
+        ]
+      }} />
+      <JsonLd data={{
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {"@type": "ListItem", "position": 1, "name": "Home", "item": baseUrl},
+          {"@type": "ListItem", "position": 2, "name": "Contact", "item": `${baseUrl}/contact`}
+        ]
+      }} />
       {/* Hero Section */}
       <div className="bg-white dark:bg-gray-800 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
