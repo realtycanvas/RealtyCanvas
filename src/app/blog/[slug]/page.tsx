@@ -6,6 +6,7 @@ import { Calendar, Clock, User, ArrowLeft, Share2, BookOpen } from "lucide-react
 import { getBlogPostBySlug, getRelatedBlogPosts } from "@/lib/sanity/queries"
 import { urlFor } from "@/lib/sanity/client"
 import BlogPostCard from "@/components/blog/BlogPostCard"
+import ShareButton from "@/components/blog/ShareButton"
 
 interface BlogPostPageProps {
   params: Promise<{
@@ -134,10 +135,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const imageUrl = post.mainImage?.asset?.url || urlFor(post.mainImage).url()
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen mt-20 bg-gray-50 dark:bg-gray-900">
       {/* Hero Section */}
       <div className="relative bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           {/* Back Button */}
           <Link
             href="/blog"
@@ -195,7 +196,15 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
             {post.author && (
               <div className="flex items-center gap-2">
-                <User className="w-5 h-5" />
+                {post.author.image ? (
+                  <img
+                    src={post.author.image.asset?.url || urlFor(post.author.image).width(30).height(30).url()}
+                    alt={post.author.image.alt || post.author.name}
+                    className="w-5 h-5 rounded-full object-contain"
+                  />
+                ) : (
+                  <User className="w-5 h-5" />
+                )}
                 <span>By {post.author.name}</span>
               </div>
             )}
@@ -203,17 +212,17 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
           {/* Share Button */}
           <div className="flex items-center gap-4">
-            <button className="inline-flex items-center gap-2 px-4 py-2 bg-brand-primary hover:bg-brand-secondary text-white rounded-lg transition-colors">
-              <Share2 className="w-4 h-4" />
-              <span>Share Article</span>
-            </button>
+            <ShareButton
+              title={post.title}
+              text={post.excerpt || undefined}
+            />
           </div>
         </div>
       </div>
 
       {/* Featured Image */}
       {post.mainImage && (
-        <div className="relative h-64 md:h-96 lg:h-[500px] overflow-hidden">
+        <div className="relative h-64 md:h-96 lg:h-[800px] overflow-hidden">
           <img
             src={imageUrl}
             alt={post.mainImage.alt || post.title}
@@ -241,8 +250,18 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             {post.author && (
               <div className="mt-12 p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
                 <div className="flex items-start gap-4">
-                  <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center flex-shrink-0">
-                    <User className="w-8 h-8 text-white" />
+                  <div className="w-16 h-16 rounded-full overflow-hidden flex-shrink-0 bg-gray-200 dark:bg-gray-700">
+                    {post.author.image ? (
+                      <img
+                        src={post.author.image.asset?.url || urlFor(post.author.image).width(128).height(128).url()}
+                        alt={post.author.image.alt || post.author.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-brand-primary to-brand-secondary flex items-center justify-center">
+                        <User className="w-8 h-8 text-white" />
+                      </div>
+                    )}
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
@@ -263,12 +282,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           </div>
 
           {/* Sidebar */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 translate-y-20">
             <div className="sticky top-8 space-y-8">
               {/* Table of Contents placeholder */}
-              <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
+              <div className="bg-white dark:bg-gray-800 rounded-xl  p-6 border border-gray-200 dark:border-gray-700">
                 <div className="flex items-center gap-2 mb-4">
-                  <BookOpen className="w-5 h-5 text-brand-primary" />
                   <h3 className="font-semibold text-gray-900 dark:text-white">
                     Quick Navigation
                   </h3>

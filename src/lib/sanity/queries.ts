@@ -169,6 +169,13 @@ const BLOG_POST_FIELDS = `
     _id,
     name,
     slug,
+    image{
+      asset->{
+        _id,
+        url
+      },
+      alt
+    },
     bio,
     email,
     website,
@@ -204,7 +211,14 @@ const BLOG_POST_PREVIEW_FIELDS = `
   author->{
     _id,
     name,
-    slug
+    slug,
+    image{
+      asset->{
+        _id,
+        url
+      },
+      alt
+    }
   },
   mainImage{
     asset->{
