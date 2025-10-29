@@ -89,12 +89,12 @@ const Footer = () => {
                    </Link>
                  </li>
                  <li>
-                   {/* <Link
+                   <Link
                      href="/coming-soon"
                      className="text-gray-300 hover:text-white hover:translate-x-2 transition-all duration-200 block"
                    >
                      Blog
-                   </Link> */}
+                   </Link>
                  </li>
                  <li>
                    <Link
