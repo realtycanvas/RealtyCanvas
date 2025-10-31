@@ -24,6 +24,7 @@ type Project = {
   totalClicks?: number;
 };
 
+
 interface TrendingProjectsSectionProps {
   projects?: Project[];
   loading?: boolean; // Controls initial skeleton; defaults to false
