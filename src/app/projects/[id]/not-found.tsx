@@ -6,6 +6,7 @@ export default function NotFound() {
       <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Project Not Found</h2>
       <p className="text-gray-600 dark:text-gray-400 mb-8 text-center max-w-md">
         The project you&apos;re looking for doesn&apos;t exist or has been removed.
+        
       </p>
       <Link
         href="/projects"
