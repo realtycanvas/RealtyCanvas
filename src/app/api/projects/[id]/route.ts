@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withDatabaseConnection, periodicHealthCheck } from '@/middleware/database';
 import { revalidatePath } from 'next/cache';
+import { clearWarmProject } from '@/lib/project-warm-cache';
 
 // Enhanced in-memory cache with better TTL management
 const projectCache = new Map<string, { 
@@ -453,17 +454,14 @@ async function putProjectHandler(request: NextRequest, { params }: { params: { i
       data: updateData,
     });
     
-    // Clear cache for this project
+    // Clear caches for this project
     projectCache.delete(id);
-    console.log(`Cleared cache for project: ${id}`);
+    clearWarmProject(id);
+    console.log(`Cleared caches for project: ${id}`);
     
-    // Trigger revalidation for the project detail page
+    // Revalidate the project detail page directly
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/revalidate`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ path: `/projects/${id}` })
-      });
+      revalidatePath(`/projects/${id}`);
       console.log(`Triggered revalidation for /projects/${id}`);
     } catch (revalidateError) {
       console.warn('Failed to trigger revalidation:', revalidateError);
@@ -480,6 +478,12 @@ async function deleteProjectHandler(_req: NextRequest, { params }: { params: { i
   try {
     const { id } = params;
     await prisma.project.delete({ where: { slug: id } });
+    // Clear caches and revalidate path after deletion
+    projectCache.delete(id);
+    clearWarmProject(id);
+    try {
+      revalidatePath(`/projects/${id}`);
+    } catch {}
     return NextResponse.json({ message: 'Project deleted' });
   } catch (error) {
     console.error('Delete project error:', error);

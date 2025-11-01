@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { unstable_noStore as noStore } from 'next/cache';
 import { prisma } from '@/lib/prisma';
+import { withWarmCache } from '@/lib/warm-cache-helper';
 import ProjectDetailClient from '@/app/projects/[id]/ProjectDetailClient';
 
 // Revalidate project detail pages every 5 minutes (ISR)
@@ -25,18 +26,13 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const slug = decodeURIComponent(id).trim().toLowerCase();
   
   try {
-    // Static attempt
-    let project = await getProjectData(slug);
-    // Fallback dynamic attempt to avoid caching false 404 metadata
-    if (!project) {
-      noStore();
-      project = await getProjectData(slug);
-    }
+    const project = await withWarmCache<Project>(slug, () => getProjectData(slug), { logLabel: 'metadata' });
     
     if (!project) {
+      // Minimal metadata to avoid broken head during transient failures
       return {
-        title: 'Project Not Found - Realty Canvas',
-        description: 'The requested project could not be found.',
+        title: 'Project',
+        description: 'Project details',
       };
     }
 
@@ -231,14 +227,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
   const { id: raw } = await params;
   const slug = decodeURIComponent(raw).trim().toLowerCase();
 
-  // Static attempt
-  let project = await getProjectData(slug);
-
-  // Avoid caching false 404 due to transient DB errors
-  if (!project) {
-    noStore();
-    project = await getProjectData(slug);
-  }
+  const project = await withWarmCache<Project>(slug, () => getProjectData(slug), { logLabel: 'page' });
 
   if (!project) {
     notFound();
