@@ -96,6 +96,24 @@ async function getHomePageData() {
     const isConnected = await ensureDatabaseConnection(3);
     if (!isConnected) {
       console.error('Database connection failed for homepage data');
+      // Attempt to use API cache fallback to avoid empty homepage
+      try {
+        const res = await fetch(`${baseUrl}/api/projects?limit=12`, { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          const projects = (data?.projects || []).map((p: any) => ({
+            ...p,
+            createdAt: typeof p.createdAt === 'string' ? p.createdAt : new Date(p.createdAt).toISOString(),
+          }));
+          return {
+            featuredProjects: projects.slice(0, 9),
+            trendingProjects: projects.slice(0, 6),
+            diagnostics: { missingSlugs: [], mismatchedTitles: [] },
+          };
+        }
+      } catch (e) {
+        console.error('API fallback failed for homepage data:', e);
+      }
       return {
         featuredProjects: [],
         trendingProjects: [],
@@ -161,12 +179,115 @@ async function getHomePageData() {
       .filter((p) => !featuredProjectTitles.includes(p.title))
       .map((p) => ({ slug: p.slug, title: p.title }));
 
-    // If still empty (no curated matches), fallback to trending/recents
-    if (featuredProjectsRaw.length === 0) {
-      featuredProjectsRaw = await prisma.project.findMany({
-        where: { OR: [{ isTrending: true }] },
+    // If curated matches are partial or empty, top up with trending and recent
+    if (featuredProjectsRaw.length < 9) {
+      const existingIds = new Set(featuredProjectsRaw.map(p => p.id));
+      // First, add manually trending projects
+      const trendingFill = await prisma.project.findMany({
+        where: { isTrending: true, id: { notIn: Array.from(existingIds) } },
+        orderBy: [{ totalClicks: 'desc' }, { updatedAt: 'desc' }],
+        take: 12,
+        select: {
+          id: true,
+          slug: true,
+          title: true,
+          subtitle: true,
+          category: true,
+          status: true,
+          address: true,
+          city: true,
+          state: true,
+          featuredImage: true,
+          createdAt: true,
+          minRatePsf: true,
+          maxRatePsf: true,
+          isTrending: true,
+          totalClicks: true,
+        },
+      });
+      trendingFill.forEach(p => existingIds.add(p.id));
+      featuredProjectsRaw = [...featuredProjectsRaw, ...trendingFill];
+
+      // Then, add most recent projects to ensure we have content
+      if (featuredProjectsRaw.length < 9) {
+        const recentFill = await prisma.project.findMany({
+          where: { id: { notIn: Array.from(existingIds) } },
+          orderBy: [{ updatedAt: 'desc' }],
+          take: 20,
+          select: {
+            id: true,
+            slug: true,
+            title: true,
+            subtitle: true,
+            category: true,
+            status: true,
+            address: true,
+            city: true,
+            state: true,
+            featuredImage: true,
+            createdAt: true,
+            minRatePsf: true,
+            maxRatePsf: true,
+            isTrending: true,
+            totalClicks: true,
+          },
+        });
+        featuredProjectsRaw = [...featuredProjectsRaw, ...recentFill];
+      }
+      // Cap to 12 and keep order (curated first, then trending, then recent)
+      featuredProjectsRaw = featuredProjectsRaw.slice(0, 12);
+    }
+
+    // Convert Date to string for client compatibility
+    const featuredProjects = featuredProjectsRaw.map(project => ({
+      ...project,
+      createdAt: project.createdAt.toISOString(),
+    }));
+
+    // Fetch trending projects with layered criteria
+    let trendingProjectsRaw = await prisma.project.findMany({
+      where: {
+        OR: [
+          { isTrending: true },
+          {
+            projectClicks: {
+              some: {
+                clickDate: { gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) },
+              },
+            },
+          },
+          { totalClicks: { gt: 0 } },
+        ],
+      },
+      orderBy: [
+        { isTrending: 'desc' },
+        { totalClicks: 'desc' },
+        { updatedAt: 'desc' },
+      ],
+      take: 12,
+      select: {
+        id: true,
+        slug: true,
+        title: true,
+        subtitle: true,
+        category: true,
+        status: true,
+        address: true,
+        city: true,
+        state: true,
+        featuredImage: true,
+        createdAt: true,
+        minRatePsf: true,
+        maxRatePsf: true,
+        isTrending: true,
+        totalClicks: true,
+      },
+    });
+    // Absolute fallback to most recent if trending still empty
+    if (trendingProjectsRaw.length === 0) {
+      trendingProjectsRaw = await prisma.project.findMany({
         orderBy: [{ updatedAt: 'desc' }],
-        take: 8,
+        take: 12,
         select: {
           id: true,
           slug: true,
@@ -188,56 +309,17 @@ async function getHomePageData() {
     }
 
     // Convert Date to string for client compatibility
-    const featuredProjects = featuredProjectsRaw.map(project => ({
-      ...project,
-      createdAt: project.createdAt.toISOString(),
-    }));
-
-    // Fetch trending projects (most clicked in last 30 days)
-    const trendingProjectsRaw = await prisma.project.findMany({
-      where: {
-        projectClicks: {
-          some: {
-            clickDate: {
-              gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) // Last 30 days
-            }
-          }
-        }
-      },
-      orderBy: [
-        { totalClicks: 'desc' },
-        { updatedAt: 'desc' }
-      ],
-      take: 6,
-      select: {
-        id: true,
-        slug: true,
-        title: true,
-        subtitle: true,
-        category: true,
-        status: true,
-        address: true,
-        city: true,
-        state: true,
-        featuredImage: true,
-        createdAt: true,
-        minRatePsf: true,
-        maxRatePsf: true,
-        isTrending: true,
-        totalClicks: true,
-      },
-    });
-
-    // Convert Date to string for client compatibility
     const trendingProjects = trendingProjectsRaw.map(project => ({
       ...project,
       createdAt: project.createdAt.toISOString(),
     }));
 
-    // If no trending projects found, fallback to recent projects
-    const finalTrendingProjects = trendingProjects.length > 0 
-      ? trendingProjects 
-      : featuredProjects.slice(0, 6);
+    // If no trending projects found, fallback to featured or recent
+    const finalTrendingProjects = trendingProjects.length > 0
+      ? trendingProjects.slice(0, 6)
+      : featuredProjects.length > 0
+        ? featuredProjects.slice(0, 6)
+        : featuredProjectsRaw.slice(0, 6).map(p => ({ ...p, createdAt: p.createdAt.toISOString() }));
 
     const diagnostics: FeaturedDiagnosticsData = { missingSlugs, mismatchedTitles };
     return {
