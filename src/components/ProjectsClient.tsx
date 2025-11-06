@@ -62,7 +62,7 @@ export default function ProjectsClient({ initialProjects, initialPagination }: {
     state: searchParams.get("state") || "",
     priceRange: {
       min: parseInt(searchParams.get("minPrice") || "0"),
-      max: parseInt(searchParams.get("maxPrice") || "10000000"),
+      max: parseInt(searchParams.get("maxPrice") || "0"),
     },
   }));
 
@@ -91,8 +91,8 @@ export default function ProjectsClient({ initialProjects, initialPagination }: {
       if (filters.city.trim()) params.set("city", filters.city.trim());
       if (filters.state.trim()) params.set("state", filters.state.trim());
       if (filters.priceRange.min > 0) params.set("minPrice", filters.priceRange.min.toString());
-      // Only include maxPrice when user narrows below default ceiling
-      if (filters.priceRange.max < 10000000) params.set("maxPrice", filters.priceRange.max.toString());
+      // Include maxPrice only when user selected a bounded upper limit
+      if (filters.priceRange.max > 0) params.set("maxPrice", filters.priceRange.max.toString());
 
       const response = await fetch(`/api/projects?${params.toString()}`, {
         headers: { "Accept": "application/json" },
@@ -140,7 +140,7 @@ export default function ProjectsClient({ initialProjects, initialPagination }: {
     if (filters.city) params.set("city", filters.city);
     if (filters.state) params.set("state", filters.state);
     if (filters.priceRange.min > 0) params.set("minPrice", filters.priceRange.min.toString());
-    if (filters.priceRange.max < 10000000) params.set("maxPrice", filters.priceRange.max.toString());
+    if (filters.priceRange.max > 0) params.set("maxPrice", filters.priceRange.max.toString());
     const newURL = params.toString() ? `/projects?${params.toString()}` : "/projects";
     router.push(newURL, { scroll: false });
   }, [pagination.page, filters, router]);
@@ -151,7 +151,7 @@ export default function ProjectsClient({ initialProjects, initialPagination }: {
   }, []);
 
   const handleClearFilters = useCallback(() => {
-    setFilters({ category: "ALL", status: "ALL", city: "", state: "", priceRange: { min: 0, max: 10000000 } });
+    setFilters({ category: "ALL", status: "ALL", city: "", state: "", priceRange: { min: 0, max: 0 } });
     setSearchQuery("");
     setDebouncedSearchQuery("");
     setPagination((prev) => ({ ...prev, page: 1 }));

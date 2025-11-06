@@ -205,7 +205,7 @@ function ProjectFilters({
   ];
 
   const priceRanges = [
-    { label: 'Any Price', min: 0, max: 10000000 },
+    { label: 'Any Price', min: 0, max: 0 },
     { label: '₹50L - ₹1Cr', min: 5000000, max: 10000000 },
     { label: '₹1Cr - ₹2Cr', min: 10000000, max: 20000000 },
     { label: '₹2Cr - ₹5Cr', min: 20000000, max: 50000000 },
@@ -215,7 +215,7 @@ function ProjectFilters({
 
   const hasActiveFilters = filters.category !== "ALL" || filters.status !== "ALL" ||
     filters.city || filters.state ||
-    filters.priceRange.min > 0 || filters.priceRange.max < 10000000;
+    filters.priceRange.min > 0 || filters.priceRange.max > 0;
 
   return (
     <div className=" mb-6 w-full">
@@ -320,7 +320,7 @@ export default function ProjectsPage() {
     state: searchParams.get('state') || "",
     priceRange: {
       min: parseInt(searchParams.get('minPrice') || '0'),
-      max: parseInt(searchParams.get('maxPrice') || '10000000')
+      max: parseInt(searchParams.get('maxPrice') || '0')
     }
   }));
 
@@ -376,8 +376,8 @@ export default function ProjectsPage() {
         params.set("minPrice", filters.priceRange.min.toString());
       }
 
-      // Only include maxPrice when user narrows below default ceiling
-      if (filters.priceRange.max < 10000000) {
+      // Include maxPrice only when user selected a bounded upper limit
+      if (filters.priceRange.max > 0) {
         params.set("maxPrice", filters.priceRange.max.toString());
       }
 
@@ -491,8 +491,8 @@ export default function ProjectsPage() {
       params.set('minPrice', filters.priceRange.min.toString());
     }
 
-    // Only include maxPrice when user narrows below default ceiling
-    if (filters.priceRange.max < 10000000) {
+    // Include maxPrice only when user selected a bounded upper limit
+    if (filters.priceRange.max > 0) {
       params.set('maxPrice', filters.priceRange.max.toString());
     }
 
@@ -513,7 +513,7 @@ export default function ProjectsPage() {
       status: "ALL",
       city: "",
       state: "",
-      priceRange: { min: 0, max: 10000000 }
+      priceRange: { min: 0, max: 0 }
     });
     setSearchQuery("");
     setDebouncedSearchQuery("");
