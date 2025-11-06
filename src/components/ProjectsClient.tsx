@@ -73,7 +73,7 @@ export default function ProjectsClient({ initialProjects, initialPagination }: {
       filters.city.trim() ||
       filters.state.trim() ||
       filters.priceRange.min > 0 ||
-      filters.priceRange.max < 10000000,
+      filters.priceRange.max > 0,
     [filters]
   );
 
@@ -91,7 +91,7 @@ export default function ProjectsClient({ initialProjects, initialPagination }: {
       if (filters.city.trim()) params.set("city", filters.city.trim());
       if (filters.state.trim()) params.set("state", filters.state.trim());
       if (filters.priceRange.min > 0) params.set("minPrice", filters.priceRange.min.toString());
-      if (filters.priceRange.max < 10000000) params.set("maxPrice", filters.priceRange.max.toString());
+      if (filters.priceRange.max > 0) params.set("maxPrice", filters.priceRange.max.toString());
 
       const response = await fetch(`/api/projects?${params.toString()}`, {
         headers: { "Accept": "application/json" },

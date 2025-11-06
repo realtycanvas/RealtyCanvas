@@ -89,6 +89,12 @@ export default function HeroSection() {
                   category: filters.category,
                   status: filters.status,
                 });
+                // Only include budget when user selects a specific range (not default "Any Price")
+                const isAnyPrice = filters.priceRange.min === 0 && filters.priceRange.max === 100000000;
+                if (!isAnyPrice) {
+                  params.set('minPrice', filters.priceRange.min.toString());
+                  params.set('maxPrice', filters.priceRange.max.toString());
+                }
                 window.location.href = `/projects?${params.toString()}`;
               }}
             />

@@ -20,6 +20,7 @@ type Project = {
   state?: string | null;
   featuredImage: string;
   createdAt: string;
+  basePrice?: string | null;
   minRatePsf?: string | null;
   maxRatePsf?: string | null;
 };
@@ -196,12 +197,19 @@ function ProjectCardComponent({ project, priority = false }: ProjectCardProps) {
             </span>
           </div>
 
-          {/* Price Range */}
-          {/* <div className="mb-4 mt-auto">
-            <span className="text-lg font-bold text-brand-primary dark:text-brand-primary">
+        {/* Price Range */}
+          {project.basePrice && (
+            <div className="mb-2 mt-auto">
+              <span className="text-sm font-semibold text-gray-900 dark:text-white">
+                Base Price: {project.basePrice}
+              </span>
+            </div>
+          )}
+          <div className="mb-4">
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
               {formatPriceRange()}
             </span>
-          </div> */}
+          </div>
 
           {/* View Details Button */}
           <BrandButton

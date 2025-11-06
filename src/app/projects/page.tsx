@@ -30,6 +30,7 @@ type Project = {
   state?: string | null;
   featuredImage: string;
   createdAt: string;
+  basePrice?: string | null;
   minRatePsf?: string | null;
   maxRatePsf?: string | null;
   developerName?: string | null;
@@ -161,6 +162,11 @@ function InlineProjectCard({ project, viewMode }: { project: Project; viewMode: 
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">
             📍 {project.address}
           </p>
+          {project.basePrice && (
+            <p className="text-sm font-medium text-gray-900 dark:text-white mb-1">
+              Base Price: {project.basePrice}
+            </p>
+          )}
           {(project.minRatePsf || project.maxRatePsf) && (
             <p className="text-sm font-medium text-gray-900 dark:text-white">
               ₹{project.minRatePsf || 'N/A'} - ₹{project.maxRatePsf || 'N/A'} per sq ft
@@ -195,6 +201,15 @@ function ProjectFilters({
     // { value: "PLANNED", label: "Planned" },
     { value: "UNDER_CONSTRUCTION", label: "Under Construction" },
     { value: "READY", label: "Ready" }
+  ];
+
+  const priceRanges = [
+    { label: 'Any Price', min: 0, max: 10000000 },
+    { label: '₹50L - ₹1Cr', min: 5000000, max: 10000000 },
+    { label: '₹1Cr - ₹2Cr', min: 10000000, max: 20000000 },
+    { label: '₹2Cr - ₹5Cr', min: 20000000, max: 50000000 },
+    { label: '₹5Cr - ₹10Cr', min: 50000000, max: 100000000 },
+    { label: '₹10Cr+', min: 100000000, max: 1000000000 },
   ];
 
   const hasActiveFilters = filters.category !== "ALL" || filters.status !== "ALL" ||
@@ -249,33 +264,30 @@ function ProjectFilters({
           </select>
         </div>
 
-        {/* City Filter */}
-        {/* <div>
+        {/* Price Range Filter */}
+        <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            City
+            Budget
           </label>
-          <input
-            type="text"
-            value={filters.city}
-            onChange={(e) => onFiltersChange({ ...filters, city: e.target.value })}
-            placeholder="Enter city"
+          <select
+            value={`${filters.priceRange.min}-${filters.priceRange.max}`}
+            onChange={(e) => {
+              const [minStr, maxStr] = e.target.value.split('-');
+              const min = parseInt(minStr, 10);
+              const max = parseInt(maxStr, 10);
+              onFiltersChange({ ...filters, priceRange: { min, max } });
+            }}
             className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
-          />
-        </div> */}
+          >
+            {priceRanges.map(range => (
+              <option key={range.label} value={`${range.min}-${range.max}`}>
+                {range.label}
+              </option>
+            ))}
+          </select>
+        </div>
 
-        {/* State Filter */}
-        {/* <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            State
-          </label>
-          <input
-            type="text"
-            value={filters.state}
-            onChange={(e) => onFiltersChange({ ...filters, state: e.target.value })}
-            placeholder="Enter state"
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
-          />
-        </div> */}
+        
       </div>
     </div>
   );
@@ -327,9 +339,10 @@ export default function ProjectsPage() {
     setError(null);
 
     try {
-      // Abort any in-flight request to prevent race conditions
+      // Abort any in-flight request to prevent race conditions (ignore abort errors)
       if (abortRef.current) {
-        abortRef.current.abort();
+        // Provide a reason to avoid generic error message
+        abortRef.current.abort('superseded-by-new-request');
       }
       const controller = new AbortController();
       abortRef.current = controller;
@@ -362,7 +375,7 @@ export default function ProjectsPage() {
         params.set("minPrice", filters.priceRange.min.toString());
       }
 
-      if (filters.priceRange.max < 10000000) {
+      if (filters.priceRange.max > 0) {
         params.set("maxPrice", filters.priceRange.max.toString());
       }
 
@@ -408,7 +421,14 @@ export default function ProjectsPage() {
         }
       } catch {}
 
-    } catch (err) {
+    } catch (err: any) {
+      // Swallow intentional aborts from previous requests
+      const isAbort = err?.name === 'AbortError' || err?.code === 'ABORT_ERR' || (typeof err?.message === 'string' && err.message.toLowerCase().includes('abort'));
+      if (isAbort) {
+        // Do not surface abort as an error to the user
+        // Just exit; finally block will handle loading state cleanup
+        return;
+      }
       console.error("Failed to fetch projects:", err);
       setError(err instanceof Error ? err.message : "Failed to fetch projects");
       setProjects([]);
@@ -469,7 +489,7 @@ export default function ProjectsPage() {
       params.set('minPrice', filters.priceRange.min.toString());
     }
 
-    if (filters.priceRange.max < 10000000) {
+    if (filters.priceRange.max > 0) {
       params.set('maxPrice', filters.priceRange.max.toString());
     }
 

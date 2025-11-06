@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma, ensureDatabaseConnection } from '@/lib/prisma';
 import { databaseWarmup } from '@/lib/database-warmup';
 import { createHash } from 'crypto';
+import { parseIndianPriceToNumber, isPriceWithinRange } from '@/lib/price';
 
 // Simple in-memory cache for better performance
 const cache = new Map<string, { data: any; timestamp: number }>();
@@ -24,6 +25,9 @@ export async function GET(request: NextRequest) {
     const state = searchParams.get('state')?.trim() || '';
     const minPrice = searchParams.get('minPrice');
     const maxPrice = searchParams.get('maxPrice');
+    const minBudget = minPrice ? parseFloat(minPrice) : null;
+    const maxBudget = maxPrice ? parseFloat(maxPrice) : null;
+    const isBudgetFilterActive = (minBudget !== null && !isNaN(minBudget)) || (maxBudget !== null && !isNaN(maxBudget));
     
     // Create cache key (must be available before warmup/connection checks)
     const cacheKey = createHash('md5')
@@ -137,54 +141,27 @@ export async function GET(request: NextRequest) {
       conditions.push({ state: { equals: state, mode: 'insensitive' } });
     }
     
-    // Price range filter
-    if (minPrice || maxPrice) {
-      const priceConditions = [];
-      
-      if (minPrice) {
-        const minPriceNum = parseFloat(minPrice);
-        if (!isNaN(minPriceNum)) {
-          priceConditions.push({
-            OR: [
-              { minRatePsf: { gte: minPriceNum.toString() } },
-              { maxRatePsf: { gte: minPriceNum.toString() } }
-            ]
-          });
-        }
-      }
-      
-      if (maxPrice) {
-        const maxPriceNum = parseFloat(maxPrice);
-        if (!isNaN(maxPriceNum)) {
-          priceConditions.push({
-            OR: [
-              { minRatePsf: { lte: maxPriceNum.toString() } },
-              { maxRatePsf: { lte: maxPriceNum.toString() } }
-            ]
-          });
-        }
-      }
-      
-      if (priceConditions.length > 0) {
-        conditions.push(...priceConditions);
-      }
-    }
+    // NOTE: Budget filter will be applied server-side using parsed basePrice.
+    // We intentionally DO NOT add DB conditions here because basePrice is stored as text.
     
     // Combine conditions
     if (conditions.length > 0) {
       whereClause.AND = conditions;
     }
 
-    // Execute optimized parallel queries
-    const [projects, totalCount] = await Promise.all([
-      prisma.project.findMany({
+    let responseData: any;
+
+    if (isBudgetFilterActive) {
+      // Fetch a larger set then filter by parsed basePrice in memory.
+      // Cap to a safe upper bound to avoid heavy queries.
+      const MAX_SCAN = 1000;
+      const allCandidates = await prisma.project.findMany({
         where: whereClause,
         orderBy: [
-          { status: 'asc' }, // Active projects first
+          { status: 'asc' },
           { updatedAt: 'desc' }
         ],
-        skip,
-        take: limit,
+        take: MAX_SCAN,
         select: {
           id: true,
           slug: true,
@@ -198,33 +175,92 @@ export async function GET(request: NextRequest) {
           featuredImage: true,
           createdAt: true,
           updatedAt: true,
+          basePrice: true,
           minRatePsf: true,
           maxRatePsf: true,
           developerName: true,
           locality: true,
         },
-      }),
-      prisma.project.count({ where: whereClause })
-    ]);
+      });
 
-    const totalPages = Math.ceil(totalCount / limit);
-    const hasMore = page < totalPages;
-    
-    const responseData = {
-      projects,
-      pagination: {
-        page,
-        limit,
-        totalCount,
-        totalPages,
-        hasMore,
-        hasPrevious: page > 1
-      },
-      meta: {
-        queryTime: Date.now() - startTime,
-        cached: false
-      }
-    };
+      const filtered = allCandidates.filter(p =>
+        isPriceWithinRange(parseIndianPriceToNumber((p as any).basePrice), minBudget, maxBudget)
+      );
+
+      const totalCount = filtered.length;
+      const totalPages = Math.ceil(totalCount / limit);
+      const hasMore = page < totalPages;
+      const paged = filtered.slice(skip, skip + limit);
+
+      responseData = {
+        projects: paged,
+        pagination: {
+          page,
+          limit,
+          totalCount,
+          totalPages,
+          hasMore,
+          hasPrevious: page > 1,
+        },
+        meta: {
+          queryTime: Date.now() - startTime,
+          cached: false,
+          budgetFilterApplied: true,
+        },
+      };
+    } else {
+      // Existing path: normal DB pagination without budget filter
+      const [projects, totalCount] = await Promise.all([
+        prisma.project.findMany({
+          where: whereClause,
+          orderBy: [
+            { status: 'asc' }, // Active projects first
+            { updatedAt: 'desc' }
+          ],
+          skip,
+          take: limit,
+          select: {
+            id: true,
+            slug: true,
+            title: true,
+            subtitle: true,
+            category: true,
+            status: true,
+            address: true,
+            city: true,
+            state: true,
+            featuredImage: true,
+            createdAt: true,
+            updatedAt: true,
+            basePrice: true,
+            minRatePsf: true,
+            maxRatePsf: true,
+            developerName: true,
+            locality: true,
+          },
+        }),
+        prisma.project.count({ where: whereClause })
+      ]);
+
+      const totalPages = Math.ceil(totalCount / limit);
+      const hasMore = page < totalPages;
+
+      responseData = {
+        projects,
+        pagination: {
+          page,
+          limit,
+          totalCount,
+          totalPages,
+          hasMore,
+          hasPrevious: page > 1
+        },
+        meta: {
+          queryTime: Date.now() - startTime,
+          cached: false
+        }
+      };
+    }
 
     // Cache the response
     cache.set(cacheKey, { data: responseData, timestamp: Date.now() });
@@ -239,7 +275,8 @@ export async function GET(request: NextRequest) {
       }
     }
     
-    console.log(`✅ Projects fetched: ${projects.length}/${totalCount} (${Date.now() - startTime}ms)`);
+    // Log summary (avoid referencing variables outside scope)
+    console.log(`✅ Projects response ready (${Date.now() - startTime}ms)`);
 
     const etag = createHash('md5').update(JSON.stringify(responseData)).digest('hex');
     return NextResponse.json(responseData, {
