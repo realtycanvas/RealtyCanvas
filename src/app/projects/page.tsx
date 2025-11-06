@@ -656,6 +656,7 @@ export default function ProjectsPage() {
             {"@type": "ListItem", "position": 2, "name": "Projects", "item": `${baseUrl}/projects`}
           ]
         }} />
+        
         {/* Header */}
         <div className="flex flex-col gap-4 w-full mt-[-10vw] lg:mt-0">
 
