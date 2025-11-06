@@ -33,9 +33,9 @@ export default function BenefitsSection() {
 
             <div className="space-y-6">
               <div className="flex items-start space-x-4">
-                {/* <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <CheckCircleIcon className="w-6 h-6 text-white" />
-                </div> */}
+              
+                  <CheckCircleIcon className="w-6 h-6 text-yellow-500" />
+              
                 <div>
                   <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
                     Verified Properties
@@ -47,9 +47,9 @@ export default function BenefitsSection() {
               </div>
 
               <div className="flex items-start space-x-4">
-                {/* <div className="w-12 h-12 bg-gradient-to-r from-brand-primary to-brand-primary rounded-xl flex items-center justify-center flex-shrink-0">
-                  <BoltIcon className="w-6 h-6 text-white" />
-                </div> */}
+              
+                  <BoltIcon className="w-6 h-6 text-yellow-500" />
+             
                 <div>
                   <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
                     Quick Process
@@ -61,9 +61,9 @@ export default function BenefitsSection() {
               </div>
 
               <div className="flex items-start space-x-4">
-                {/* <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <CurrencyDollarIcon className="w-6 h-6 text-white" />
-                </div> */}
+                
+                  <CurrencyDollarIcon className="w-6 h-6 text-yellow-500" />
+              
                 <div>
                   <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
                     Best Prices
@@ -75,9 +75,9 @@ export default function BenefitsSection() {
               </div>
 
               <div className="flex items-start space-x-4">
-                {/* <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-600 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <HandRaisedIcon className="w-6 h-6 text-white" />
-                </div> */}
+              
+                  <HandRaisedIcon className="w-6 h-6 text-yellow-500" />
+             
                 <div>
                   <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
                    Post-Purchase Support
@@ -88,9 +88,9 @@ export default function BenefitsSection() {
                 </div>
               </div>
               <div className="flex items-start space-x-4">
-                 {/* <div className="w-12 h-12 bg-gradient-to-r from-red-500 to-red-600 rounded-xl flex items-center justify-center flex-shrink-0">
-                   <ChartBarIcon className="w-6 h-6 text-white" />
-                 </div> */}
+
+                   <ChartBarIcon className="w-6 h-6 text-yellow-500" />
+             
                  <div>
                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
                     Maximum ROI Focus
@@ -104,8 +104,8 @@ export default function BenefitsSection() {
           </div>
 
           {/* Right side - Image */}
-          <div className="flex items-end border-2 border-gray-500 overflow-hidden rounded-tl-[200px] rounded-br-[200px]">
-            <div className="relative w-full h-[550px] overflow-hidden ">
+          <div className="flex items-end border-2 lg:w-[380px] w-full lg:h-[600px] h-full border-gray-500 overflow-hidden rounded-tl-[200px] rounded-br-[200px]">
+            <div className="relative  overflow-hidden ">
               <SmartImage
                 src="/bannernew.webp"
                 alt="Real Estate Benefits"
