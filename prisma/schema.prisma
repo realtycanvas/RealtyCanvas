@@ -111,6 +111,13 @@ model Project {
   pricingTable        PricingTable[]
   projectClicks       ProjectClick[]
   units               Unit[]
+
+  // Indexes to accelerate common filters and sorts used by the API
+  @@index([createdAt], map: "idx_project_created_at_prisma")
+  @@index([updatedAt], map: "idx_project_updated_at_prisma")
+  @@index([status], map: "idx_project_status_prisma")
+  @@index([category], map: "idx_project_category_prisma")
+  @@index([status, updatedAt], map: "idx_project_status_updated_prisma")
 }
 
 model Highlight {

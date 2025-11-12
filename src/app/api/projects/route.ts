@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma, ensureDatabaseConnection } from '@/lib/prisma';
+import { prisma, ensureDatabaseConnection, enableQueryTiming } from '@/lib/prisma';
 import { databaseWarmup } from '@/lib/database-warmup';
 import { createHash } from 'crypto';
 import { parseIndianPriceToNumber, isPriceWithinRange } from '@/lib/price';
@@ -10,6 +10,8 @@ const CACHE_TTL = 90000; // 90 seconds
 
 export async function GET(request: NextRequest) {
   const startTime = Date.now();
+  // Enable detailed Prisma timing (dev-only by default, or LOG_QUERY_TIMES=1 in prod)
+  enableQueryTiming();
   
   try {
     const { searchParams } = new URL(request.url);
@@ -155,6 +157,7 @@ export async function GET(request: NextRequest) {
       // Fetch a larger set then filter by parsed basePrice in memory.
       // Cap to a safe upper bound to avoid heavy queries.
       const MAX_SCAN = 1000;
+      const scanStart = Date.now();
       const allCandidates = await prisma.project.findMany({
         where: whereClause,
         orderBy: [
@@ -182,10 +185,13 @@ export async function GET(request: NextRequest) {
           locality: true,
         },
       });
+      const scanMs = Date.now() - scanStart;
 
+      const filterStart = Date.now();
       const filtered = allCandidates.filter(p =>
         isPriceWithinRange(parseIndianPriceToNumber((p as any).basePrice), minBudget, maxBudget)
       );
+      const filterMs = Date.now() - filterStart;
 
       const totalCount = filtered.length;
       const totalPages = Math.ceil(totalCount / limit);
@@ -206,41 +212,45 @@ export async function GET(request: NextRequest) {
           queryTime: Date.now() - startTime,
           cached: false,
           budgetFilterApplied: true,
+          dbScanMs: scanMs,
+          filterMs,
         },
       };
     } else {
       // Existing path: normal DB pagination without budget filter
-      const [projects, totalCount] = await Promise.all([
-        prisma.project.findMany({
-          where: whereClause,
-          orderBy: [
-            { status: 'asc' }, // Active projects first
-            { updatedAt: 'desc' }
-          ],
-          skip,
-          take: limit,
-          select: {
-            id: true,
-            slug: true,
-            title: true,
-            subtitle: true,
-            category: true,
-            status: true,
-            address: true,
-            city: true,
-            state: true,
-            featuredImage: true,
-            createdAt: true,
-            updatedAt: true,
-            basePrice: true,
-            minRatePsf: true,
-            maxRatePsf: true,
-            developerName: true,
-            locality: true,
-          },
-        }),
-        prisma.project.count({ where: whereClause })
-      ]);
+      const listStart = Date.now();
+      const projects = await prisma.project.findMany({
+        where: whereClause,
+        orderBy: [
+          { status: 'asc' }, // Active projects first
+          { updatedAt: 'desc' }
+        ],
+        skip,
+        take: limit,
+        select: {
+          id: true,
+          slug: true,
+          title: true,
+          subtitle: true,
+          category: true,
+          status: true,
+          address: true,
+          city: true,
+          state: true,
+          featuredImage: true,
+          createdAt: true,
+          updatedAt: true,
+          basePrice: true,
+          minRatePsf: true,
+          maxRatePsf: true,
+          developerName: true,
+          locality: true,
+        },
+      });
+      const listMs = Date.now() - listStart;
+      const countStart = Date.now();
+      const totalCount = await prisma.project.count({ where: whereClause });
+      const countMs = Date.now() - countStart;
 
       const totalPages = Math.ceil(totalCount / limit);
       const hasMore = page < totalPages;
@@ -257,7 +267,9 @@ export async function GET(request: NextRequest) {
         },
         meta: {
           queryTime: Date.now() - startTime,
-          cached: false
+          cached: false,
+          listMs,
+          countMs,
         }
       };
     }
@@ -283,7 +295,14 @@ export async function GET(request: NextRequest) {
       headers: {
         'Cache-Control': 'public, max-age=60, stale-while-revalidate=120',
         'ETag': etag,
-        'X-Cache': 'MISS'
+        'X-Cache': 'MISS',
+        'X-Response-Time': (Date.now() - startTime).toString(),
+        // Prefer listMs+countMs when available; otherwise fall back to meta.queryTime
+        'X-DB-Time': (
+          (responseData?.meta?.listMs || 0) +
+          (responseData?.meta?.countMs || 0) +
+          (responseData?.meta?.dbScanMs || 0)
+        ).toString(),
       }
     });
     

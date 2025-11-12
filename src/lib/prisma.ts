@@ -69,4 +69,24 @@ export async function ensureDatabaseConnection(retries = 3) {
   return false;
 }
 
+// Optional: enable per-query timing logs for Prisma operations.
+// This is helpful for diagnosing slow queries in production when LOG_QUERY_TIMES=1,
+// and is always enabled in development.
+let timingEnabled = false;
+export function enableQueryTiming() {
+  if (timingEnabled) return;
+  prisma.$use(async (params, next) => {
+    const start = Date.now();
+    const result = await next(params);
+    const duration = Date.now() - start;
+    if (process.env.LOG_QUERY_TIMES === '1' || process.env.NODE_ENV === 'development') {
+      const model = (params as any).model || 'raw';
+      const action = (params as any).action || 'unknown';
+      console.log(`⏱️ Prisma ${model}.${action} took ${duration}ms`);
+    }
+    return result;
+  });
+  timingEnabled = true;
+}
+
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
