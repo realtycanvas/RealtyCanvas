@@ -669,7 +669,7 @@ export default function ProjectsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <JsonLd data={{
           "@context": "https://schema.org",
           "@type": "CollectionPage",
@@ -736,7 +736,7 @@ export default function ProjectsPage() {
 
 
           {/* Filters */}
-          <div className="hidden md:block w-full">
+          <div className="hidden md:block w-full max-w-6xl mx-auto">
             <ProjectFilters
               filters={filters}
               onFiltersChange={handleFiltersChange}

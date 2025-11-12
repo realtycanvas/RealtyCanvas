@@ -13,8 +13,8 @@ import SmartImage from '../ui/SmartImage';
 export default function BenefitsSection() {
   return (
     <section className="py-20 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center justify-center">
           {/* Left side - Benefits */}
           <div className="space-y-8">
             <div className="space-y-2">
@@ -22,7 +22,7 @@ export default function BenefitsSection() {
                 Why RealtyCanvas Stands Apart: 
               </span>
               <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white">
-               Benefits of 
+               Benefits of <br/>
                 <span className="bg-gradient-to-r from-brand-primary to-brand-primary bg-clip-text text-transparent">
                   {" "}
                   Choosing Us

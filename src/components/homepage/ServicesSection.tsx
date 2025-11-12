@@ -43,7 +43,7 @@ export default function ServicesSection() {
       <div className="absolute top-10 right-10 w-32 h-32 bg-gradient-to-r from-brand-primary/10 to-brand-primary/10 rounded-full blur-3xl"></div>
       <div className="absolute bottom-10 left-10 w-40 h-40 bg-gradient-to-r from-pink-500/10 to-purple-500/10 rounded-full blur-3xl"></div>
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="max-w-6xl mx-auto px-4   relative z-10">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
             How We Make 
@@ -62,15 +62,15 @@ export default function ServicesSection() {
           {services.map((service, index) => (
             <div
               key={index}
-              className="group bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-gray-100 dark:border-gray-700 w-full sm:w-80 lg:w-72"
+              className="group bg-white dark:bg-gray-800 rounded-3xl p-4 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-gray-100 dark:border-gray-700 w-full  lg:w-48"
             >
-              <div className="bg-gradient-to-r from-brand-primary to-brand-primary p-4 rounded-2xl w-20 h-20 flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+              <div className="bg-gradient-to-r from-brand-primary to-brand-primary p-2 rounded-2xl w-10 h-10 flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform duration-300">
                 {service.icon}
               </div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 text-center">
+              <h3 className="text-md font-bold text-gray-900 dark:text-white mb-2 text-center">
                 {service.title}
               </h3>
-              <p className="text-gray-600 dark:text-gray-300 text-center leading-relaxed">
+              <p className="text-gray-600 text-xs text-center leading-relaxed">
                 {service.description}
               </p>
             </div>

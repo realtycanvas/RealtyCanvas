@@ -123,7 +123,7 @@ export default function Navbar() {
   
   return (
     <nav className={`${isScrolled ? 'bg-white shadow-lg' : 'bg-transparent'} backdrop-blur-sm fixed w-full z-50 transition-all duration-300`}>
-      <div className={`max-w-5xl mx-auto px-2 sm:px-4 lg:px-6 ${isScrolled ? 'bg-transparent' : 'bg-white/10'} rounded-lg mx-4 mt-2`}>
+      <div className={`max-w-6xl mx-auto px-2 sm:px-4  ${isScrolled ? 'bg-transparent' : 'bg-white/10'} rounded-lg mx-4 mt-2`}>
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="">

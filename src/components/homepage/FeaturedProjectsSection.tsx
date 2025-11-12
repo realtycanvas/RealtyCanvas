@@ -108,7 +108,7 @@ export default function FeaturedProjectsSection({ projects, loading }: FeaturedP
 
   return (
     <section id="featured-projects" className="py-20 bg-white dark:bg-gray-900">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
             Featured
@@ -164,12 +164,8 @@ export default function FeaturedProjectsSection({ projects, loading }: FeaturedP
                 <BrandButton
                   variant="primary"
                   size="lg"
-                  className="rounded-2xl inline-flex items-center"
-                >
+                  className="rounded-2xl inline-flex items-center">
                   View All Projects
-                  <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                  </svg>
                 </BrandButton>
               </Link>
             </div>

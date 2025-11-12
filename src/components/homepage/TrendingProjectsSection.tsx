@@ -40,7 +40,7 @@ export default function TrendingProjectsSection({ projects = [], loading = false
 
   return (
     <section className="py-20 bg-gray-50 dark:bg-gray-800">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <div className="flex items-center justify-center mb-4">
             <FireIcon className="w-8 h-8 text-yellow-500 mr-3" />

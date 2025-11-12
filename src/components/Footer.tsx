@@ -12,19 +12,19 @@ const Footer = () => {
         <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-l from-brand-primary/10 to-brand-primary/10 rounded-full blur-3xl"></div>
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-r from-brand-primary/5 to-brand-primary/5 rounded-full blur-3xl"></div>
 
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
             {/* Company Info */}
             <div className="lg:col-span-2">
               <Link href="/" className="inline-block mb-6 no-underline hover:no-underline focus:no-underline">
                 <SmartImage src="/logo.webp" alt="Reality Canvas" width={1200} height={100} className="w-56 h-22" />
               </Link>
-              <p className="text-gray-300 text-lg leading-relaxed mb-6 max-w-md">
+              <p className="text-gray-300 text-sm leading-relaxed mb-6 max-w-xs lg:ml-8">
                 Your trusted partner in finding the perfect property that
                 matches your lifestyle and investment goals. Experience the
                 future of real estate.
               </p>
-              <div className="flex space-x-4">
+              <div className="flex space-x-4 lg:ml-8">
                 <Link
                   href="https://www.facebook.com/realtycanvasofficial"
                   target="_blank"
@@ -245,19 +245,19 @@ const Footer = () => {
             </div>
             <div className="flex space-x-6">
               <Link
-                href="#"
+                href="/privacy-policy"
                 className="text-gray-400 hover:text-white transition-colors duration-200"
               >
                 Privacy Policy
               </Link>
               <Link
-                href="#"
+                href="/terms-of-service"
                 className="text-gray-400 hover:text-white transition-colors duration-200"
               >
                 Terms of Service
               </Link>
               <Link
-                href="#"
+                href="/cookie-policy"
                 className="text-gray-400 hover:text-white transition-colors duration-200"
               >
                 Cookie Policy

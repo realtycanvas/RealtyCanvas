@@ -50,8 +50,8 @@ export default function NewsletterSection() {
       <div className="absolute top-10 left-10 w-32 h-32 bg-white/10 rounded-full blur-3xl"></div>
       <div className="absolute bottom-10 right-10 w-40 h-40 bg-white/5 rounded-full blur-3xl"></div>
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="max-w-4xl mx-auto text-center">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className=" text-center">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
             Stay Updated with Latest Properties
           </h2>
@@ -60,7 +60,7 @@ export default function NewsletterSection() {
             delivered straight to your inbox
           </p>
 
-          <form onSubmit={handleSubscribe} className="max-w-7xl mx-auto">
+          <form onSubmit={handleSubscribe} className="">
             <div className="flex flex-col sm:flex-row gap-4">
               <input
                 type="email"

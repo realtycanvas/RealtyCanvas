@@ -8,6 +8,9 @@ import {
   PropertySearchSection,
   BenefitsSection,
   FeaturedProjectsSection,
+  CommercialProjectsSection,
+  ResidentialProjectsSection,
+  FAQSection,
   ServicesSection,
   NewsletterSection,
   ContactSection,
@@ -44,6 +47,8 @@ type DataSources = { featuredSource: Source; trendingSource: Source };
 type HomePageData = {
   featuredProjects: Project[];
   trendingProjects: Project[];
+  commercialProjects: Project[];
+  residentialProjects: Project[];
   diagnostics: FeaturedDiagnosticsData;
   dataSources: DataSources;
 };
@@ -120,6 +125,8 @@ async function getHomePageData(): Promise<HomePageData> {
           return {
             featuredProjects: projects.slice(0, 9),
             trendingProjects: projects.slice(0, 6),
+            commercialProjects: projects.filter((p: any) => p.category === 'COMMERCIAL').slice(0, 6),
+            residentialProjects: projects.filter((p: any) => p.category === 'RESIDENTIAL').slice(0, 6),
             diagnostics: { missingSlugs: [], mismatchedTitles: [] },
             dataSources,
           };
@@ -131,6 +138,8 @@ async function getHomePageData(): Promise<HomePageData> {
       return {
         featuredProjects: [],
         trendingProjects: [],
+        commercialProjects: [],
+        residentialProjects: [],
         diagnostics: { missingSlugs: [], mismatchedTitles: [] },
         dataSources,
       };
@@ -336,11 +345,59 @@ async function getHomePageData(): Promise<HomePageData> {
         ? featuredProjects.slice(0, 6)
         : featuredProjectsRaw.slice(0, 6).map(p => ({ ...p, createdAt: p.createdAt.toISOString() }));
 
+    // Fetch commercial projects
+    const commercialProjectsRaw = await prisma.project.findMany({
+      where: { category: 'COMMERCIAL' },
+      orderBy: [{ updatedAt: 'desc' }],
+      take: 12,
+      select: {
+        id: true,
+        slug: true,
+        title: true,
+        subtitle: true,
+        category: true,
+        status: true,
+        address: true,
+        city: true,
+        state: true,
+        featuredImage: true,
+        createdAt: true,
+        minRatePsf: true,
+        maxRatePsf: true,
+      },
+    });
+    const commercialProjects = commercialProjectsRaw.map(p => ({ ...p, createdAt: p.createdAt.toISOString() })).slice(0, 6);
+
+    // Fetch residential projects
+    const residentialProjectsRaw = await prisma.project.findMany({
+      where: { category: 'RESIDENTIAL' },
+      orderBy: [{ updatedAt: 'desc' }],
+      take: 12,
+      select: {
+        id: true,
+        slug: true,
+        title: true,
+        subtitle: true,
+        category: true,
+        status: true,
+        address: true,
+        city: true,
+        state: true,
+        featuredImage: true,
+        createdAt: true,
+        minRatePsf: true,
+        maxRatePsf: true,
+      },
+    });
+    const residentialProjects = residentialProjectsRaw.map(p => ({ ...p, createdAt: p.createdAt.toISOString() })).slice(0, 6);
+
     const diagnostics: FeaturedDiagnosticsData = { missingSlugs, mismatchedTitles };
     dataSources = { featuredSource: 'db', trendingSource: 'db' };
     return {
       featuredProjects,
       trendingProjects: finalTrendingProjects,
+      commercialProjects,
+      residentialProjects,
       diagnostics,
       dataSources,
     };
@@ -350,6 +407,8 @@ async function getHomePageData(): Promise<HomePageData> {
     return {
       featuredProjects: [],
       trendingProjects: [],
+      commercialProjects: [],
+      residentialProjects: [],
       diagnostics: { missingSlugs: [], mismatchedTitles: [] },
       dataSources,
     };
@@ -359,7 +418,7 @@ async function getHomePageData(): Promise<HomePageData> {
 // Server component with ISR
 export default async function Home() {
   // Fetch data on the server with ISR
-  const { featuredProjects, trendingProjects, diagnostics, dataSources } = await getHomePageData();
+  const { featuredProjects, trendingProjects, commercialProjects, residentialProjects, diagnostics, dataSources } = await getHomePageData();
 
   return (
     <main className="flex min-h-screen flex-col pt-16 bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
@@ -372,12 +431,18 @@ export default async function Home() {
       <FeaturedDiagnostics diagnostics={diagnostics} />
       {/* Featured Projects Section - Server-side rendered with ISR */}
       <FeaturedProjectsSection projects={featuredProjects} loading={false} />
+      {/* Commercial Projects */}
+      <CommercialProjectsSection projects={commercialProjects} loading={false} />
+      {/* Residential Projects */}
+      <ResidentialProjectsSection projects={residentialProjects} loading={false} />
       {/* Services Section */}
       <ServicesSection />
       {/* Newsletter Section */}
       <NewsletterSection />
       {/* Trending Projects Section - Server-side rendered with ISR */}
       <Sections projects={trendingProjects} loading={false} />
+      {/* FAQ Section */}
+      <FAQSection />
     </main>
   );
 }

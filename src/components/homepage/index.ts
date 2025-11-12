@@ -8,3 +8,6 @@ export { default as ServicesSection } from './ServicesSection';
 export { default as NewsletterSection } from './NewsletterSection';
 export { default as ContactSection } from './ContactSection';
 export { default as Sections } from './Sections';
+export { default as CommercialProjectsSection } from './CommercialProjectsSection';
+export { default as ResidentialProjectsSection } from './ResidentialProjectsSection';
+export { default as FAQSection } from './FAQSection';
