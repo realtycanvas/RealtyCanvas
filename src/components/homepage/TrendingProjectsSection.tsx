@@ -5,6 +5,7 @@ import Link from 'next/link';
 import ProjectCard from '@/components/ProjectCard';
 import { BrandButton } from '../ui/BrandButton';
 import { FireIcon } from '@heroicons/react/24/solid';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 
 type Project = {
   id: string;
@@ -41,64 +42,55 @@ export default function TrendingProjectsSection({ projects = [], loading = false
   return (
     <section className="py-20 bg-gray-50 dark:bg-gray-800">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <div className="flex items-center justify-center mb-4">
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center">
             <FireIcon className="w-8 h-8 text-yellow-500 mr-3" />
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white">
-              Trending
-              <span className="bg-gradient-to-r from-yellow-500 to-orange-500 bg-clip-text text-transparent">
-                {" "}
-                Projects
-              </span>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
+              Trending <span className="bg-gradient-to-r from-yellow-500 to-orange-500 bg-clip-text text-transparent">Projects</span>
             </h2>
           </div>
-          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
-            Explore the most popular and recently added projects that are gaining attention from buyers and investors
-          </p>
+          <Link href="/projects">
+            <BrandButton
+              variant="secondary"
+              size="sm"
+              className="rounded-2xl inline-flex items-center bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white border-none"
+            >
+              <FireIcon className="mr-2 w-5 h-5" />
+              View All
+            </BrandButton>
+          </Link>
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div
-                key={i}
-                className="bg-gray-200 dark:bg-gray-700 rounded-2xl h-96 animate-pulse"
-              ></div>
-            ))}
-          </div>
-        ) : trendingProjects.length > 0 ? (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-              {trendingProjects.map((project, index) => (
-                <div key={project.id} className="relative">
-                  {/* Trending Badge */}
-                  {index < 3 && (
-                    <div className="absolute -top-2 -right-2 z-10 bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center shadow-lg">
-                      <FireIcon className="w-3 h-3 mr-1" />
-                      #{index + 1} Trending
-                    </div>
-                  )}
-                  <ProjectCard project={project} />
-                </div>
+          <Carousel opts={{ align: 'start', dragFree: true }}>
+            <CarouselContent>
+              {Array.from({ length: 6 }).map((_, i) => (
+                <CarouselItem key={i} className="md:basis-1/2 lg:basis-1/3">
+                  <div className="bg-gray-200 dark:bg-gray-700 rounded-2xl h-[360px] animate-pulse" />
+                </CarouselItem>
               ))}
-            </div>
-            
-            <div className="text-center">
-              <Link href="/projects">
-                <BrandButton
-                  variant="secondary"
-                  size="lg"
-                  className="rounded-2xl inline-flex items-center bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white border-none"
-                >
-                  <FireIcon className="mr-2 w-5 h-5" />
-                  View All Projects
-                  <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                  </svg>
-                </BrandButton>
-              </Link>
-            </div>
-          </>
+            </CarouselContent>
+          </Carousel>
+        ) : trendingProjects.length > 0 ? (
+          <Carousel opts={{ align: 'start', dragFree: true }}>
+            <CarouselContent>
+              {trendingProjects.map((project, index) => (
+                <CarouselItem key={project.id} className="md:basis-1/2 lg:basis-1/3">
+                  <div className="relative">
+                    {index < 3 && (
+                      <div className="absolute top-2 right-2 z-10 bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center shadow-lg">
+                        <FireIcon className="w-3 h-3 mr-1" />
+                        #{index + 1} Trending
+                      </div>
+                    )}
+                    <ProjectCard project={project} />
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious />
+            <CarouselNext />
+          </Carousel>
         ) : (
           <div className="text-center py-16">
             <div className="w-24 h-24 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-6">

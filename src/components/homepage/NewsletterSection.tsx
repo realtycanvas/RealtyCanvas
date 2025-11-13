@@ -100,7 +100,8 @@ export default function NewsletterSection() {
             </p>
           </form>
 
-          <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/*
+           <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center">
               <div className="text-3xl font-bold mb-2">10K+</div>
               <div className="text-white/80">Newsletter Subscribers</div>
@@ -114,6 +115,7 @@ export default function NewsletterSection() {
               <div className="text-white/80">Deals & Offers</div>
             </div>
           </div>
+           */}
         </div>
       </div>
     </section>

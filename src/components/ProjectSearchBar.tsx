@@ -201,9 +201,9 @@ export default function ProjectSearchBar({ onSearch, className = '', compact = f
         {/* Search Button */}
         <button
           onClick={handleSearch}
-          className="w-full h-8 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors text-xs font-medium"
+          className="w-full h-6 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors text-xs font-medium"
         >
-          <MagnifyingGlassIcon className="w-4 h-4 mr-2 inline" />
+          <MagnifyingGlassIcon className="w-2 h-2 mr-2 inline" />
           Search Projects
         </button>
       </div>

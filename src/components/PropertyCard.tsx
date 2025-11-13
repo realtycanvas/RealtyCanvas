@@ -91,7 +91,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
       className="block h-full no-underline hover:no-underline focus:no-underline"
       onClick={handlePropertyClick}
     >
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300 h-full group cursor-pointer flex flex-col">
+      <div className="bg-white  rounded-2xl  overflow-hidden border border-gray-100  transition-all duration-300 h-full group cursor-pointer flex flex-col">
         {/* Image Section */}
         <div className="relative h-48 overflow-hidden flex-shrink-0">
           <ImageCarousel 
@@ -120,7 +120,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
           </button>
 
           {/* Hover Overlay */}
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300"></div>
+          {/* <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300"></div> */}
         </div>
 
         {/* Content Section */}

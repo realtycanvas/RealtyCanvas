@@ -126,9 +126,9 @@ function ProjectCardComponent({ project, priority = false }: ProjectCardProps) {
 
   return (
     <Link href={`/projects/${project.slug}`} prefetch className="block h-full no-underline hover:no-underline focus:no-underline" onClick={handleProjectClick}>
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md overflow-hidden border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300 h-full group cursor-pointer flex flex-col">
+      <div className="bg-white  rounded-2xl  overflow-hidden border border-gray-100  transition-all duration-300 group cursor-pointer flex flex-col">
         {/* Image Section */}
-        <div className="relative h-48 overflow-hidden flex-shrink-0">
+        <div className="relative aspect-[16/9] overflow-hidden flex-shrink-0">
           <Image
             src={project.featuredImage || '/placeholder-property.svg'}
             alt={project.title}
@@ -176,9 +176,9 @@ function ProjectCardComponent({ project, priority = false }: ProjectCardProps) {
         </div>
 
         {/* Content Section */}
-        <div className="p-4 flex flex-col flex-grow">
+        <div className="p-4 flex flex-col">
           {/* Title */}
-          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 line-clamp-2 group-hover:text-brand-primary dark:group-hover:text-brand-primary transition-colors ">
+          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 line-clamp-2 group-hover:text-brand-primary dark:group-hover:text-brand-primary transition-colors min-h-[3rem]">
             {project.title}
           </h3>
           
@@ -200,9 +200,9 @@ function ProjectCardComponent({ project, priority = false }: ProjectCardProps) {
 
         {/* Price Range */}
           {project.basePrice && (
-            <div className="mb-2 mt-auto">
+            <div className="mb-3 mt-2">
               <span className="text-lg font-semibold text-gray-900 dark:text-white">
-                Base Price:<span className="text-blue-600 text-xl py-10"> ₹{project.basePrice}</span>
+                Base Price:<span className="text-blue-600 text-xl"> ₹{project.basePrice}</span>
               </span>
             </div>
           )}

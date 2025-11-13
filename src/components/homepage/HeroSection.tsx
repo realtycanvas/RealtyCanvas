@@ -8,7 +8,7 @@ import ProjectSearchBar from "../ProjectSearchBar";
 export default function HeroSection() {
   return (
     <section 
-      className="relative overflow-hidden lg:mb-10 mb-2 min-h-screen h-screen max-h-screen flex items-center  py-0 lg:py-12"
+      className="relative overflow-hidden lg:mb-10 mb-2 h-[700px] md:h-screen  flex items-center justify-center  py-0 lg:py-12 mt-[-10vw] md:mt-0"
     >
      {/* Desktop Background Image */}
       <SmartImage 
@@ -26,7 +26,7 @@ export default function HeroSection() {
         alt="Hero Background Mobile"
         fill
         quality={100}
-        className="block sm:hidden object-cover object-center mt-[-10.5vw]"
+        className="block sm:hidden object-cover object-center "
         priority
       />
     
@@ -40,31 +40,31 @@ export default function HeroSection() {
       <div className="absolute bottom-32 right-16 w-40 h-40 bg-gradient-to-r from-brand-primary/20 to-brand-primary/20 rounded-full blur-3xl"></div>
       <div className="absolute top-1/3 right-1/4 w-24 h-24 bg-gradient-to-r from-brand-primary/20 to-brand-primary/20 rounded-full blur-2xl"></div> */}
 
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col justify-center h-full">
-        <div className="flex flex-col items-center justify-center text-center space-y-4  md:space-y-8">
+      <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col items-center justify-center h-full">
+        <div className="flex flex-col items-center justify-center text-center   lg:space-y-8">
           {/* Main Heading */}
-          <div className="space-y-3 sm:space-y-4">
-            <div className="flex flex-col sm:flex-row items-center mt-[-10vw] lg:mt-0 justify-center gap-1 sm:gap-2 md:gap-4">
-              <h1 className="text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight text-white">
+          <div className="lg:space-y-3 ">
+            <div className="flex flex-col sm:flex-row items-center  justify-center gap-1  md:gap-4">
+              <h1 className="text-3xl lg:text-5xl xl:text-6xl font-bold leading-tight text-white">
                 Find Your
               </h1>
-              <span className="text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight bg-gradient-to-r from-brand-primary to-brand-primary bg-clip-text text-transparent">
+              <span className="text-3xl lg:text-5xl xl:text-6xl font-bold leading-tight bg-gradient-to-r from-brand-primary to-brand-primary bg-clip-text text-transparent">
                 Dream Project
               </span>
             </div>
 
-            <p className="text-sm sm:text-base md:text-lg lg:text-xl font-bold lg:font-semibold text-white/90 leading-relaxed max-w-xl lg:max-w-2xl mx-auto px-2 sm:px-4">
+            <p className="text-xs  md:text-base  font-semibold text-white/90 leading-relaxed max-w-[280px] lg:max-w-2xl mx-auto px-2 pb-4 lg:pb-0">
               Discover premium residential homes and commercial spaces across Gurgaon with India&apos;s most trusted real estate consultant.
             </p>
           </div>
 
           {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 md:gap-4 justify-center items-center w-full max-w-md sm:max-w-none">
+          <div className="flex flex-row gap-4  md:gap-4 justify-center items-center w-full max-w-[200px] ">
             <Link href="/projects" className="w-full sm:w-auto">
               <BrandButton
                 variant="primary"
                 size="lg"
-                className="rounded-xl sm:rounded-2xl text-xs sm:text-sm md:text-base px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 w-full sm:w-auto sm:min-w-[160px]"
+                className="rounded-xl  text-xs  md:text-sm px-4  md:px-8 py-2  md:py-4 w-full sm:w-auto sm:min-w-[160px]"
               >
                 Explore Projects
               </BrandButton>
@@ -73,7 +73,7 @@ export default function HeroSection() {
               <BrandButton
                 variant="primary"
                 size="lg"
-                className="rounded-xl sm:rounded-2xl text-xs sm:text-sm md:text-base px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 w-full sm:w-auto sm:min-w-[160px]"
+                className="rounded-xl  text-xs  md:text-sm px-4  md:px-8 py-2  md:py-4 w-full sm:w-auto sm:min-w-[160px]"
               >
                 Get In Touch
               </BrandButton>
@@ -81,7 +81,7 @@ export default function HeroSection() {
           </div>
           
           {/* Search Bar */}
-          <div className="w-full max-w-sm sm:max-w-2xl md:max-w-xl mx-auto mt-3 sm:mt-4 md:mt-6 lg:mt-8 px-2 sm:px-0">
+          <div className="w-full max-w-[300px]  md:max-w-xl mx-auto mt-3  px-2 sm:px-0 ">
             <ProjectSearchBar
               onSearch={(filters) => {
                 // Navigate to projects page with filters
