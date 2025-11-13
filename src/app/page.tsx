@@ -438,7 +438,7 @@ export default async function Home() {
       {/* Services Section */}
       <ServicesSection />
       {/* Newsletter Section */}
-      <NewsletterSection />
+      {/* <NewsletterSection /> */}
       {/* Trending Projects Section - Server-side rendered with ISR */}
       <Sections projects={trendingProjects} loading={false} />
       {/* FAQ Section */}

@@ -48,7 +48,9 @@ export default function FAQSection({ faqs }: { faqs?: FAQ[] }) {
     <section className="py-20 bg-white dark:bg-gray-900">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-10">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">Frequently Asked Questions</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
+            Frequently  <span className="bg-gradient-to-r from-brand-primary to-brand-primary bg-clip-text text-transparent">Asked Questions</span>
+          </h2>
         </div>
         <div className="space-y-4">
           {items.map((faq, i) => (

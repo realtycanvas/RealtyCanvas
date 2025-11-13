@@ -45,7 +45,7 @@ export default function ServicesSection() {
 
       <div className="max-w-6xl mx-auto px-4   relative z-10">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6">
             How We Make 
             <span className="bg-gradient-to-r from-brand-primary to-brand-primary bg-clip-text text-transparent">
               {" "}

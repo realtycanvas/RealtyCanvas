@@ -1,10 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { MagnifyingGlassIcon, BuildingOfficeIcon, CurrencyDollarIcon } from '@heroicons/react/24/outline';
+import { MagnifyingGlassIcon, BuildingOfficeIcon, CurrencyDollarIcon, HomeModernIcon } from '@heroicons/react/24/outline';
 import { BrandButton } from './ui/BrandButton';
 import { Menu, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
+import { Banknote } from 'lucide-react';
 
 interface ProjectSearchBarProps {
   onSearch?: (filters: SearchFilters) => void;
@@ -123,7 +124,7 @@ export default function ProjectSearchBar({ onSearch, className = '', compact = f
           <label className="text-xs font-medium text-muted-foreground mb-1 block">Status</label>
           <Menu as="div" className="relative">
             <Menu.Button className="w-full flex items-center justify-between pl-8 pr-2 h-8 border border-input rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-ring text-xs">
-              <BuildingOfficeIcon className="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <HomeModernIcon className="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
               <span className="truncate">{statusDisplayNames[projectStatus] || projectStatus}</span>
               <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -163,7 +164,7 @@ export default function ProjectSearchBar({ onSearch, className = '', compact = f
           <label className="text-xs font-medium text-muted-foreground mb-1 block">Budget</label>
           <Menu as="div" className="relative">
             <Menu.Button className="w-full flex items-center justify-between pl-8 pr-2 h-8 border border-input rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-ring text-xs">
-              <CurrencyDollarIcon className="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Banknote className="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
               <span className="truncate">{selectedPriceRange.label}</span>
               <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -200,8 +201,9 @@ export default function ProjectSearchBar({ onSearch, className = '', compact = f
 
         {/* Search Button */}
         <button
+
           onClick={handleSearch}
-          className="w-full h-6 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors text-xs font-medium"
+          className="w-full h-4 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors text-xs font-medium"
         >
           <MagnifyingGlassIcon className="w-2 h-2 mr-2 inline" />
           Search Projects
@@ -213,7 +215,7 @@ export default function ProjectSearchBar({ onSearch, className = '', compact = f
   return (
     <div className={`bg-white/20 dark:bg-gray-800/20 backdrop-blur-md rounded-xl sm:rounded-2xl shadow-xl p-3 sm:p-4 border border-white/30 dark:border-gray-700/30 ${className}`}>
       {/* Search Inputs */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 items-end">
+      <div className="grid grid-cols-1 sm:grid-cols-4 gap-2 sm:gap-3 items-end">
 
         {/* Project Category Dropdown */}
         <div className="space-y-1 sm:space-y-2">
@@ -334,19 +336,17 @@ export default function ProjectSearchBar({ onSearch, className = '', compact = f
             </Transition>
           </Menu>
         </div>
-      </div>
-
-      {/* Search Button */}
-      <div className="mt-3 sm:mt-4 flex justify-center">
-        <BrandButton
-          onClick={handleSearch}
-          variant="primary"
-          size="lg"
-          className="rounded-xl sm:rounded-2xl px-4 sm:px-8 py-2 sm:py-3 font-semibold text-xs sm:text-sm shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 w-full sm:w-auto"
-        >
-          <MagnifyingGlassIcon className="w-4 sm:w-6 h-4 sm:h-6 mr-2 sm:mr-3" />
-          Search Projects
-        </BrandButton>
+        <div className="flex self-end">
+          <BrandButton
+            onClick={handleSearch}
+            variant="primary"
+            size="sm"
+            className="rounded-xl px-4 py-2 text-xs font-semibold w-full sm:w-auto"
+          >
+            <MagnifyingGlassIcon className="w-4 h-4 mr-2" />
+            Search Projects
+          </BrandButton>
+        </div>
       </div>
     </div>
   );
