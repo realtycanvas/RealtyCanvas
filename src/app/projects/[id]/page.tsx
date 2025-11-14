@@ -23,7 +23,7 @@ type Unit = {
 // Generate dynamic metadata for Open Graph sharing
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
-  const slug = decodeURIComponent(id).trim().toLowerCase();
+  const slug = decodeURIComponent(id).trim();
   
   try {
     const project = await withWarmCache<Project>(slug, () => getProjectData(slug), { logLabel: 'metadata' });
@@ -225,7 +225,7 @@ type Project = {
 // Server component that fetches data and renders the client component
 export default async function ProjectDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id: raw } = await params;
-  const slug = decodeURIComponent(raw).trim().toLowerCase();
+  const slug = decodeURIComponent(raw).trim();
 
   const project = await withWarmCache<Project>(slug, () => getProjectData(slug), { logLabel: 'page' });
 
@@ -239,8 +239,8 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
 // Server-side data fetching function with optimized queries
 async function getProjectData(slug: string): Promise<Project | null> {
   try {
-    const project = await prisma.project.findUnique({
-      where: { slug },
+    const project = await prisma.project.findFirst({
+      where: { slug: { equals: slug, mode: 'insensitive' } },
       include: {
         units: {
           select: {
