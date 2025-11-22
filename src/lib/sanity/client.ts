@@ -12,7 +12,7 @@ export const client = createClient({
   projectId: isDevelopmentMode ? 'mock-project' : projectId,
   dataset: isDevelopmentMode ? 'mock-dataset' : dataset,
   apiVersion,
-  useCdn: true,
+  useCdn: false, // Disable CDN to get fresh data
   token: process.env.SANITY_API_TOKEN,
 })
 

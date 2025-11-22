@@ -10,6 +10,9 @@ export const metadata: Metadata = {
   description: 'Real estate insights, market trends, and expert advice from RealityCanvas.',
 }
 
+// Revalidate every 60 seconds (ISR) to get fresh blog posts
+export const revalidate = 60
+
 // Skeleton loader component
 function BlogPostSkeleton() {
   return (
