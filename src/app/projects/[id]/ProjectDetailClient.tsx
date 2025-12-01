@@ -277,7 +277,11 @@ export default function ProjectDetailClient({
     e.preventDefault();
     setLeadSubmitting(true);
     try {
-      await submitLeadCapture(leadForm);
+      await submitLeadCapture({
+        ...leadForm,
+        projectSlug: slug,
+        projectTitle: project.title,
+      });
       showToast("Thanks! We will contact you shortly.");
       setLeadForm({
         name: "",
@@ -521,6 +525,8 @@ export default function ProjectDetailClient({
                 </div>
               </div>
             </div>
+
+            {/* Inline Lead Capture - Moved to sidebar per request (removed from left) */}
 
             {/* Property Highlights */}
             {project.highlights.length > 0 && (
@@ -974,127 +980,79 @@ export default function ProjectDetailClient({
                 </div>
               </div>
 
-
-
-              {/* Inline Lead Capture Form */}
+              {/* Inline Lead Capture Form - replaced with property-context version */}
               <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg max-h-[80vh] overflow-y-auto">
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Request a Callback</h3>
-                <p className="text-gray-600 dark:text-gray-400 mb-4">Fill in your details and we’ll reach out.</p>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Request Info for {project.title}</h3>
+                <p className="text-gray-600 dark:text-gray-400 mb-4">Tell us how to reach you. We’ll share details about this property.</p>
                 <form onSubmit={submitLeadInline} className="space-y-3">
-                  {/* Property Type */}
-                  <div className="space-y-1.5">
-                    <label className="block text-xs font-medium text-gray-700">Property Type *</label>
-                    <div className="flex bg-gray-100 rounded-lg p-1">
-                      <button
-                        type="button"
-                        onClick={() => onLeadInput("propertyType", "COMMERCIAL")}
-                        className={`flex-1 py-1.5 px-3 rounded-md text-xs font-medium transition-all ${leadForm.propertyType === "COMMERCIAL" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:text-gray-800"
-                          }`}
-                      >
-                        🏢 Commercial
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => onLeadInput("propertyType", "RESIDENTIAL")}
-                        className={`flex-1 py-1.5 px-3 rounded-md text-xs font-medium transition-all ${leadForm.propertyType === "RESIDENTIAL" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:text-gray-800"
-                          }`}
-                      >
-                        🏠 Residential
-                      </button>
-                    </div>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => onLeadInput("propertyType", "COMMERCIAL")}
+                      className={`px-3 py-1 rounded-md text-xs border ${leadForm.propertyType === "COMMERCIAL" ? "bg-blue-600 text-white border-blue-600" : "bg-white text-gray-700 border-gray-300"}`}
+                    >
+                      Commercial
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => onLeadInput("propertyType", "RESIDENTIAL")}
+                      className={`px-3 py-1 rounded-md text-xs border ${leadForm.propertyType === "RESIDENTIAL" ? "bg-blue-600 text-white border-blue-600" : "bg-white text-gray-700 border-gray-300"}`}
+                    >
+                      Residential
+                    </button>
                   </div>
 
-                  <div className="space-y-1.5">
-                    <label className="block text-xs font-medium text-gray-700" htmlFor="lead-name">Name *</label>
-                    <Input id="lead-name" value={leadForm.name} onChange={(e) => onLeadInput("name", e.target.value)} required className="h-8 text-sm" />
+                  <div>
+                    <label htmlFor="lead-name-sidebar" className="block text-xs font-medium text-gray-700 dark:text-gray-300">Name</label>
+                    <Input id="lead-name-sidebar" value={leadForm.name} onChange={(e) => onLeadInput("name", e.target.value)} required className="h-8 text-sm" />
                   </div>
-
-                  <div className="space-y-1.5">
-                    <label className="block text-xs font-medium text-gray-700" htmlFor="lead-phone">Phone Number *</label>
-                    <Input id="lead-phone" type="tel" value={leadForm.phone} onChange={(e) => onLeadInput("phone", e.target.value)} required className="h-8 text-sm" />
+                  <div>
+                    <label htmlFor="lead-phone-sidebar" className="block text-xs font-medium text-gray-700 dark:text-gray-300">Phone</label>
+                    <Input id="lead-phone-sidebar" type="tel" value={leadForm.phone} onChange={(e) => onLeadInput("phone", e.target.value)} required className="h-8 text-sm" />
                   </div>
-
-                  <div className="space-y-1.5">
-                    <label className="block text-xs font-medium text-gray-700" htmlFor="lead-email">Email ID *</label>
-                    <Input id="lead-email" type="email" value={leadForm.email} onChange={(e) => onLeadInput("email", e.target.value)} required className="h-8 text-sm" />
+                  <div>
+                    <label htmlFor="lead-email-sidebar" className="block text-xs font-medium text-gray-700 dark:text-gray-300">Email</label>
+                    <Input id="lead-email-sidebar" type="email" value={leadForm.email} onChange={(e) => onLeadInput("email", e.target.value)} required className="h-8 text-sm" />
                   </div>
-
                   <div className="grid grid-cols-2 gap-2">
-                    <div className="space-y-1.5">
-                      <label className="block text-xs font-medium text-gray-700" htmlFor="lead-city">City *</label>
-                      <Input id="lead-city" value={leadForm.city} onChange={(e) => onLeadInput("city", e.target.value)} required className="h-8 text-sm" />
+                    <div>
+                      <label htmlFor="lead-city-sidebar" className="block text-xs font-medium text-gray-700 dark:text-gray-300">City</label>
+                      <Input id="lead-city-sidebar" value={leadForm.city} onChange={(e) => onLeadInput("city", e.target.value)} required className="h-8 text-sm" />
                     </div>
-                    <div className="space-y-1.5">
-                      <label className="block text-xs font-medium text-gray-700" htmlFor="lead-state">State *</label>
-                      <select
-                        id="lead-state"
-                        value={leadForm.state}
-                        onChange={(e) => onLeadInput("state", e.target.value)}
-                        required
-                        className="w-full h-8 px-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
-                      >
-                        <option value="">Select state</option>
-                        <option value="Andhra Pradesh">Andhra Pradesh</option>
-                        <option value="Arunachal Pradesh">Arunachal Pradesh</option>
-                        <option value="Assam">Assam</option>
-                        <option value="Bihar">Bihar</option>
-                        <option value="Chhattisgarh">Chhattisgarh</option>
-                        <option value="Goa">Goa</option>
-                        <option value="Gujarat">Gujarat</option>
+                    <div>
+                      <label htmlFor="lead-state-sidebar" className="block text-xs font-medium text-gray-700 dark:text-gray-300">State</label>
+                      <select id="lead-state-sidebar" className="w-full h-8 text-sm border rounded-md bg-white dark:bg-gray-700 dark:text-white" value={leadForm.state} onChange={(e) => onLeadInput("state", e.target.value)}>
+                        <option value="">Select State</option>
+                        <option value="Delhi">Delhi</option>
                         <option value="Haryana">Haryana</option>
-                        <option value="Himachal Pradesh">Himachal Pradesh</option>
-                        <option value="Jharkhand">Jharkhand</option>
-                        <option value="Karnataka">Karnataka</option>
-                        <option value="Kerala">Kerala</option>
-                        <option value="Madhya Pradesh">Madhya Pradesh</option>
-                        <option value="Maharashtra">Maharashtra</option>
-                        <option value="Manipur">Manipur</option>
-                        <option value="Meghalaya">Meghalaya</option>
-                        <option value="Mizoram">Mizoram</option>
-                        <option value="Nagaland">Nagaland</option>
-                        <option value="Odisha">Odisha</option>
+                        <option value="Uttar Pradesh">Uttar Pradesh</option>
                         <option value="Punjab">Punjab</option>
                         <option value="Rajasthan">Rajasthan</option>
-                        <option value="Sikkim">Sikkim</option>
-                        <option value="Tamil Nadu">Tamil Nadu</option>
+                        <option value="Maharashtra">Maharashtra</option>
+                        <option value="Karnataka">Karnataka</option>
                         <option value="Telangana">Telangana</option>
-                        <option value="Tripura">Tripura</option>
-                        <option value="Uttar Pradesh">Uttar Pradesh</option>
-                        <option value="Uttarakhand">Uttarakhand</option>
-                        <option value="West Bengal">West Bengal</option>
-                        <option value="Delhi">Delhi</option>
-                        <option value="Chandigarh">Chandigarh</option>
-                        <option value="Puducherry">Puducherry</option>
+                        <option value="Tamil Nadu">Tamil Nadu</option>
                       </select>
                     </div>
                   </div>
-
-                  <div className="space-y-1.5">
-                    <label className="block text-xs font-medium text-gray-700" htmlFor="lead-timeline">Purchase Timeline *</label>
-                    <select
-                      id="lead-timeline"
-                      value={leadForm.timeline}
-                      onChange={(e) => onLeadInput("timeline", e.target.value)}
-                      required
-                      className="w-full h-8 px-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
-                    >
-                      <option value="">Select your timeline</option>
-                      <option value="1-month">1 Month</option>
-                      <option value="3-months">3 Months</option>
-                      <option value="6-months">6 Months</option>
-                      <option value="more-than-6-months">More than 6 Months</option>
+                  <div>
+                    <label htmlFor="lead-timeline-sidebar" className="block text-xs font-medium text-gray-700 dark:text-gray-300">Purchase timeline</label>
+                    <select id="lead-timeline-sidebar" className="w-full h-8 text-sm border rounded-md bg-white dark:bg-gray-700 dark:text-white" value={leadForm.timeline} onChange={(e) => onLeadInput("timeline", e.target.value)}>
+                      <option value="">Select timeline</option>
+                      <option value="1-2 Weeks">1-2 Weeks</option>
+                      <option value="1 Month">1 Month</option>
+                      <option value="2-3 Months">2-3 Months</option>
+                      <option value="3-6 Months">3-6 Months</option>
+                      <option value="> 6 Months">More than 6 months</option>
                     </select>
                   </div>
 
-                  <div className="flex gap-2 pt-2">
-                    <Button type="submit" disabled={leadSubmitting} className="flex-1 h-9 text-sm bg-blue-600 hover:bg-blue-700 text-white">
-                      {leadSubmitting ? "Submitting..." : "Submit"}
-                    </Button>
-                  </div>
+                  <div className="text-xs text-gray-500">Property context will be attached automatically.</div>
+                  <Button type="submit" disabled={leadSubmitting} className="w-full">
+                    {leadSubmitting ? "Submitting..." : "Request Info"}
+                  </Button>
                 </form>
-                <p className="text-xs text-gray-500 text-center mt-3">We respect your privacy. Your information will be used only to provide you with property recommendations.</p>
               </div>
-
 
             </div>
           </div>

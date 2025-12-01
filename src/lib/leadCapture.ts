@@ -10,6 +10,10 @@ export type LeadCapturePayload = {
   propertyType: 'COMMERCIAL' | 'RESIDENTIAL';
   city: string;
   state: string;
+  // Optional contextual fields to identify source property
+  projectSlug?: string;
+  projectTitle?: string;
+  sourcePath?: string;
 };
 
 export type LeadCaptureResponse = {
@@ -31,10 +35,16 @@ export async function submitLeadCapture(payload: LeadCapturePayload): Promise<Le
     }
   }
 
+  // Add source path automatically when running in browser
+  const enrichedPayload = {
+    ...payload,
+    sourcePath: payload.sourcePath ?? (typeof window !== 'undefined' ? window.location.pathname : undefined),
+  };
+
   const res = await fetch('/api/lead-capture', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
+    body: JSON.stringify(enrichedPayload),
   });
 
   const data = (await res.json()) as LeadCaptureResponse;

@@ -13,6 +13,7 @@ describe('submitLeadCapture', () => {
 
   beforeEach(() => {
     (global as any).fetch = jest.fn();
+    (global as any).window = undefined;
   });
 
   it('submits lead and returns success message', async () => {
@@ -40,5 +41,20 @@ describe('submitLeadCapture', () => {
 
   it('validates required fields', async () => {
     await expect(submitLeadCapture({ ...payload, name: '' })).rejects.toThrow('Missing field: name');
+  });
+
+  it('includes project metadata and auto sourcePath when window is available', async () => {
+    (global as any).window = { location: { pathname: '/projects/m3m-altitude' } } as any;
+    (global as any).fetch.mockResolvedValue({
+      ok: true,
+      json: async () => ({ success: true }),
+    });
+
+    await submitLeadCapture({ ...payload, projectSlug: 'm3m-altitude', projectTitle: 'M3M Altitude' });
+    const call = (global as any).fetch.mock.calls[0];
+    const bodyObj = JSON.parse(call[1].body);
+    expect(bodyObj.projectSlug).toBe('m3m-altitude');
+    expect(bodyObj.projectTitle).toBe('M3M Altitude');
+    expect(bodyObj.sourcePath).toBe('/projects/m3m-altitude');
   });
 });

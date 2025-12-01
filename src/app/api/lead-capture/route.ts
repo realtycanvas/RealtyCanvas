@@ -3,7 +3,7 @@ import nodemailer from 'nodemailer';
 
 export async function POST(request: NextRequest) {
   try {
-    const { name, phone, email, timeline, propertyType, city, state } = await request.json();
+    const { name, phone, email, timeline, propertyType, city, state, projectSlug, projectTitle, sourcePath } = await request.json();
 
     // Validate required fields
     if (!name || !phone || !email || !propertyType || !city || !state) {
@@ -26,6 +26,19 @@ export async function POST(request: NextRequest) {
     });
 
     // Email content
+    const sourceInfoHtml = projectSlug || projectTitle || sourcePath
+      ? `
+            <div style="background: #fff7ed; padding: 16px; border-radius: 8px; margin-top: 12px; border-left: 4px solid #f59e0b;">
+              <p style="margin: 0; font-size: 15px; color: #7c2d12;">
+                <strong>🧭 Lead Source:</strong><br/>
+                ${projectTitle ? `Property: <strong>${projectTitle}</strong><br/>` : ''}
+                ${projectSlug ? `Slug: <code>${projectSlug}</code><br/>` : ''}
+                ${sourcePath ? `Page: <code>${sourcePath}</code>` : ''}
+              </p>
+            </div>
+        `
+      : '';
+
     const mailOptions = {
       from: process.env.GODADDY_EMAIL_USER,
       to: 'sales@realtycanvas.in',
@@ -58,6 +71,7 @@ export async function POST(request: NextRequest) {
                 • Timeline: ${timeline || 'Ask about their timeline'}
               </p>
             </div>
+            ${sourceInfoHtml}
           </div>
           
           <div style="background: #333; color: white; padding: 15px; border-radius: 0 0 10px 10px; text-align: center; font-size: 12px;">
@@ -78,6 +92,8 @@ Lead Details:
 - Timeline: ${timeline || 'Not specified'}
 
 Lead captured on: ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })} IST
+Source:
+${projectTitle ? `- Property: ${projectTitle}\n` : ''}${projectSlug ? `- Slug: ${projectSlug}\n` : ''}${sourcePath ? `- Page: ${sourcePath}\n` : ''}
       `,
     };
 
@@ -93,6 +109,9 @@ Lead captured on: ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata
       city,
       state,
       timeline,
+      projectSlug,
+      projectTitle,
+      sourcePath,
       timestamp: new Date().toISOString(),
     });
 
