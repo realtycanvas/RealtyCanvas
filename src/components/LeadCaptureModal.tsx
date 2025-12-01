@@ -11,7 +11,7 @@ interface FormData {
   phone: string;
   email: string;
   timeline: string;
-  propertyType: 'COMMERCIAL' | 'RESIDENTIAL';
+  propertyType: 'COMMERCIAL' | 'RESIDENTIAL' | '';
   city: string;
   state: string;
 }
@@ -25,7 +25,7 @@ export default function LeadCaptureModal() {
     phone: '',
     email: '',
     timeline: '',
-    propertyType: 'COMMERCIAL',
+    propertyType: '',
     city: '',
     state: '',
   });
@@ -94,7 +94,7 @@ export default function LeadCaptureModal() {
            phone: '',
            email: '',
            timeline: '',
-           propertyType: 'COMMERCIAL',
+           propertyType: '',
            city: '',
            state: '',
          });
@@ -144,34 +144,36 @@ export default function LeadCaptureModal() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-3 mt-3">
-          {/* Property Type Tabs */}
-          <div className="space-y-1.5">
-            <label className="block text-xs font-medium text-gray-700">Property Type *</label>
-            <div className="flex bg-gray-100 rounded-lg p-1">
-              <button
-                 type="button"
-                 onClick={() => handleInputChange('propertyType', 'COMMERCIAL')}
-                 className={`flex-1 py-1.5 px-3 rounded-md text-xs font-medium transition-all ${
-                   formData.propertyType === 'COMMERCIAL'
-                     ? 'bg-white text-blue-600 shadow-sm'
-                     : 'text-gray-600 hover:text-gray-800'
-                 }`}
-               >
-                 🏢 Commercial
-               </button>
-               <button
-                 type="button"
-                 onClick={() => handleInputChange('propertyType', 'RESIDENTIAL')}
-                 className={`flex-1 py-1.5 px-3 rounded-md text-xs font-medium transition-all ${
-                   formData.propertyType === 'RESIDENTIAL'
-                     ? 'bg-white text-blue-600 shadow-sm'
-                     : 'text-gray-600 hover:text-gray-800'
-                 }`}
-               >
-                 🏠 Residential
-               </button>
+          {/* Property Type Radios */}
+          <fieldset className="space-y-1.5">
+            <legend className="block text-xs font-medium text-gray-700">Property Type *</legend>
+            <div className="flex items-center gap-4">
+              <label className="inline-flex items-center gap-2 text-xs text-gray-700">
+                <input
+                  type="radio"
+                  name="propertyType"
+                  value="COMMERCIAL"
+                  checked={formData.propertyType === 'COMMERCIAL'}
+                  onChange={() => handleInputChange('propertyType', 'COMMERCIAL')}
+                  required
+                  className="accent-blue-600"
+                />
+                <span>🏢 Commercial</span>
+              </label>
+              <label className="inline-flex items-center gap-2 text-xs text-gray-700">
+                <input
+                  type="radio"
+                  name="propertyType"
+                  value="RESIDENTIAL"
+                  checked={formData.propertyType === 'RESIDENTIAL'}
+                  onChange={() => handleInputChange('propertyType', 'RESIDENTIAL')}
+                  required
+                  className="accent-blue-600"
+                />
+                <span>🏠 Residential</span>
+              </label>
             </div>
-          </div>
+          </fieldset>
 
           <div className="space-y-1.5">
             <label htmlFor="name" className="block text-xs font-medium text-gray-700">Name *</label>

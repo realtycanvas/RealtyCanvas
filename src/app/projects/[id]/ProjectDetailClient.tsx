@@ -253,7 +253,7 @@ export default function ProjectDetailClient({
     phone: string;
     email: string;
     timeline: string;
-    propertyType: "COMMERCIAL" | "RESIDENTIAL";
+    propertyType: "COMMERCIAL" | "RESIDENTIAL" | "";
     city: string;
     state: string;
   };
@@ -263,7 +263,7 @@ export default function ProjectDetailClient({
     phone: "",
     email: "",
     timeline: "",
-    propertyType: project.category?.toUpperCase() === "RESIDENTIAL" ? "RESIDENTIAL" : "COMMERCIAL",
+    propertyType: "",
     city: project.city || "",
     state: project.state || "",
   });
@@ -273,12 +273,28 @@ export default function ProjectDetailClient({
     setLeadForm((prev) => ({ ...prev, [field]: value }));
   };
 
+  // Narrow propertyType for payload submission
+  const isValidPropertyType = (
+    t: LeadFormData["propertyType"]
+  ): t is "COMMERCIAL" | "RESIDENTIAL" => t === "COMMERCIAL" || t === "RESIDENTIAL";
+
   const submitLeadInline = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    // Validate property type before submission to satisfy payload typing
+    if (!isValidPropertyType(leadForm.propertyType)) {
+      showToast("Please select a property type.");
+      return;
+    }
     setLeadSubmitting(true);
     try {
       await submitLeadCapture({
-        ...leadForm,
+        name: leadForm.name,
+        phone: leadForm.phone,
+        email: leadForm.email,
+        timeline: leadForm.timeline,
+        propertyType: leadForm.propertyType, // Now narrowed to correct union
+        city: leadForm.city,
+        state: leadForm.state,
         projectSlug: slug,
         projectTitle: project.title,
       });
@@ -288,7 +304,7 @@ export default function ProjectDetailClient({
         phone: "",
         email: "",
         timeline: "",
-        propertyType: project.category?.toUpperCase() === "RESIDENTIAL" ? "RESIDENTIAL" : "COMMERCIAL",
+        propertyType: "",
         city: project.city || "",
         state: project.state || "",
       });
@@ -985,22 +1001,35 @@ export default function ProjectDetailClient({
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Request Info for {project.title}</h3>
                 <p className="text-gray-600 dark:text-gray-400 mb-4">Tell us how to reach you. We’ll share details about this property.</p>
                 <form onSubmit={submitLeadInline} className="space-y-3">
-                  <div className="flex gap-2">
-                    <button
-                      type="button"
-                      onClick={() => onLeadInput("propertyType", "COMMERCIAL")}
-                      className={`px-3 py-1 rounded-md text-xs border ${leadForm.propertyType === "COMMERCIAL" ? "bg-blue-600 text-white border-blue-600" : "bg-white text-gray-700 border-gray-300"}`}
-                    >
-                      Commercial
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => onLeadInput("propertyType", "RESIDENTIAL")}
-                      className={`px-3 py-1 rounded-md text-xs border ${leadForm.propertyType === "RESIDENTIAL" ? "bg-blue-600 text-white border-blue-600" : "bg-white text-gray-700 border-gray-300"}`}
-                    >
-                      Residential
-                    </button>
-                  </div>
+                  <fieldset className="space-y-1.5">
+                    <legend className="block text-xs font-medium text-gray-700">Property Type *</legend>
+                    <div className="flex items-center gap-4">
+                      <label className="inline-flex items-center gap-2 text-xs text-gray-700">
+                        <input
+                          type="radio"
+                          name="propertyType"
+                          value="COMMERCIAL"
+                          checked={leadForm.propertyType === "COMMERCIAL"}
+                          onChange={() => onLeadInput("propertyType", "COMMERCIAL")}
+                          required
+                          className="accent-blue-600"
+                        />
+                        <span>Commercial</span>
+                      </label>
+                      <label className="inline-flex items-center gap-2 text-xs text-gray-700">
+                        <input
+                          type="radio"
+                          name="propertyType"
+                          value="RESIDENTIAL"
+                          checked={leadForm.propertyType === "RESIDENTIAL"}
+                          onChange={() => onLeadInput("propertyType", "RESIDENTIAL")}
+                          required
+                          className="accent-blue-600"
+                        />
+                        <span>Residential</span>
+                      </label>
+                    </div>
+                  </fieldset>
 
                   <div>
                     <label htmlFor="lead-name-sidebar" className="block text-xs font-medium text-gray-700 dark:text-gray-300">Name</label>
