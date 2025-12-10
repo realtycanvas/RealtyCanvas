@@ -99,7 +99,7 @@ const portableTextComponents = {
 export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
   const { slug } = await params
   const post = await getBlogPostBySlug(slug)
-  
+
   if (!post) {
     return {
       title: "Post Not Found",
@@ -119,10 +119,10 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const { slug } = await params
-  const categoryIds = await getBlogPostBySlug(slug).then(post => 
+  const categoryIds = await getBlogPostBySlug(slug).then(post =>
     post?.categories?.map(cat => cat._id) || []
   )
-  
+
   const [post, relatedPosts] = await Promise.all([
     getBlogPostBySlug(slug),
     getRelatedBlogPosts(slug, categoryIds, 3)
@@ -132,7 +132,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     notFound()
   }
 
-  const imageUrl = post.mainImage?.asset?.url || urlFor(post.mainImage).url()
+  const imageUrl = post.mainImage?.asset?.url || (post.mainImage ? urlFor(post.mainImage).url() : '')
 
   return (
     <div className="min-h-screen mt-20">
@@ -186,7 +186,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 })}
               </span>
             </div>
-            
+
             {post.readTime && (
               <div className="flex items-center gap-2">
                 <Clock className="w-5 h-5" />
@@ -197,7 +197,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               <div className="flex items-center gap-2">
                 {post.author.image ? (
                   <img
-                    src={post.author.image.asset?.url || urlFor(post.author.image).width(30).height(30).url()}
+                    src={post.author.image.asset?.url || (post.author.image ? urlFor(post.author.image).width(30).height(30).url() : '')}
                     alt={post.author.image.alt || post.author.name}
                     className="w-5 h-5 rounded-full object-contain"
                   />
@@ -220,7 +220,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       </div>
 
       {/* Featured Image */}
-      {post.mainImage && (
+      {post.mainImage && imageUrl && (
         <div className="relative h-[500px] overflow-hidden">
           <img
             src={imageUrl}
@@ -252,7 +252,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   <div className="w-16 h-16 rounded-full overflow-hidden flex-shrink-0 bg-gray-200 dark:bg-gray-700">
                     {post.author.image ? (
                       <img
-                        src={post.author.image.asset?.url || urlFor(post.author.image).width(128).height(128).url()}
+                        src={post.author.image.asset?.url || (post.author.image ? urlFor(post.author.image).width(128).height(128).url() : '')}
                         alt={post.author.image.alt || post.author.name}
                         className="w-full h-full object-cover"
                       />

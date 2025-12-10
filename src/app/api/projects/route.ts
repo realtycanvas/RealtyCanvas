@@ -38,27 +38,9 @@ export async function GET(request: NextRequest) {
       .digest('hex');
     
     // Ensure database is warmed up and ready; if not, serve warm cache if available
-    const isReady = await databaseWarmup.ensureReady();
-    if (!isReady) {
-      console.error('❌ Database warmup failed');
-      const cachedWarm = cache.get(cacheKey);
-      if (cachedWarm && (Date.now() - cachedWarm.timestamp) < CACHE_TTL) {
-        const etag = createHash('md5').update(JSON.stringify(cachedWarm.data)).digest('hex');
-        return NextResponse.json(cachedWarm.data, {
-          headers: {
-            'Cache-Control': 'public, max-age=30, stale-while-revalidate=180',
-            'ETag': etag,
-            'X-Cache': 'HIT',
-            'X-Fallback': 'warmup'
-          }
-        });
-      }
-      return NextResponse.json({
-        error: 'Database service is initializing. Please try again in a moment.',
-        projects: [],
-        pagination: { page, limit, totalCount: 0, totalPages: 0, hasMore: false }
-      }, { status: 503 });
-    }
+    // Warmup check removed to allow Prisma to handle connections natively
+    // const isReady = await databaseWarmup.ensureReady();
+    // if (!isReady) { ... }
     
     // Check cache with ETag support
     const cached = cache.get(cacheKey);
@@ -85,26 +67,10 @@ export async function GET(request: NextRequest) {
     }
 
     // Ensure database connection
-    const isConnected = await ensureDatabaseConnection(1);
-    if (!isConnected) {
-      const cachedConn = cache.get(cacheKey);
-      if (cachedConn && (Date.now() - cachedConn.timestamp) < CACHE_TTL) {
-        const etag = createHash('md5').update(JSON.stringify(cachedConn.data)).digest('hex');
-        return NextResponse.json(cachedConn.data, {
-          headers: {
-            'Cache-Control': 'public, max-age=30, stale-while-revalidate=180',
-            'ETag': etag,
-            'X-Cache': 'HIT',
-            'X-Fallback': 'connection'
-          }
-        });
-      }
-      return NextResponse.json({
-        error: 'Database unavailable',
-        projects: [],
-        pagination: { page, limit, totalCount: 0, totalPages: 0, hasMore: false }
-      }, { status: 503 });
-    }
+    // Connection check removed to avoid premature failure.
+    // Prisma has built-in connection pooling and robust retry logic.
+    // const isConnected = await ensureDatabaseConnection(1);
+    // if (!isConnected) { ... }
     
     console.log(`🔍 Fetching projects from DB (page=${page}, limit=${limit})`);
     
