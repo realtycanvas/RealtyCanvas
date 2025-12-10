@@ -135,7 +135,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const imageUrl = post.mainImage?.asset?.url || urlFor(post.mainImage).url()
 
   return (
-    <div className="min-h-screen mt-20  ">
+    <div className="min-h-screen mt-20">
       {/* Hero Section */}
       <div className="relative bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

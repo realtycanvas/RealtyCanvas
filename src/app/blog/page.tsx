@@ -47,10 +47,14 @@ async function getAllPosts(): Promise<BlogPost[]> {
 }
 
 export default async function BlogPage() {
-  const [featuredPosts, allPosts] = await Promise.all([
+  const [featuredPostsRaw, allPostsRaw] = await Promise.all([
     getFeaturedPosts(),
     getAllPosts()
   ])
+
+  // Filter out any null or undefined posts
+  const featuredPosts = featuredPostsRaw.filter((post): post is BlogPost => post != null && post.title != null)
+  const allPosts = allPostsRaw.filter((post): post is BlogPost => post != null && post.title != null)
 
   return (
     <div className="min-h-screen bg-gray-50 ">
@@ -69,7 +73,7 @@ export default async function BlogPage() {
                 Don't miss these hand-picked articles from our editorial team
               </p>
             </div>
-            
+
             <div className="space-y-12">
               {featuredPosts.slice(0, 2).map((post, index) => (
                 <FeaturedPost key={post._id} post={post} />
@@ -88,7 +92,7 @@ export default async function BlogPage() {
               Stay informed with our latest real estate market analysis and expert advice
             </p>
           </div>
-          
+
           {allPosts.length === 0 ? (
             <div className="text-center py-20">
               <div className="max-w-md mx-auto">
