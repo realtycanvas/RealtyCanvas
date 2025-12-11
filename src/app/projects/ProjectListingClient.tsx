@@ -443,6 +443,10 @@ export default function ProjectListingClient({ initialProjects, initialPaginatio
         // We only fetch when dependencies change.
         if (isFirstRender.current) {
             isFirstRender.current = false;
+            // If we have no initial projects, try fetching immediately
+            if (initialProjects.length === 0) {
+                fetchProjects();
+            }
             return;
         }
         fetchProjects();

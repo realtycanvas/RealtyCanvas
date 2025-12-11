@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   },
 };
 
-export const revalidate = 60; // Revalidate every minute
+export const dynamic = 'force-dynamic';
 
 async function getProjects(searchParams: { [key: string]: string | string[] | undefined }) {
   const page = typeof searchParams.page === 'string' ? parseInt(searchParams.page) : 1;
