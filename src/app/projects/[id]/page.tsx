@@ -4,6 +4,7 @@ import { unstable_noStore as noStore } from 'next/cache';
 import { prisma } from '@/lib/prisma';
 import { withWarmCache } from '@/lib/warm-cache-helper';
 import ProjectDetailClient from '@/app/projects/[id]/ProjectDetailClient';
+import JsonLd from '@/components/SEO/JsonLd';
 
 // Revalidate project detail pages every 5 minutes (ISR)
 export const revalidate = 300;
@@ -24,10 +25,10 @@ type Unit = {
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
   const slug = decodeURIComponent(id).trim().toLowerCase();
-  
+
   try {
     const project = await withWarmCache<Project>(slug, () => getProjectData(slug), { logLabel: 'metadata' });
-    
+
     if (!project) {
       // Minimal metadata to avoid broken head during transient failures
       return {
@@ -53,16 +54,16 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       (project as any).seoKeywords && (project as any).seoKeywords.length
         ? (project as any).seoKeywords
         : [
-            project.title,
-            project.developerName || '',
-            (project as any).locality || '',
-            project.city || '',
-            project.category.toLowerCase(),
-            'property',
-            'real estate',
-            'gurgaon',
-            'Gurgaon',
-          ].filter(Boolean);
+          project.title,
+          project.developerName || '',
+          (project as any).locality || '',
+          project.city || '',
+          project.category.toLowerCase(),
+          'property',
+          'real estate',
+          'gurgaon',
+          'Gurgaon',
+        ].filter(Boolean);
 
     // Ensure absolute OG/Twitter image URLs
     const ogImage =
@@ -220,6 +221,7 @@ type Project = {
   seoTitle?: string | null;
   seoDescription?: string | null;
   seoKeywords?: string[];
+  createdAt: string;
 };
 
 // Server component that fetches data and renders the client component
@@ -232,8 +234,47 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
   if (!project) {
     notFound();
   }
-  
-  return <ProjectDetailClient project={project} slug={slug} />;
+
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.realtycanvas.in';
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "RealEstateListing",
+    "name": project.title,
+    "description": project.seoDescription || project.description,
+    "image": project.featuredImage?.startsWith('http')
+      ? project.featuredImage
+      : `${baseUrl}${project.featuredImage?.startsWith('/') ? project.featuredImage : `/${project.featuredImage}`}`,
+    "url": `${baseUrl}/projects/${project.slug}`,
+    "datePosted": project.createdAt,
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": project.address,
+      "addressLocality": (project as any).locality || project.city,
+      "addressRegion": project.state,
+      "addressCountry": "IN"
+    },
+    "provider": {
+      "@type": "RealEstateAgent",
+      "name": "Realty Canvas",
+      "url": baseUrl
+    },
+    "offer": {
+      "@type": "Offer",
+      "priceCurrency": "INR",
+      "price": (project as any).basePrice ? String((project as any).basePrice).replace(/[^0-9.]/g, '') : undefined,
+      "availability": "https://schema.org/InStock"
+    }
+  };
+
+  return (
+    <>
+      <div style={{ display: 'none' }}>
+        <JsonLd data={jsonLd} />
+      </div>
+      <ProjectDetailClient project={project} slug={slug} />
+    </>
+  );
 }
 
 // Server-side data fetching function with optimized queries
@@ -327,7 +368,7 @@ async function getProjectData(slug: string): Promise<Project | null> {
         },
       },
     });
-    
+
     // Convert Date and string fields for client component compatibility
     if (!project) return null;
 
@@ -380,6 +421,7 @@ async function getProjectData(slug: string): Promise<Project | null> {
       seoTitle: (project as any).seoTitle ?? null,
       seoDescription: (project as any).seoDescription ?? null,
       seoKeywords: (project as any).seoKeywords ?? [],
+      createdAt: project.createdAt.toISOString(),
     };
 
     return normalized;

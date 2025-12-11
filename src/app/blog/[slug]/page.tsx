@@ -7,6 +7,7 @@ import { getBlogPostBySlug, getRelatedBlogPosts } from "@/lib/sanity/queries"
 import { urlFor } from "@/lib/sanity/client"
 import BlogPostCard from "@/components/blog/BlogPostCard"
 import ShareButton from "@/components/blog/ShareButton"
+import JsonLd from "@/components/SEO/JsonLd"
 
 interface BlogPostPageProps {
   params: Promise<{
@@ -134,8 +135,31 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   const imageUrl = post.mainImage?.asset?.url || (post.mainImage ? urlFor(post.mainImage).url() : '')
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": post.title,
+    "description": post.excerpt,
+    "image": imageUrl ? [imageUrl] : [],
+    "datePublished": post.publishedAt,
+    "author": {
+      "@type": "Person",
+      "name": post.author?.name || "Reality Canvas Team",
+      "url": post.author?.slug?.current ? `https://www.realtycanvas.in/author/${post.author.slug.current}` : undefined
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Reality Canvas",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://www.realtycanvas.in/logo.webp"
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen mt-20">
+      <JsonLd data={jsonLd} />
       {/* Hero Section */}
       <div className="relative bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

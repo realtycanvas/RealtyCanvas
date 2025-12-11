@@ -4,6 +4,7 @@ import { BlogPost } from '@/lib/sanity/types'
 import BlogHero from '@/components/blog/BlogHero'
 import FeaturedPost from '@/components/blog/FeaturedPost'
 import BlogPostCard from '@/components/blog/BlogPostCard'
+import JsonLd from '@/components/SEO/JsonLd'
 
 export const metadata: Metadata = {
   title: 'Blog | RealityCanvas',
@@ -56,8 +57,24 @@ export default async function BlogPage() {
   const featuredPosts = featuredPostsRaw.filter((post): post is BlogPost => post != null && post.title != null)
   const allPosts = allPostsRaw.filter((post): post is BlogPost => post != null && post.title != null)
 
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.realtycanvas.in';
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Reality Canvas Blog",
+    "description": "Real estate insights, market trends, and expert advice from RealityCanvas.",
+    "url": `${baseUrl}/blog`,
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "Reality Canvas",
+      "url": baseUrl
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 ">
+      <JsonLd data={jsonLd} />
       {/* Hero Section */}
       <BlogHero />
 
