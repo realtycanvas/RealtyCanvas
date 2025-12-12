@@ -57,6 +57,10 @@ export const metadata: Metadata = {
     description: "Find your dream property with Realty Canvas",
     images: ["https://www.realtycanvas.in/logo.webp"],
   },
+  metadataBase: new URL("https://www.realtycanvas.in"),
+  alternates: {
+    canonical: "./",
+  },
 };
 
 export default function RootLayout({

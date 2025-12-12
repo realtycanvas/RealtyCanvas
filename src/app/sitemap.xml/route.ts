@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getAllBlogPosts } from '@/lib/sanity/queries';
 
-const BASE_URL = 'https://www.realtycanvas.in/';
+const BASE_URL = 'https://www.realtycanvas.in';
 
 // Static pages that should be included in sitemap
 const staticPages = [
