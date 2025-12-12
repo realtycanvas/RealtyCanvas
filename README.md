@@ -136,3 +136,5 @@ src/
 ## License
 
 This project is licensed under the MIT License.
+
+-git push new-repo main -github
