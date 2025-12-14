@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getAllBlogPosts } from '@/lib/sanity/queries';
 
+export const revalidate = 3600; // Cache for 1 hour
+
 const BASE_URL = 'https://www.realtycanvas.in';
 
 // Static pages that should be included in sitemap
@@ -14,30 +16,8 @@ const staticPages = [
   '/services',
 ];
 
-// Cache for sitemap data with timestamps
-let sitemapCache: {
-  data: string;
-  timestamp: number;
-  projects: Array<{ slug: string; updatedAt: Date }>;
-  blogPosts: Array<{ slug: string; publishedAt: string }>;
-} | null = null;
-
-const CACHE_DURATION = 3600000; // 1 hour in milliseconds
-
 export async function GET() {
   try {
-    // Check if we have valid cached data
-    const now = Date.now();
-    if (sitemapCache && (now - sitemapCache.timestamp) < CACHE_DURATION) {
-      console.log('Serving sitemap from cache');
-      return new NextResponse(sitemapCache.data, {
-        headers: {
-          'Content-Type': 'application/xml',
-          'Cache-Control': 'public, max-age=3600, s-maxage=3600',
-        },
-      });
-    }
-
     console.log('Generating fresh sitemap...');
 
     // Use Promise.allSettled to prevent one failure from blocking the other
@@ -139,14 +119,6 @@ export async function GET() {
     .join('')}
 </urlset>`;
 
-    // Cache the generated sitemap
-    sitemapCache = {
-      data: sitemap,
-      timestamp: now,
-      projects,
-      blogPosts,
-    };
-
     console.log(`Sitemap generated with ${projects.length} projects and ${blogPosts.length} blog posts`);
 
     return new NextResponse(sitemap, {
@@ -157,17 +129,6 @@ export async function GET() {
     });
   } catch (error) {
     console.error('Error generating sitemap:', error);
-    
-    // Return cached data if available, even if expired
-    if (sitemapCache) {
-      console.log('Serving expired cache due to error');
-      return new NextResponse(sitemapCache.data, {
-        headers: {
-          'Content-Type': 'application/xml',
-          'Cache-Control': 'public, max-age=300, s-maxage=300', // Shorter cache for error case
-        },
-      });
-    }
     
     // Return a basic sitemap with just static pages if there's an error and no cache
     const basicSitemap = `<?xml version="1.0" encoding="UTF-8"?>

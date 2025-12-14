@@ -400,8 +400,12 @@ export async function GET(request: NextRequest) {
       }
     });
     
-  } catch (error) {
-    console.error('❌ Projects API error:', error);
+  } catch (error: any) {
+    console.error('Prisma error:', {
+      message: error.message,
+      code: error.code,
+      meta: error.meta,
+    });
     
     // Attempt 1: Serve any cached response
     try {

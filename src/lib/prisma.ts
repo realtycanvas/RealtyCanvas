@@ -9,7 +9,7 @@ const globalForPrisma = globalThis as unknown as {
 
 // Enhanced Prisma configuration with connection pooling and timeouts
 export const prisma =
-  globalForPrisma.prisma ||
+  globalForPrisma.prisma ??
   new PrismaClient({
     log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
     datasources: {
@@ -18,6 +18,10 @@ export const prisma =
       },
     },
   });
+
+if (process.env.NODE_ENV !== 'production') {
+  globalForPrisma.prisma = prisma;
+}
 
 // Graceful shutdown handling
 process.on('beforeExit', async () => {
@@ -117,5 +121,3 @@ export function enableQueryTiming() {
   });
   timingEnabled = true;
 }
-
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
