@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { prisma, ensureDatabaseConnection } from '@/lib/prisma';
 import { withDatabaseConnection, periodicHealthCheck } from '@/middleware/database';
 import { revalidatePath } from 'next/cache';
 import { clearWarmProject } from '@/lib/project-warm-cache';
@@ -115,6 +115,16 @@ async function getProjectHandler(req: NextRequest, { params }: { params: { id: s
     
     console.log(`🔍 Cache MISS for project: ${id} - fetching from DB`);
     
+    // Ensure database connection before querying
+    const connected = await ensureDatabaseConnection(2);
+    if (!connected) {
+      console.error(`❌ Database not connected for project API: ${id}`);
+      return NextResponse.json({
+        error: 'Database connection unavailable',
+        message: 'Service temporarily unavailable. Please try again later.'
+      }, { status: 503 });
+    }
+
     // Perform health check only if not in cache
     await periodicHealthCheck();
     

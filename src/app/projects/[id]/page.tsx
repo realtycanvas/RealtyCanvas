@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { unstable_noStore as noStore } from 'next/cache';
-import { prisma } from '@/lib/prisma';
+import { prisma, ensureDatabaseConnection } from '@/lib/prisma';
 import { withWarmCache } from '@/lib/warm-cache-helper';
 import ProjectDetailClient from '@/app/projects/[id]/ProjectDetailClient';
 import JsonLd from '@/components/SEO/JsonLd';
@@ -280,6 +280,13 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
 // Server-side data fetching function with optimized queries
 async function getProjectData(slug: string): Promise<Project | null> {
   try {
+    // Ensure database connection before querying
+    const connected = await ensureDatabaseConnection(2);
+    if (!connected) {
+      console.warn(`Database not connected for project: ${slug}`);
+      return null;
+    }
+
     const project = await prisma.project.findUnique({
       where: { slug },
       include: {

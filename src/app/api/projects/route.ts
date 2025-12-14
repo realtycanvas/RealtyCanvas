@@ -69,8 +69,21 @@ export async function GET(request: NextRequest) {
     // Ensure database connection
     // Connection check removed to avoid premature failure.
     // Prisma has built-in connection pooling and robust retry logic.
-    // const isConnected = await ensureDatabaseConnection(1);
-    // if (!isConnected) { ... }
+    const isConnected = await ensureDatabaseConnection(1);
+    if (!isConnected) {
+      console.warn('Database unavailable for projects list, serving fallback');
+      const fallbackProjects = require('@/data/fallback-projects.json');
+      return NextResponse.json({
+        projects: fallbackProjects,
+        pagination: { page: 1, limit: 6, totalCount: fallbackProjects.length, totalPages: 1, hasMore: false },
+        meta: { queryTime: 0, cached: false, fallback: true }
+      }, {
+        headers: {
+          'X-Fallback': 'static',
+          'Cache-Control': 'public, max-age=60'
+        }
+      });
+    }
     
     console.log(`🔍 Fetching projects from DB (page=${page}, limit=${limit})`);
     
