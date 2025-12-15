@@ -1,9 +1,54 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma, ensureDatabaseConnection, enableQueryTiming } from '@/lib/prisma';
+import { prisma, enableQueryTiming } from '@/lib/prisma';
 import { Prisma } from '@prisma/client';
 import { databaseWarmup } from '@/lib/database-warmup';
 import { createHash } from 'crypto';
 import { parseIndianPriceToNumber, isPriceWithinRange } from '@/lib/price';
+import { unstable_cache } from 'next/cache';
+
+// Use unstable_cache for database queries to improve performance and reduce DB load
+const getCachedProjects = unstable_cache(
+  async (page: number, limit: number, whereClause: any) => {
+    const skip = (page - 1) * limit;
+    
+    // Execute query and count in parallel
+    const [projects, totalCount] = await Promise.all([
+      prisma.project.findMany({
+        where: whereClause,
+        orderBy: [
+          { status: 'asc' }, // Active projects first
+          { updatedAt: 'desc' }
+        ],
+        skip,
+        take: limit,
+        select: {
+          id: true,
+          slug: true,
+          title: true,
+          subtitle: true,
+          category: true,
+          status: true,
+          address: true,
+          city: true,
+          state: true,
+          featuredImage: true,
+          createdAt: true,
+          updatedAt: true,
+          basePrice: true,
+          minRatePsf: true,
+          maxRatePsf: true,
+          developerName: true,
+          locality: true,
+        },
+      }),
+      prisma.project.count({ where: whereClause })
+    ]);
+
+    return { projects, totalCount };
+  },
+  ['projects-api-list'],
+  { revalidate: 60, tags: ['projects'] }
+);
 
 // Simple in-memory cache for better performance
 const cache = new Map<string, { data: any; timestamp: number }>();
@@ -66,25 +111,6 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    // Ensure database connection
-    // Connection check removed to avoid premature failure.
-    // Prisma has built-in connection pooling and robust retry logic.
-    const isConnected = await ensureDatabaseConnection(1);
-    if (!isConnected) {
-      console.warn('Database unavailable for projects list, serving fallback');
-      const fallbackProjects = require('@/data/fallback-projects.json');
-      return NextResponse.json({
-        projects: fallbackProjects,
-        pagination: { page: 1, limit: 6, totalCount: fallbackProjects.length, totalPages: 1, hasMore: false },
-        meta: { queryTime: 0, cached: false, fallback: true }
-      }, {
-        headers: {
-          'X-Fallback': 'static',
-          'Cache-Control': 'public, max-age=60'
-        }
-      });
-    }
-    
     console.log(`🔍 Fetching projects from DB (page=${page}, limit=${limit})`);
     
     // Build optimized where clause
@@ -133,7 +159,35 @@ export async function GET(request: NextRequest) {
 
     let responseData: any;
 
-    if (isBudgetFilterActive) {
+    // Check if we can use the cached fetcher (basic pagination only)
+    // Complex filters might blow up cache storage, so we only cache the "main" views
+    const isBasicList = !search && !category && !status && !city && !state && !isBudgetFilterActive;
+
+    if (isBasicList) {
+      const result = await getCachedProjects(page, limit, whereClause);
+      const { projects, totalCount } = result;
+
+      const totalPages = Math.ceil(totalCount / limit);
+      const hasMore = page < totalPages;
+
+      responseData = {
+        projects,
+        pagination: {
+          page,
+          limit,
+          totalCount,
+          totalPages,
+          hasMore,
+          hasPrevious: page > 1
+        },
+        meta: {
+          queryTime: Date.now() - startTime,
+          cached: true,
+          listMs: 0,
+          countMs: 0,
+        }
+      };
+    } else if (isBudgetFilterActive) {
       // Fetch a larger set then filter by parsed basePrice in memory.
       // Cap to a safe upper bound to avoid heavy queries.
       // Prefer DB-side filtering when numeric price columns exist (priceMin/priceMax)
@@ -477,14 +531,14 @@ export async function POST(request: NextRequest) {
     }
 
     // Double-check with connection test
-    const isConnected = await ensureDatabaseConnection(2);
-    if (!isConnected) {
-      console.error('❌ Database connection failed for project creation');
-      return NextResponse.json({
-        error: 'Database connection error. Please try again.',
-        details: 'Connection could not be established'
-      }, { status: 503 });
-    }
+    // const isConnected = await ensureDatabaseConnection(2);
+    // if (!isConnected) {
+    //   console.error('❌ Database connection failed for project creation');
+    //   return NextResponse.json({
+    //     error: 'Database connection error. Please try again.',
+    //     details: 'Connection could not be established'
+    //   }, { status: 503 });
+    // }
 
     const body = await request.json();
 

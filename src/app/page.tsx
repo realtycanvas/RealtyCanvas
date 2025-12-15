@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { prisma, ensureDatabaseConnection } from '@/lib/prisma';
+import { prisma } from '@/lib/prisma';
 import { FeaturedDiagnostics } from '@/components/homepage';
 import { AdminFallbackBanner } from '@/components/homepage';
 // Homepage Components
@@ -108,43 +108,7 @@ export const metadata: Metadata = {
 async function getHomePageData(): Promise<HomePageData> {
   try {
     let dataSources: DataSources = { featuredSource: 'db', trendingSource: 'db' };
-    // Check database connection first
-    const isConnected = await ensureDatabaseConnection(3);
-    if (!isConnected) {
-      console.error('Database connection failed for homepage data');
-      // Attempt to use API cache fallback to avoid empty homepage
-      try {
-        const res = await fetch(`${baseUrl}/api/projects?limit=12`, { cache: 'no-store' });
-        if (res.ok) {
-          const data = await res.json();
-          const projects = (data?.projects || []).map((p: any) => ({
-            ...p,
-            createdAt: typeof p.createdAt === 'string' ? p.createdAt : new Date(p.createdAt).toISOString(),
-          }));
-          dataSources = { featuredSource: 'api', trendingSource: 'api' };
-          return {
-            featuredProjects: projects.slice(0, 9),
-            trendingProjects: projects.slice(0, 6),
-            commercialProjects: projects.filter((p: any) => p.category === 'COMMERCIAL').slice(0, 6),
-            residentialProjects: projects.filter((p: any) => p.category === 'RESIDENTIAL').slice(0, 6),
-            diagnostics: { missingSlugs: [], mismatchedTitles: [] },
-            dataSources,
-          };
-        }
-      } catch (e) {
-        console.error('API fallback failed for homepage data:', e);
-      }
-      dataSources = { featuredSource: 'fallback', trendingSource: 'fallback' };
-      return {
-        featuredProjects: [],
-        trendingProjects: [],
-        commercialProjects: [],
-        residentialProjects: [],
-        diagnostics: { missingSlugs: [], mismatchedTitles: [] },
-        dataSources,
-      };
-    }
-
+    
     // Featured project titles to keep (editorial curation)
     const featuredProjectTitles = [
       'Elan The Presidential',

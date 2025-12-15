@@ -41,70 +41,7 @@ process.on('SIGTERM', async () => {
   process.exit(0);
 });
 
-// Connection health check function
-export async function checkDatabaseConnection() {
-  try {
-    // Race against a timeout to prevent hanging checks
-    const check = prisma.$queryRaw`SELECT 1`;
-    const timeout = new Promise((_, reject) => 
-      setTimeout(() => reject(new Error('Connection check timed out')), 5000)
-    );
-    
-    await Promise.race([check, timeout]);
-    return { status: 'connected', timestamp: new Date().toISOString() };
-  } catch (error) {
-    console.error('Database connection check failed:', error);
-    return { status: 'disconnected', error: error instanceof Error ? error.message : String(error), timestamp: new Date().toISOString() };
-  }
-}
-
-// Auto-reconnection with retry logic
-export async function ensureDatabaseConnection(retries = 3) {
-  for (let i = 0; i < retries; i++) {
-    try {
-      const health = await checkDatabaseConnection();
-      if (health.status === 'connected') {
-        return true;
-      }
-
-      // If check fails, attempt to force reconnection
-      console.warn(`Database connection check failed (attempt ${i + 1}/${retries}). resetting connection...`);
-      
-      try {
-        // Force disconnect to clear stale connections from the pool
-        await prisma.$disconnect();
-        // Small delay to allow cleanup
-        await new Promise(resolve => setTimeout(resolve, 200));
-        // Explicitly connect (although Prisma connects lazily, this helps verify immediately)
-        await prisma.$connect();
-        
-        // Re-verify immediately
-        const recheck = await checkDatabaseConnection();
-        if (recheck.status === 'connected') {
-          console.log('Database connection recovered successfully.');
-          return true;
-        }
-      } catch (reconnectError) {
-        console.error(`Reconnection attempt ${i + 1} failed:`, reconnectError);
-      }
-
-    } catch (error) {
-      console.warn(`Database connection attempt ${i + 1} failed:`, error);
-    }
-    
-    if (i < retries - 1) {
-      // Wait before retry (exponential backoff)
-      await new Promise(resolve => setTimeout(resolve, Math.pow(2, i) * 1000));
-    }
-  }
-  
-  console.error('Failed to establish database connection after', retries, 'attempts');
-  return false;
-}
-
 // Optional: enable per-query timing logs for Prisma operations.
-// This is helpful for diagnosing slow queries in production when LOG_QUERY_TIMES=1,
-// and is always enabled in development.
 let timingEnabled = false;
 export function enableQueryTiming() {
   if (timingEnabled) return;

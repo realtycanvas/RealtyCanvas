@@ -2,6 +2,7 @@ import { Suspense } from 'react';
 import { Metadata } from 'next';
 import JsonLd from '@/components/SEO/JsonLd';
 import { prisma } from '@/lib/prisma';
+import { unstable_cache } from 'next/cache';
 import ProjectListingClient, { Project, Pagination } from './ProjectListingClient';
 
 export const metadata: Metadata = {
@@ -14,53 +15,11 @@ export const metadata: Metadata = {
 
 export const dynamic = 'force-dynamic';
 
-async function getProjects(searchParams: { [key: string]: string | string[] | undefined }) {
-  const page = typeof searchParams.page === 'string' ? parseInt(searchParams.page) : 1;
-  const limit = typeof searchParams.limit === 'string' ? parseInt(searchParams.limit) : 6;
-  const skip = (page - 1) * limit;
-
-  // Build filter conditions based on search params
-  const where: any = {};
-
-  if (typeof searchParams.search === 'string' && searchParams.search.trim()) {
-    where.OR = [
-      { title: { contains: searchParams.search.trim(), mode: 'insensitive' } },
-      { address: { contains: searchParams.search.trim(), mode: 'insensitive' } },
-      { city: { contains: searchParams.search.trim(), mode: 'insensitive' } },
-      { developerName: { contains: searchParams.search.trim(), mode: 'insensitive' } },
-    ];
-  }
-
-  if (typeof searchParams.category === 'string' && searchParams.category !== 'ALL') {
-    where.category = searchParams.category;
-  }
-
-  if (typeof searchParams.status === 'string' && searchParams.status !== 'ALL') {
-    where.status = searchParams.status;
-  }
-
-  if (typeof searchParams.city === 'string' && searchParams.city.trim()) {
-    where.city = { contains: searchParams.city.trim(), mode: 'insensitive' };
-  }
-
-  if (typeof searchParams.state === 'string' && searchParams.state.trim()) {
-    where.state = { contains: searchParams.state.trim(), mode: 'insensitive' };
-  }
-
-  // Price range logic (simplified for Prisma - exact implementation depends on schema and type)
-  // Assuming minRatePsf/maxRatePsf are stored as strings or numbers. 
-  // For simplicity in this SSR fetch, we might skip complex price filtering or do basic implementation.
-  // The client side does full API fetch which handles all filters.
-  // We will prioritize content serving here.
-
-  // Note: For SSR efficiency, you might want to only apply basic filters here 
-  // or duplicate the exact API logic. For now, basic fetching ensures content is present.
-
-  try {
+// Cached fetcher for initial load (no filters)
+const getCachedInitialProjects = unstable_cache(
+  async (limit: number = 6) => {
     const [projects, totalCount] = await Promise.all([
       prisma.project.findMany({
-        where,
-        skip,
         take: limit,
         orderBy: { updatedAt: 'desc' },
         select: {
@@ -82,8 +41,92 @@ async function getProjects(searchParams: { [key: string]: string | string[] | un
           locality: true,
         },
       }),
-      prisma.project.count({ where }),
+      prisma.project.count(),
     ]);
+    return { projects, totalCount };
+  },
+  ['projects-initial-list'],
+  { revalidate: 60, tags: ['projects'] }
+);
+
+async function getProjects(searchParams: { [key: string]: string | string[] | undefined }) {
+  const page = typeof searchParams.page === 'string' ? parseInt(searchParams.page) : 1;
+  const limit = typeof searchParams.limit === 'string' ? parseInt(searchParams.limit) : 6;
+  const skip = (page - 1) * limit;
+
+  // Build filter conditions based on search params
+  const where: any = {};
+  let hasFilters = false;
+
+  if (typeof searchParams.search === 'string' && searchParams.search.trim()) {
+    where.OR = [
+      { title: { contains: searchParams.search.trim(), mode: 'insensitive' } },
+      { address: { contains: searchParams.search.trim(), mode: 'insensitive' } },
+      { city: { contains: searchParams.search.trim(), mode: 'insensitive' } },
+      { developerName: { contains: searchParams.search.trim(), mode: 'insensitive' } },
+    ];
+    hasFilters = true;
+  }
+
+  if (typeof searchParams.category === 'string' && searchParams.category !== 'ALL') {
+    where.category = searchParams.category;
+    hasFilters = true;
+  }
+
+  if (typeof searchParams.status === 'string' && searchParams.status !== 'ALL') {
+    where.status = searchParams.status;
+    hasFilters = true;
+  }
+
+  if (typeof searchParams.city === 'string' && searchParams.city.trim()) {
+    where.city = { contains: searchParams.city.trim(), mode: 'insensitive' };
+    hasFilters = true;
+  }
+
+  if (typeof searchParams.state === 'string' && searchParams.state.trim()) {
+    where.state = { contains: searchParams.state.trim(), mode: 'insensitive' };
+    hasFilters = true;
+  }
+
+  try {
+    let projects: any[];
+    let totalCount: number;
+
+    // Use cached version for initial load (page 1, no filters)
+    if (!hasFilters && page === 1 && limit === 6) {
+      const cached = await getCachedInitialProjects(limit);
+      projects = cached.projects;
+      totalCount = cached.totalCount;
+    } else {
+      // Direct DB call for filtered/paginated views
+      [projects, totalCount] = await Promise.all([
+        prisma.project.findMany({
+          where,
+          skip,
+          take: limit,
+          orderBy: { updatedAt: 'desc' },
+          select: {
+            id: true,
+            slug: true,
+            title: true,
+            subtitle: true,
+            category: true,
+            status: true,
+            address: true,
+            city: true,
+            state: true,
+            featuredImage: true,
+            createdAt: true,
+            basePrice: true,
+            minRatePsf: true,
+            maxRatePsf: true,
+            developerName: true,
+            locality: true,
+          },
+        }),
+        prisma.project.count({ where }),
+      ]);
+    }
 
     const formattedProjects: Project[] = projects.map(p => ({
       ...p,
