@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma, ensureDatabaseConnection } from '@/lib/prisma';
+import { prisma } from '@/lib/prisma';
 import { databaseWarmup } from '@/lib/database-warmup';
 
 export async function GET(request: NextRequest) {
@@ -10,16 +10,6 @@ export async function GET(request: NextRequest) {
       console.error('❌ Database warmup failed for trending projects');
       return NextResponse.json({
         error: 'Database service is initializing. Please try again in a moment.',
-        projects: []
-      }, { status: 503 });
-    }
-
-    // Double-check with connection test
-    const isConnected = await ensureDatabaseConnection(3);
-    if (!isConnected) {
-      console.error('❌ Database connection failed for trending projects');
-      return NextResponse.json({
-        error: 'Database connection error. Please try again.',
         projects: []
       }, { status: 503 });
     }

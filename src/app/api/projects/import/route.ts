@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma, ensureDatabaseConnection } from '@/lib/prisma';
+import { prisma } from '@/lib/prisma';
 import { databaseWarmup } from '@/lib/database-warmup';
 
 function slugify(input: string) {
@@ -30,17 +30,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       error: 'Database service is initializing. Please try again in a moment.',
       message: 'Service temporarily unavailable',
-      timestamp: new Date().toISOString(),
-    }, { status: 503 });
-  }
-
-  // Double-check with connection test
-  const isConnected = await ensureDatabaseConnection(3);
-  if (!isConnected) {
-    console.error('❌ Database connection failed for project import');
-    return NextResponse.json({
-      error: 'Database connection unavailable',
-      message: 'Unable to establish database connection. Please try again later.',
       timestamp: new Date().toISOString(),
     }, { status: 503 });
   }
