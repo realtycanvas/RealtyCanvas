@@ -156,7 +156,7 @@ const Footer = () => {
                     </svg>
                   </div>
                   <div>
-                    <p className="text-gray-300">+91 9910007801</p>
+                    <p className="text-gray-300">+91 9555562626</p>
                     {/* <p className="text-gray-300">+91 11 2345 6789</p> */}
                   </div>
                 </div>

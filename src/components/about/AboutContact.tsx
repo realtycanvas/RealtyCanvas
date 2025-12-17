@@ -20,7 +20,7 @@ export default function AboutContact() {
               </div>
               <div>
                 <div className="text-sm text-gray-500 dark:text-gray-400">Phone</div>
-                <div className="text-lg font-semibold text-gray-900 dark:text-white">+91 9910007801</div>
+                <div className="text-lg font-semibold text-gray-900 dark:text-white">+91 9555562626</div>
               </div>
             </div>
           </div>

@@ -11,17 +11,17 @@ interface PropertyFAQProps {
   title?: string;
 }
 
-const PropertyFAQ: React.FC<PropertyFAQProps> = ({ 
-  faqs, 
-  title = 'Frequently Asked Questions' 
+const PropertyFAQ: React.FC<PropertyFAQProps> = ({
+  faqs,
+  title = 'Frequently Asked Questions'
 }) => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
-  
+
   if (!faqs) return null;
-  
+
   // Ensure faqs is an array before mapping
   let faqsArray: FAQ[] = [];
-  
+
   if (typeof faqs === 'string') {
     try {
       const parsedFaqs = JSON.parse(faqs);
@@ -38,11 +38,11 @@ const PropertyFAQ: React.FC<PropertyFAQProps> = ({
   } else if (Array.isArray(faqs)) {
     faqsArray = faqs;
   }
-  
+
   // Add default contact FAQ
   const defaultContactFAQ = {
     question: "How can I contact you for more information about this property?",
-    answer: "For purchasing this property or to get more information, please contact us:\n\n📞 Phone: +91 9910007801\n📧 Email: sales@realtycanvas.in\n\nOur team is available to assist you with all your queries and help you with the property purchase process. We look forward to hearing from you!"
+    answer: "For purchasing this property or to get more information, please contact us:\n\n📞 Phone: +91 9555562626\n📧 Email: sales@realtycanvas.in\n\nOur team is available to assist you with all your queries and help you with the property purchase process. We look forward to hearing from you!"
   };
 
   // Always include the contact FAQ at the end
@@ -55,11 +55,11 @@ const PropertyFAQ: React.FC<PropertyFAQProps> = ({
   return (
     <div className="mt-8">
       <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">{title}</h2>
-      
+
       <div className="space-y-4">
         {allFAQs.map((faq, index) => (
-          <div 
-            key={index} 
+          <div
+            key={index}
             className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden"
           >
             <button
@@ -79,7 +79,7 @@ const PropertyFAQ: React.FC<PropertyFAQProps> = ({
                 </svg>
               </span>
             </button>
-            
+
             {openIndex === index && (
               <div className="p-4 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600">
                 <div className="prose prose-lg max-w-none text-gray-600 dark:text-gray-300 whitespace-pre-line">

@@ -15,11 +15,11 @@ interface PropertyFAQEditorProps {
   placeholder?: string;
 }
 
-export default function PropertyFAQEditor({ 
-  value, 
-  onChange, 
-  label = "Frequently Asked Questions", 
-  placeholder = "Add common questions and answers about the property" 
+export default function PropertyFAQEditor({
+  value,
+  onChange,
+  label = "Frequently Asked Questions",
+  placeholder = "Add common questions and answers about the property"
 }: PropertyFAQEditorProps) {
   const [isJsonMode, setIsJsonMode] = useState(false);
   const [expandedFAQ, setExpandedFAQ] = useState<number | null>(null);
@@ -53,7 +53,7 @@ export default function PropertyFAQEditor({
   };
 
   const updateFAQ = (index: number, field: keyof FAQ, value: string) => {
-    const newFAQs = faqs.map((faq, i) => 
+    const newFAQs = faqs.map((faq, i) =>
       i === index ? { ...faq, [field]: value } : faq
     );
     updateFAQs(newFAQs);
@@ -70,12 +70,12 @@ export default function PropertyFAQEditor({
 
   const addCommonQuestion = (question: string) => {
     let answer = '';
-    
+
     // Provide default answer for contact question
     if (question === "How can I contact you for more information about this property?") {
-      answer = "For purchasing this property or to get more information, please contact us:\n\n📞 Phone: +91 9910007801\n📧 Email: sales@realtycanvas.in\n\nOur team is available to assist you with all your queries and help you with the property purchase process. We look forward to hearing from you!";
+      answer = "For purchasing this property or to get more information, please contact us:\n\n📞 Phone: +91 9555562626\n📧 Email: sales@realtycanvas.in\n\nOur team is available to assist you with all your queries and help you with the property purchase process. We look forward to hearing from you!";
     }
-    
+
     const newFAQs = [...faqs, { question, answer }];
     updateFAQs(newFAQs);
     setExpandedFAQ(newFAQs.length - 1);
@@ -96,11 +96,10 @@ export default function PropertyFAQEditor({
           <button
             type="button"
             onClick={() => setIsJsonMode(!isJsonMode)}
-            className={`flex items-center px-3 py-1 rounded-md text-sm font-medium transition-colors ${
-              isJsonMode
+            className={`flex items-center px-3 py-1 rounded-md text-sm font-medium transition-colors ${isJsonMode
                 ? 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white'
                 : 'bg-primary-100 dark:bg-secondary-900 text-brand-primary dark:text-brand-primary'
-            }`}
+              }`}
           >
             {isJsonMode ? (
               <>

@@ -72,7 +72,7 @@ export default function ContactPage() {
         "@type": "RealEstateAgent",
         "name": "Realty Canvas",
         "url": baseUrl,
-        "telephone": "+91 9910007801",
+        "telephone": "+91 9555562626",
         "address": {
           "@type": "PostalAddress",
           "streetAddress": "1st Floor, Landmark Cyber Park, Sector 67",
@@ -136,8 +136,8 @@ export default function ContactPage() {
                   <PhoneIcon className="w-6 h-6 text-brand-primary flex-shrink-0" />
                   <div>
                     <h3 className="font-semibold text-gray-900 dark:text-white">Phone</h3>
-                    <a href="tel:+919910007801" className="text-brand-primary hover:brightness-110 transition-colors">
-                      +91 9910007801
+                    <a href="tel:+919555562626" className="text-brand-primary hover:brightness-110 transition-colors">
+                      +91 9555562626
                     </a>
                   </div>
                 </div>
@@ -153,7 +153,7 @@ export default function ContactPage() {
                     </div>
                   </div>
                 </div>
-                                <div className="flex items-start space-x-4">
+                <div className="flex items-start space-x-4">
                   <MapPinIcon className="w-6 h-6 text-brand-primary mt-1 flex-shrink-0" />
                   <div>
                     <h3 className="font-semibold text-gray-900 dark:text-white">Office Address</h3>
@@ -233,7 +233,7 @@ export default function ContactPage() {
                 Get Directions
               </a>
               <a
-                href="tel:+91 9910007801"
+                href="tel:+91 9555562626"
                 className="inline-flex items-center px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition-colors shadow-md hover:shadow-lg"
               >
                 <PhoneIcon className="w-4 h-4 mr-2" />

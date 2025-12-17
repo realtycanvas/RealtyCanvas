@@ -180,7 +180,7 @@ export default function Navbar() {
           <div className="hidden lg:flex lg:items-center lg:space-x-4">
             {/* Theme toggle removed - using light mode only */}
             <Link
-              href="tel:9910007801"
+              href="tel:9555562626"
               ref={callNowButtonRef}
               className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-medium px-3 py-2 rounded-full transition-all duration-300 transform hover:scale-105 animate-pulse hover:animate-none whitespace-nowrap"
             >
@@ -190,14 +190,14 @@ export default function Navbar() {
               Call Now
             </Link>
             <Link
-              href="tel:9910007801"
+              href="tel:9555562626"
               ref={hotlineButtonRef}
               className="flex items-center gap-2 bg-[#112D48] hover:bg-[#091a30] text-white font-medium px-3 py-2 rounded-full transition-all duration-300 transform hover:scale-105 whitespace-nowrap"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
               </svg>
-              9910007801
+              9555562626
             </Link>
             <button
               onClick={handleShare}
@@ -300,7 +300,7 @@ export default function Navbar() {
               ))}
               <div className="px-3 py-2">
                 <Link
-                  href="tel:9910007801"
+                  href="tel:9555562626"
                   ref={mobileCallNowButtonRef}
                   className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-medium py-3 rounded-lg text-center w-full mb-2 transition-all duration-300 transform hover:scale-105 animate-pulse hover:animate-none"
                   onClick={() => setMobileMenuOpen(false)}
@@ -308,10 +308,10 @@ export default function Navbar() {
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                     <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
                   </svg>
-                  Call Now: 9910007801
+                  Call Now: 9555562626
                 </Link>
                 <Link
-                  href="tel:9910007801"
+                  href="tel:9555562626"
                   ref={mobileHotlineButtonRef}
                   className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-lg text-center w-full mb-2 transition-all duration-300 transform hover:scale-105"
                   onClick={() => setMobileMenuOpen(false)}
@@ -319,7 +319,7 @@ export default function Navbar() {
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
                   </svg>
-                  9910007801
+                  9555562626
                 </Link>
                 {/* Admin-only Add Project Button */}
                 {isAdmin && (
