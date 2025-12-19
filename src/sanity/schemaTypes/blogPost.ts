@@ -1,4 +1,4 @@
-import {defineField, defineType} from 'sanity'
+import {defineArrayMember, defineField, defineType} from 'sanity'
 
 export const blogPost = defineType({
   name: 'blogPost',
@@ -24,14 +24,14 @@ export const blogPost = defineType({
     defineField({
       name: 'author',
       title: 'Author',
-      type: 'reference',
-      to: {type: 'author'},
-      validation: (Rule) => Rule.required(),
+      type: 'reference' as const,
+      to: [{type: 'author'}],
+      validation: (Rule: any) => Rule.required(),
     }),
     defineField({
       name: 'mainImage',
       title: 'Main image',
-      type: 'image',
+      type: 'image' as const,
       options: {
         hotspot: true,
       },
@@ -46,19 +46,25 @@ export const blogPost = defineType({
     defineField({
       name: 'categories',
       title: 'Categories',
-      type: 'array',
-      of: [{type: 'reference', to: {type: 'category'}}],
+      type: 'array' as const,
+      of: [
+        defineArrayMember({
+          type: 'reference',
+          to: [{type: 'category' as const}],
+        })
+      ],
     }),
     defineField({
       name: 'publishedAt',
       title: 'Published at',
       type: 'datetime',
-      validation: (Rule) => Rule.required(),
+      validation: (Rule) => Rule,
+      initialValue: () => new Date().toISOString(),
     }),
     defineField({
       name: 'excerpt',
       title: 'Excerpt',
-      type: 'text',
+      type: 'text' as const,
       rows: 4,
       validation: (Rule) => Rule.max(200),
     }),
@@ -82,7 +88,7 @@ export const blogPost = defineType({
     defineField({
       name: 'seo',
       title: 'SEO',
-      type: 'object',
+      type: 'object' as const,
       fields: [
         {
           name: 'metaTitle',
@@ -93,7 +99,7 @@ export const blogPost = defineType({
         {
           name: 'metaDescription',
           title: 'Meta Description',
-          type: 'text',
+          type: 'text' as const,
           rows: 3,
           validation: (Rule) => Rule.max(160),
         },

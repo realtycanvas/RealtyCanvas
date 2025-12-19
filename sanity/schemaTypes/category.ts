@@ -1,4 +1,4 @@
-import {defineField, defineType} from 'sanity'
+import {defineField, defineType, type Rule} from 'sanity'
 
 export const category = defineType({
   name: 'category',

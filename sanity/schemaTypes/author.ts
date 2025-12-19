@@ -1,4 +1,4 @@
-import {defineField, defineType} from 'sanity'
+import {defineArrayMember, defineField, defineType, type Rule} from 'sanity'
 
 export const author = defineType({
   name: 'author',
@@ -24,7 +24,7 @@ export const author = defineType({
     defineField({
       name: 'image',
       title: 'Image',
-      type: 'image',
+      type: 'image' as const,
       options: {
         hotspot: true,
       },
@@ -39,14 +39,14 @@ export const author = defineType({
     defineField({
       name: 'bio',
       title: 'Bio',
-      type: 'array',
+      type: 'array' as const,
       of: [
-        {
+        defineArrayMember({
           title: 'Block',
           type: 'block',
           styles: [{title: 'Normal', value: 'normal'}],
           lists: [],
-        },
+        }),
       ],
     }),
     defineField({
@@ -63,7 +63,7 @@ export const author = defineType({
     defineField({
       name: 'socialLinks',
       title: 'Social Links',
-      type: 'object',
+      type: 'object' as const,
       fields: [
         {
           name: 'twitter',

@@ -7,7 +7,7 @@ export const blockContent = defineType({
   of: [
     defineArrayMember({
       title: 'Block',
-      type: 'block',
+      type: 'block' as const,
       styles: [
         {title: 'Normal', value: 'normal'},
         {title: 'H1', value: 'h1'},
@@ -43,7 +43,7 @@ export const blockContent = defineType({
       },
     }),
     defineArrayMember({
-      type: 'image',
+      type: 'image' as const,
       options: {hotspot: true},
       fields: [
         {
@@ -54,7 +54,7 @@ export const blockContent = defineType({
       ]
     }),
     defineArrayMember({
-      type: 'object',
+      type: 'object' as const,
       name: 'codeBlock',
       title: 'Code Block',
       fields: [
@@ -77,7 +77,7 @@ export const blockContent = defineType({
         {
           name: 'code',
           title: 'Code',
-          type: 'text',
+          type: 'text' as const,
           rows: 10,
         },
       ],
