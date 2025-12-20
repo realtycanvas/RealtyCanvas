@@ -24,14 +24,14 @@ export const blogPost = defineType({
     defineField({
       name: 'author',
       title: 'Author',
-      type: 'reference' as const,
+      type: 'reference',
       to: [{type: 'author'}],
-      validation: (Rule: any) => Rule.required(),
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'mainImage',
       title: 'Main image',
-      type: 'image' as const,
+      type: 'image',
       options: {
         hotspot: true,
       },
@@ -46,11 +46,11 @@ export const blogPost = defineType({
     defineField({
       name: 'categories',
       title: 'Categories',
-      type: 'array' as const,
+      type: 'array',
       of: [
         defineArrayMember({
           type: 'reference',
-          to: [{type: 'category' as const}],
+          to: [{type: 'category'}],
         })
       ],
     }),
@@ -58,13 +58,13 @@ export const blogPost = defineType({
       name: 'publishedAt',
       title: 'Published at',
       type: 'datetime',
-      validation: (Rule) => Rule,
+      validation: (Rule) => Rule.required(),
       initialValue: () => new Date().toISOString(),
     }),
     defineField({
       name: 'excerpt',
       title: 'Excerpt',
-      type: 'text' as const,
+      type: 'text',
       rows: 4,
       validation: (Rule) => Rule.max(200),
     }),
@@ -88,7 +88,7 @@ export const blogPost = defineType({
     defineField({
       name: 'seo',
       title: 'SEO',
-      type: 'object' as const,
+      type: 'object',
       fields: [
         {
           name: 'metaTitle',

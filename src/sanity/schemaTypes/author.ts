@@ -1,4 +1,4 @@
-import {defineArrayMember, defineField, defineType, type Rule} from 'sanity'
+import {defineArrayMember, defineField, defineType} from 'sanity'
 
 export const author = defineType({
   name: 'author',
@@ -9,7 +9,7 @@ export const author = defineType({
       name: 'name',
       title: 'Name',
       type: 'string',
-      validation: (Rule: Rule) => Rule.required(),
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'slug',
@@ -19,12 +19,12 @@ export const author = defineType({
         source: 'name',
         maxLength: 96,
       },
-      validation: (Rule: Rule) => Rule.required(),
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'image',
       title: 'Image',
-      type: 'image' as const,
+      type: 'image',
       options: {
         hotspot: true,
       },
@@ -39,7 +39,7 @@ export const author = defineType({
     defineField({
       name: 'bio',
       title: 'Bio',
-      type: 'array' as const,
+      type: 'array',
       of: [
         defineArrayMember({
           title: 'Block',
@@ -53,7 +53,7 @@ export const author = defineType({
       name: 'email',
       title: 'Email',
       type: 'string',
-      validation: (Rule: Rule) => Rule.email(),
+      validation: (Rule) => Rule.email(),
     }),
     defineField({
       name: 'website',
@@ -63,7 +63,7 @@ export const author = defineType({
     defineField({
       name: 'socialLinks',
       title: 'Social Links',
-      type: 'object' as const,
+      type: 'object',
       fields: [
         {
           name: 'twitter',
