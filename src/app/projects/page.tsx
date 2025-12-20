@@ -130,7 +130,7 @@ async function getProjects(searchParams: { [key: string]: string | string[] | un
 
     const formattedProjects: Project[] = projects.map(p => ({
       ...p,
-      createdAt: p.createdAt.toISOString(),
+      createdAt: p.createdAt instanceof Date ? p.createdAt.toISOString() : new Date(p.createdAt).toISOString(),
       basePrice: p.basePrice ? String(p.basePrice) : null, // Ensure string if DB has string/number
       minRatePsf: p.minRatePsf ? String(p.minRatePsf) : null,
       maxRatePsf: p.maxRatePsf ? String(p.maxRatePsf) : null,

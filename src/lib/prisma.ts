@@ -8,6 +8,7 @@ const globalForPrisma = globalThis as unknown as {
 };
 
 // Enhanced Prisma configuration with connection pooling and timeouts
+// Note: If you see type errors about missing models, try restarting your TS server
 export const prisma =
   globalForPrisma.prisma ??
   new PrismaClient({

@@ -309,6 +309,30 @@ model ProjectClick {
   @@unique([projectId, clickDate])
 }
 
+model Lead {
+  id           String     @id @default(uuid())
+  name         String
+  phone        String
+  email        String
+  propertyType String
+  city         String
+  state        String
+  timeline     String?
+  projectSlug  String?
+  projectTitle String?
+  sourcePath   String?
+  createdAt    DateTime   @default(now())
+  status       LeadStatus @default(NEW)
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  CLOSED
+  ARCHIVED
+}
+
 enum ProjectCategory {
   COMMERCIAL
   RETAIL_ONLY

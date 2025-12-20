@@ -3,6 +3,7 @@ const path = require('path');
 const nextConfig = {
   allowedDevOrigins: ["192.168.1.3"],
   // Performance optimizations
+  productionBrowserSourceMaps: false, // Disable source maps in production to fix invalid source map errors
   experimental: {
     optimizePackageImports: ["@heroicons/react"],
   },
