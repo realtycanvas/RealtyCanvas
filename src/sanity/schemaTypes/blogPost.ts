@@ -105,6 +105,31 @@ export const blogPost = defineType({
         },
       ],
     }),
+    defineField({
+      name: 'faqs',
+      title: 'FAQs',
+      type: 'array',
+      of: [
+        defineArrayMember({
+          type: 'object',
+          title: 'FAQ',
+          fields: [
+            defineField({
+              name: 'question',
+              title: 'Question',
+              type: 'string',
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: 'answer',
+              title: 'Answer',
+              type: 'text',
+              validation: (Rule) => Rule.required(),
+            }),
+          ],
+        }),
+      ],
+    }),
   ],
 
   preview: {

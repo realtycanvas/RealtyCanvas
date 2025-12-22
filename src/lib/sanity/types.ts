@@ -54,6 +54,10 @@ export interface BlogPost {
     metaTitle?: string
     metaDescription?: string
   }
+  faqs?: {
+    question: string
+    answer: string
+  }[]
 }
 
 export interface BlogPostPreview {

@@ -201,6 +201,10 @@ const BLOG_POST_FIELDS = `
   body,
   featured,
   readTime,
+  faqs[]{
+    question,
+    answer
+  },
   seo
 `
 

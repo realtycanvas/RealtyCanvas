@@ -1,13 +1,13 @@
 import { Suspense } from 'react';
 import { Metadata } from 'next';
-import JsonLd from '@/components/SEO/JsonLd';
+import Script from 'next/script';
 import { prisma } from '@/lib/prisma';
 import { unstable_cache } from 'next/cache';
 import ProjectListingClient, { Project, Pagination } from './ProjectListingClient';
 
 export const metadata: Metadata = {
-  title: 'All Projects | Realty Canvas',
-  description: 'Explore our wide range of commercial and residential projects in Gurgaon.',
+  title: 'Premium Real Estate Projects – Residential & Commercial | Realty Canvas',
+  description: 'Explore premium residential and commercial real estate projects across Gurgaon & beyond with Realty Canvas. Discover verified listings, top locations, and expert property assistance for buyers and investors.',
   alternates: {
     canonical: 'https://www.realtycanvas.in/projects',
   },
@@ -171,24 +171,61 @@ export default async function ProjectsPage({ searchParams }: { searchParams: Pro
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.realtycanvas.in';
 
+  const itemListSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Realty Canvas Projects",
+    "description": "A curated list of premium residential and commercial real estate projects available through Realty Canvas, including under construction and ready-to-move options.",
+    "url": `${baseUrl}/projects`,
+    "publisher": {
+      "@type": "Organization",
+      "name": "Realty Canvas",
+      "url": baseUrl,
+      "logo": {
+        "@type": "ImageObject",
+        "url": `${baseUrl}/logo.png`
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+919910007801",
+        "contactType": "customer service",
+        "areaServed": "IN"
+      }
+    },
+    "itemListElement": projects.map((project, index) => ({
+      "@type": "ListItem",
+      "position": index + 1,
+      "name": project.title,
+      "url": `${baseUrl}/projects/${project.slug}`
+    }))
+  };
+
   return (
     <>
-      <JsonLd data={{
-        "@context": "https://schema.org",
-        "@type": "CollectionPage",
-        "url": `${baseUrl}/projects`,
-        "name": "Projects",
-        "isPartOf": { "@type": "WebSite", "url": baseUrl }
-      }} />
+      <Script
+        id="projects-itemlist-schema"
+        type="application/ld+json"
+        strategy="beforeInteractive"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(itemListSchema)
+        }}
+      />
 
-      <JsonLd data={{
-        "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-          { "@type": "ListItem", "position": 1, "name": "Home", "item": baseUrl },
-          { "@type": "ListItem", "position": 2, "name": "Projects", "item": `${baseUrl}/projects` }
-        ]
-      }} />
+      <Script
+        id="projects-breadcrumb-schema"
+        type="application/ld+json"
+        strategy="beforeInteractive"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "Home", "item": baseUrl },
+              { "@type": "ListItem", "position": 2, "name": "Projects", "item": `${baseUrl}/projects` }
+            ]
+          })
+        }}
+      />
 
       <ProjectListingClient initialProjects={projects} initialPagination={pagination} />
     </>

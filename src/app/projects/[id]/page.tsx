@@ -247,12 +247,16 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
       : `${baseUrl}${project.featuredImage?.startsWith('/') ? project.featuredImage : `/${project.featuredImage}`}`,
     "url": `${baseUrl}/projects/${project.slug}`,
     "datePosted": project.createdAt,
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": project.address,
-      "addressLocality": (project as any).locality || project.city,
-      "addressRegion": project.state,
-      "addressCountry": "IN"
+    "about": {
+      "@type": "Place",
+      "name": project.title,
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": project.address,
+        "addressLocality": (project as any).locality || project.city,
+        "addressRegion": project.state,
+        "addressCountry": "IN"
+      }
     },
     "provider": {
       "@type": "RealEstateAgent",

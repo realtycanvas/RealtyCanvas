@@ -1,4 +1,5 @@
 import { Metadata } from "next"
+import Script from "next/script"
 import { notFound } from "next/navigation"
 import Link from "next/link"
 import { PortableText } from "@portabletext/react"
@@ -7,7 +8,6 @@ import { getBlogPostBySlug, getRelatedBlogPosts } from "@/lib/sanity/queries"
 import { urlFor } from "@/lib/sanity/client"
 import BlogPostCard from "@/components/blog/BlogPostCard"
 import ShareButton from "@/components/blog/ShareButton"
-import JsonLd from "@/components/SEO/JsonLd"
 
 interface BlogPostPageProps {
   params: Promise<{
@@ -133,33 +133,113 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     notFound()
   }
 
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.realtycanvas.in';
   const imageUrl = post.mainImage?.asset?.url || (post.mainImage ? urlFor(post.mainImage).url() : '')
+  const postUrl = `${baseUrl}/blog/${post.slug.current}`;
 
-  const jsonLd = {
+  // BlogPosting Schema
+  const blogPostingLd = {
     "@context": "https://schema.org",
-    "@type": "Article",
+    "@type": "BlogPosting",
     "headline": post.title,
     "description": post.excerpt,
     "image": imageUrl ? [imageUrl] : [],
     "datePublished": post.publishedAt,
+    "dateModified": post.publishedAt, // Using published as modified since we don't track modified
     "author": {
       "@type": "Person",
       "name": post.author?.name || "Reality Canvas Team",
-      "url": post.author?.slug?.current ? `https://www.realtycanvas.in/author/${post.author.slug.current}` : undefined
+      "url": post.author?.slug?.current ? `${baseUrl}/author/${post.author.slug.current}` : undefined
     },
     "publisher": {
       "@type": "Organization",
-      "name": "Reality Canvas",
+      "name": "Realty Canvas",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://www.realtycanvas.in/logo.webp"
-      }
-    }
+        "url": `${baseUrl}/logo.webp`
+      },
+      "@id": `${baseUrl}/#organization`
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": postUrl
+    },
+    "url": postUrl
   };
+
+  // BreadcrumbList Schema
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": baseUrl
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Blog",
+        "item": `${baseUrl}/blog`
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": post.title,
+        "item": postUrl
+      }
+    ]
+  };
+
+  // FAQPage Schema - Only if post has FAQs
+  const faqLd = post.faqs && post.faqs.length > 0 ? {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": post.faqs.map(faq => ({
+      "@type": "Question",
+      "name": faq.question,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": faq.answer
+      }
+    }))
+  } : null;
 
   return (
     <div className="min-h-screen mt-20">
-      <JsonLd data={jsonLd} />
+      {/* BlogPosting Schema */}
+      <Script
+        id="blog-posting-schema"
+        type="application/ld+json"
+        strategy="beforeInteractive"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(blogPostingLd)
+        }}
+      />
+
+      {/* BreadcrumbList Schema */}
+      <Script
+        id="breadcrumb-schema"
+        type="application/ld+json"
+        strategy="beforeInteractive"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbLd)
+        }}
+      />
+
+      {/* FAQPage Schema */}
+      {faqLd && (
+        <Script
+          id="faq-schema"
+          type="application/ld+json"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(faqLd)
+          }}
+        />
+      )}
       {/* Hero Section */}
       <div className="relative bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
