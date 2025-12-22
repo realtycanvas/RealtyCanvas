@@ -1,18 +1,19 @@
 import { Metadata } from 'next'
-import { getAllBlogPosts, getFeaturedBlogPosts } from '@/lib/sanity/queries'
-import { BlogPost } from '@/lib/sanity/types'
+import { getAllBlogPosts, getBlogPostCount, getFeaturedBlogPosts } from '@/lib/sanity/queries'
+import { BlogPostPreview } from '@/lib/sanity/types'
 import BlogHero from '@/components/blog/BlogHero'
 import FeaturedPost from '@/components/blog/FeaturedPost'
-import BlogPostCard from '@/components/blog/BlogPostCard'
 import JsonLd from '@/components/SEO/JsonLd'
+import BlogListInfinite from '@/components/blog/BlogListInfinite'
+import { normalizeBlogSearchQuery } from '@/lib/blog-search'
 
 export const metadata: Metadata = {
   title: 'Blog | RealityCanvas',
   description: 'Real estate insights, market trends, and expert advice from RealityCanvas.',
 }
 
-// Revalidate every 60 seconds (ISR) to get fresh blog posts
-export const revalidate = 60
+// Force dynamic rendering so pagination and searchParams work correctly
+export const dynamic = 'force-dynamic'
 
 // Skeleton loader component
 function BlogPostSkeleton() {
@@ -29,7 +30,7 @@ function BlogPostSkeleton() {
   )
 }
 
-async function getFeaturedPosts(): Promise<BlogPost[]> {
+async function getFeaturedPosts(): Promise<BlogPostPreview[]> {
   try {
     return await getFeaturedBlogPosts()
   } catch (error) {
@@ -38,24 +39,53 @@ async function getFeaturedPosts(): Promise<BlogPost[]> {
   }
 }
 
-async function getAllPosts(): Promise<BlogPost[]> {
+async function getAllPosts(limit: number, offset: number, search?: string): Promise<BlogPostPreview[]> {
   try {
-    return await getAllBlogPosts()
+    return await getAllBlogPosts(limit, offset, search)
   } catch (error) {
     console.error('Error fetching all posts:', error)
     return []
   }
 }
 
-export default async function BlogPage() {
-  const [featuredPostsRaw, allPostsRaw] = await Promise.all([
+export default async function BlogPage({
+  searchParams,
+}: {
+  searchParams?: {
+    q?: string | string[]
+  }
+}) {
+  const rawQuery = searchParams?.q
+  const searchQuery =
+    typeof rawQuery === 'string'
+      ? rawQuery.trim()
+      : Array.isArray(rawQuery) && rawQuery.length > 0
+        ? String(rawQuery[0]).trim()
+        : ''
+
+  const effectiveSearch = normalizeBlogSearchQuery(searchQuery)
+
+  const pageSize = 12
+  const offset = 0
+
+  const [featuredPostsRaw, totalCount, allPostsRaw] = await Promise.all([
     getFeaturedPosts(),
-    getAllPosts()
+    getBlogPostCount(effectiveSearch || undefined),
+    getAllPosts(pageSize, offset, effectiveSearch || undefined),
   ])
 
-  // Filter out any null or undefined posts
-  const featuredPosts = featuredPostsRaw.filter((post): post is BlogPost => post != null && post.title != null)
-  const allPosts = allPostsRaw.filter((post): post is BlogPost => post != null && post.title != null)
+  const featuredPosts = featuredPostsRaw.filter(
+    (post): post is BlogPostPreview => post != null && post.title != null
+  )
+
+  const posts = allPostsRaw.filter(
+    (post): post is BlogPostPreview => post != null && post.title != null
+  )
+
+  const safeTotal =
+    typeof totalCount === 'number' && totalCount > 0
+      ? totalCount
+      : posts.length
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.realtycanvas.in';
 
@@ -101,16 +131,37 @@ export default async function BlogPage() {
 
         {/* All Posts Section */}
         <section>
-          <div className="text-center mb-12">
+          {/* <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
               Latest Insights
             </h2>
             <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               Stay informed with our latest real estate market analysis and expert advice
             </p>
-          </div>
+          </div> */}
 
-          {allPosts.length === 0 ? (
+          {/* <form
+            className="max-w-2xl mx-auto mb-10"
+            method="GET"
+          >
+            <div className="flex flex-col sm:flex-row gap-3">
+              <input
+                type="text"
+                name="q"
+                defaultValue={searchQuery}
+                placeholder="Search blog articles by title or summary..."
+                className="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-primary/60"
+              />
+              <button
+                type="submit"
+                className="px-6 py-2.5 rounded-lg bg-brand-primary text-white font-semibold text-sm hover:bg-brand-secondary transition-colors"
+              >
+                Search
+              </button>
+            </div>
+          </form> */}
+
+          {posts.length === 0 ? (
             <div className="text-center py-20">
               <div className="max-w-md mx-auto">
                 <div className="w-24 h-24 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -128,24 +179,12 @@ export default async function BlogPage() {
             </div>
           ) : (
             <>
-              <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                {allPosts.map((post) => (
-                  <BlogPostCard key={post._id} post={post} />
-                ))}
-              </div>
-
-              {/* Load More Button - Placeholder for future pagination */}
-              <div className="text-center mt-16">
-                <button
-                  className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
-                  disabled
-                >
-                  Load More Posts
-                </button>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-3">
-                  Pagination coming soon
-                </p>
-              </div>
+              <BlogListInfinite
+                initialPosts={posts}
+                totalCount={safeTotal}
+                pageSize={pageSize}
+                searchQuery={searchQuery || undefined}
+              />
             </>
           )}
         </section>

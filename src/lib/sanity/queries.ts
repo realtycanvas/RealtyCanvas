@@ -284,9 +284,24 @@ function getMockImageUrl(imageRef: string): string {
 }
 
 // Query functions
-export async function getAllBlogPosts(limit = 10, offset = 0): Promise<BlogPostPreview[]> {
+export async function getAllBlogPosts(
+  limit = 10,
+  offset = 0,
+  search?: string
+): Promise<BlogPostPreview[]> {
   if (isDevelopmentMode) {
-    return mockBlogPosts.slice(offset, offset + limit).map(post => ({
+    let posts = mockBlogPosts
+
+    if (search && search.trim().length > 0) {
+      const q = search.toLowerCase()
+      posts = posts.filter(
+        (post) =>
+          post.title.toLowerCase().includes(q) ||
+          (post.excerpt && post.excerpt.toLowerCase().includes(q))
+      )
+    }
+
+    return posts.slice(offset, offset + limit).map(post => ({
       _id: post._id,
       title: post.title,
       slug: post.slug,
@@ -304,11 +319,44 @@ export async function getAllBlogPosts(limit = 10, offset = 0): Promise<BlogPostP
     }))
   }
 
-  const query = `*[_type == "blogPost"] | order(publishedAt desc) [${offset}...${offset + limit}] {
+  const baseFilter = `_type == "blogPost"`
+  const filter = search && search.trim().length > 0
+    ? `${baseFilter} && (title match $search || excerpt match $search)`
+    : baseFilter
+
+  const query = `*[${filter}] | order(publishedAt desc) [${offset}...${
+    offset + limit
+  }] {
     ${BLOG_POST_PREVIEW_FIELDS}
   }`
-  
-  return client.fetch(query)
+
+  const params = search && search.trim().length > 0 ? { search: `*${search.trim()}*` } : {}
+
+  return client.fetch(query, params)
+}
+
+export async function getBlogPostCount(search?: string): Promise<number> {
+  if (isDevelopmentMode) {
+    if (!search || search.trim().length === 0) {
+      return mockBlogPosts.length
+    }
+    const q = search.toLowerCase()
+    return mockBlogPosts.filter(
+      (post) =>
+        post.title.toLowerCase().includes(q) ||
+        (post.excerpt && post.excerpt.toLowerCase().includes(q))
+    ).length
+  }
+
+  const baseFilter = `_type == "blogPost"`
+  const filter = search && search.trim().length > 0
+    ? `${baseFilter} && (title match $search || excerpt match $search)`
+    : baseFilter
+
+  const query = `count(*[${filter}])`
+  const params = search && search.trim().length > 0 ? { search: `*${search.trim()}*` } : {}
+
+  return client.fetch<number>(query, params)
 }
 
 export async function getFeaturedBlogPosts(): Promise<BlogPostPreview[]> {
