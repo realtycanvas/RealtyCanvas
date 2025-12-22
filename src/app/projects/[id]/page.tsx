@@ -259,12 +259,6 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
       "name": "Realty Canvas",
       "url": baseUrl,
       "@id": `${baseUrl}/#organization`
-    },
-    "offer": {
-      "@type": "Offer",
-      "priceCurrency": "INR",
-      "price": (project as any).basePrice ? String((project as any).basePrice).replace(/[^0-9.]/g, '') : undefined,
-      "availability": "https://schema.org/InStock"
     }
   };
 
@@ -294,6 +288,20 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
     ]
   };
 
+  // FAQPage schema if project has FAQs
+  const faqLd = project.faqs && project.faqs.length > 0 ? {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": project.faqs.map(faq => ({
+      "@type": "Question",
+      "name": faq.question,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": faq.answer || ""
+      }
+    }))
+  } : null;
+
   return (
     <>
       {/* RealEstateListing Schema */}
@@ -315,6 +323,18 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
           __html: JSON.stringify(breadcrumbLd)
         }}
       />
+
+      {/* FAQPage Schema - Only if project has FAQs */}
+      {faqLd && (
+        <Script
+          id="faq-schema"
+          type="application/ld+json"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(faqLd)
+          }}
+        />
+      )}
 
       <ProjectDetailClient project={project} slug={slug} />
     </>
