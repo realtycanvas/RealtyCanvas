@@ -14,4 +14,6 @@ export { default as TestimonialsSection } from './TestimonialsSection';
 export { default as PodcastSection } from './PodcastSection';
 export { default as EnquirySection } from './EnquirySection';
 export { default as FAQSection } from './FAQSection';
-
+export { default as ExploreOptionsSection } from './ExploreOptionsSection';
+export { default as PriceInsightsSection } from './PriceInsightsSection';
+export { default as BlogsSection } from './BlogsSection';

@@ -3,6 +3,9 @@ import Script from 'next/script';
 import { prisma } from '@/lib/prisma';
 import { FeaturedDiagnostics } from '@/components/homepage';
 import { AdminFallbackBanner } from '@/components/homepage';
+import { getAllBlogPosts } from '@/lib/sanity/queries';
+import type { BlogPostPreview } from '@/lib/sanity/types';
+import { parseIndianPriceToNumber } from '@/lib/price';
 // Homepage Components
 import {
   HeroSection,
@@ -18,6 +21,9 @@ import {
   TestimonialsSection,
   PodcastSection,
   EnquirySection,
+  ExploreOptionsSection,
+  PriceInsightsSection,
+  BlogsSection,
 } from "@/components/homepage";
 import Sections from "@/components/homepage/Sections";
 import Newsletter from "@/components/homepage/Newsletter";
@@ -49,6 +55,22 @@ type FeaturedDiagnosticsData = {
 
 type Source = 'db' | 'api' | 'fallback';
 type DataSources = { featuredSource: Source; trendingSource: Source };
+type ExploreOptionsData = {
+  heading: string;
+  locationName: string;
+  items: { title: string; description: string; href: string }[];
+  cards: { title: string; subtitle: string; countLabel: string; href: string; imageUrl: string }[];
+};
+
+type PriceInsightsData = {
+  locationName: string;
+  totalProjects: number;
+  geocodedProjects: number;
+  medianTicketSizeRupees: number | null;
+  micromarkets: { name: string; avgTicketSizeRupees: number | null }[];
+  rentalSupply: { label: string; count: number }[];
+};
+
 type HomePageData = {
   featuredProjects: Project[];
   trendingProjects: Project[];
@@ -56,6 +78,9 @@ type HomePageData = {
   residentialProjects: Project[];
   diagnostics: FeaturedDiagnosticsData;
   dataSources: DataSources;
+  exploreOptions: ExploreOptionsData;
+  priceInsights: PriceInsightsData;
+  blogPosts: BlogPostPreview[];
 };
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.realtycanvas.in';
@@ -113,6 +138,17 @@ export const metadata: Metadata = {
 async function getHomePageData(): Promise<HomePageData> {
   try {
     let dataSources: DataSources = { featuredSource: 'db', trendingSource: 'db' };
+    const locationName = 'Gurgaon';
+    const gurgaonFilter = {
+      OR: [
+        { city: { contains: 'gurgaon', mode: 'insensitive' as const } },
+        { city: { contains: 'gurugram', mode: 'insensitive' as const } },
+        { address: { contains: 'gurgaon', mode: 'insensitive' as const } },
+        { address: { contains: 'gurugram', mode: 'insensitive' as const } },
+        { locality: { contains: 'gurgaon', mode: 'insensitive' as const } },
+        { locality: { contains: 'gurugram', mode: 'insensitive' as const } },
+      ],
+    };
 
     // Featured project titles to keep (editorial curation)
     const featuredProjectTitles = [
@@ -360,6 +396,190 @@ async function getHomePageData(): Promise<HomePageData> {
     });
     const residentialProjects = residentialProjectsRaw.map(p => ({ ...p, createdAt: p.createdAt.toISOString() })).slice(0, 6);
 
+    const [
+      readyToMoveCount,
+      newLaunchCount,
+      gurgaonTotalProjects,
+      gurgaonGeocodedProjects,
+      readyToMoveHero,
+      newLaunchHero,
+      gurgaonSampleProjects,
+      rentalSupplyRaw,
+      blogPosts,
+    ] = await Promise.all([
+      prisma.project.count({ where: { ...gurgaonFilter, status: 'READY' } }),
+      prisma.project.count({ where: { ...gurgaonFilter, status: 'PLANNED' } }),
+      prisma.project.count({ where: gurgaonFilter }),
+      prisma.project.count({
+        where: {
+          ...gurgaonFilter,
+          latitude: { not: null },
+          longitude: { not: null },
+        },
+      }),
+      prisma.project.findFirst({
+        where: { ...gurgaonFilter, status: 'READY' },
+        orderBy: [{ updatedAt: 'desc' }],
+        select: { featuredImage: true, slug: true, title: true },
+      }),
+      prisma.project.findFirst({
+        where: { ...gurgaonFilter, status: 'PLANNED' },
+        orderBy: [{ updatedAt: 'desc' }],
+        select: { featuredImage: true, slug: true, title: true },
+      }),
+      prisma.project.findMany({
+        where: { ...gurgaonFilter, basePrice: { not: null } },
+        orderBy: [{ updatedAt: 'desc' }],
+        take: 300,
+        select: {
+          slug: true,
+          title: true,
+          featuredImage: true,
+          basePrice: true,
+          locality: true,
+        },
+      }),
+      prisma.$queryRaw<{ type: string; count: bigint }[]>`
+        SELECT u."type" AS type, COUNT(*)::bigint AS count
+        FROM "Unit" u
+        JOIN "Project" p ON p.id = u."projectId"
+        WHERE u."availability" = 'AVAILABLE'
+          AND (
+            LOWER(COALESCE(p."city", '') || ' ' || COALESCE(p."address", '') || ' ' || COALESCE(p."locality", '')) LIKE ${'%gurgaon%'}
+            OR LOWER(COALESCE(p."city", '') || ' ' || COALESCE(p."address", '') || ' ' || COALESCE(p."locality", '')) LIKE ${'%gurugram%'}
+          )
+        GROUP BY u."type"
+        ORDER BY count DESC
+        LIMIT 4
+      `,
+      getAllBlogPosts(3, 0),
+    ]);
+
+    const parsedTickets = gurgaonSampleProjects
+      .map((p) => parseIndianPriceToNumber(p.basePrice))
+      .filter((v): v is number => typeof v === 'number' && Number.isFinite(v))
+      .sort((a, b) => a - b);
+    const medianTicketSizeRupees =
+      parsedTickets.length === 0
+        ? null
+        : parsedTickets.length % 2 === 1
+          ? parsedTickets[Math.floor(parsedTickets.length / 2)]
+          : Math.round(
+              (parsedTickets[parsedTickets.length / 2 - 1] + parsedTickets[parsedTickets.length / 2]) / 2
+            );
+
+    const affordableMin = 10 * 100_000;
+    const affordableMax = 40 * 100_000;
+    let affordableCount = 0;
+    let affordablePick: { slug: string; featuredImage: string; title: string; value: number } | null = null;
+    for (const p of gurgaonSampleProjects) {
+      const value = parseIndianPriceToNumber(p.basePrice);
+      if (value === null) continue;
+      if (value >= affordableMin && value <= affordableMax) {
+        affordableCount += 1;
+        if (!affordablePick || value < affordablePick.value) {
+          affordablePick = { slug: p.slug, featuredImage: p.featuredImage, title: p.title, value };
+        }
+      }
+    }
+
+    const localityAgg = new Map<
+      string,
+      { count: number; sum: number; values: number[] }
+    >();
+    for (const p of gurgaonSampleProjects) {
+      const key = (p.locality || '').trim();
+      if (!key) continue;
+      const v = parseIndianPriceToNumber(p.basePrice);
+      if (v === null) continue;
+      const bucket = localityAgg.get(key) || { count: 0, sum: 0, values: [] };
+      bucket.count += 1;
+      bucket.sum += v;
+      bucket.values.push(v);
+      localityAgg.set(key, bucket);
+    }
+    const micromarkets = Array.from(localityAgg.entries())
+      .map(([name, agg]) => ({
+        name,
+        avgTicketSizeRupees: agg.count ? Math.round(agg.sum / agg.count) : null,
+        count: agg.count,
+      }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 4)
+      .map(({ name, avgTicketSizeRupees }) => ({ name, avgTicketSizeRupees }));
+
+    const rentalSupply = rentalSupplyRaw.map((row) => ({
+      label: row.type,
+      count: Number(row.count),
+    }));
+
+    const exploreOptions: ExploreOptionsData = {
+      heading: 'Discover More Real Estate Options',
+      locationName,
+      items: [
+        {
+          title: 'New Projects',
+          description:
+            'Explore pre-launch and planned projects across key micro-markets with verified project basics.',
+          href: `/projects?city=${encodeURIComponent(locationName)}&status=PLANNED`,
+        },
+        {
+          title: 'Properties for Sale',
+          description:
+            'Browse verified residential and mixed-use listings with transparent pricing guidance.',
+          href: `/projects?city=${encodeURIComponent(locationName)}&category=RESIDENTIAL`,
+        },
+        {
+          title: 'Properties for Rent',
+          description:
+            'See commercial opportunities and available inventory across high-demand corridors.',
+          href: `/projects?city=${encodeURIComponent(locationName)}&category=COMMERCIAL`,
+        },
+      ],
+      cards: [
+        {
+          title: 'Ready to Move Projects',
+          subtitle: `in ${locationName}`,
+          countLabel: `${readyToMoveCount.toLocaleString('en-IN')}+`,
+          href: `/projects?city=${encodeURIComponent(locationName)}&status=READY`,
+          imageUrl:
+            readyToMoveHero?.featuredImage ||
+            featuredProjects[0]?.featuredImage ||
+            '/bannernew.webp',
+        },
+        {
+          title: 'New Launch Projects',
+          subtitle: `in ${locationName}`,
+          countLabel: `${newLaunchCount.toLocaleString('en-IN')}+`,
+          href: `/projects?city=${encodeURIComponent(locationName)}&status=PLANNED`,
+          imageUrl:
+            newLaunchHero?.featuredImage ||
+            featuredProjects[1]?.featuredImage ||
+            '/bannernew.webp',
+        },
+        {
+          title: 'Affordable Housing Projects',
+          subtitle: `in ${locationName}`,
+          countLabel: `${affordableCount.toLocaleString('en-IN')}+`,
+          href: `/projects?city=${encodeURIComponent(locationName)}&category=RESIDENTIAL`,
+          imageUrl:
+            affordablePick?.featuredImage ||
+            residentialProjects[0]?.featuredImage ||
+            featuredProjects[2]?.featuredImage ||
+            '/bannernew.webp',
+        },
+      ],
+    };
+
+    const priceInsights: PriceInsightsData = {
+      locationName,
+      totalProjects: gurgaonTotalProjects,
+      geocodedProjects: gurgaonGeocodedProjects,
+      medianTicketSizeRupees,
+      micromarkets,
+      rentalSupply,
+    };
+
     const diagnostics: FeaturedDiagnosticsData = { missingSlugs, mismatchedTitles };
     dataSources = { featuredSource: 'db', trendingSource: 'db' };
     return {
@@ -369,6 +589,9 @@ async function getHomePageData(): Promise<HomePageData> {
       residentialProjects,
       diagnostics,
       dataSources,
+      exploreOptions,
+      priceInsights,
+      blogPosts,
     };
   } catch (error) {
     console.error('Error fetching homepage data:', error);
@@ -380,6 +603,21 @@ async function getHomePageData(): Promise<HomePageData> {
       residentialProjects: [],
       diagnostics: { missingSlugs: [], mismatchedTitles: [] },
       dataSources,
+      exploreOptions: {
+        heading: 'Discover More Real Estate Options',
+        locationName: 'Gurgaon',
+        items: [],
+        cards: [],
+      },
+      priceInsights: {
+        locationName: 'Gurgaon',
+        totalProjects: 0,
+        geocodedProjects: 0,
+        medianTicketSizeRupees: null,
+        micromarkets: [],
+        rentalSupply: [],
+      },
+      blogPosts: [],
     };
   }
 }
@@ -387,7 +625,17 @@ async function getHomePageData(): Promise<HomePageData> {
 // Server component with ISR
 export default async function Home() {
   // Fetch data on the server with ISR
-  const { featuredProjects, trendingProjects, commercialProjects, residentialProjects, diagnostics, dataSources } = await getHomePageData();
+  const {
+    featuredProjects,
+    trendingProjects,
+    commercialProjects,
+    residentialProjects,
+    diagnostics,
+    dataSources,
+    exploreOptions,
+    priceInsights,
+    blogPosts,
+  } = await getHomePageData();
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.realtycanvas.in';
 
@@ -558,6 +806,20 @@ export default async function Home() {
         <CommercialProjectsSection projects={commercialProjects} loading={false} />
         {/* Residential Projects */}
         <ResidentialProjectsSection projects={residentialProjects} loading={false} />
+        {/* <ExploreOptionsSection
+          heading={exploreOptions.heading}
+          locationName={exploreOptions.locationName}
+          items={exploreOptions.items}
+          cards={exploreOptions.cards}
+        /> */}
+        {/* <PriceInsightsSection
+          locationName={priceInsights.locationName}
+          totalProjects={priceInsights.totalProjects}
+          geocodedProjects={priceInsights.geocodedProjects}
+          medianTicketSizeRupees={priceInsights.medianTicketSizeRupees}
+          micromarkets={priceInsights.micromarkets}
+          rentalSupply={priceInsights.rentalSupply}
+        /> */}
         {/* Services Section */}
         <ServicesSection />
         {/* Newsletter Section */}
@@ -570,6 +832,7 @@ export default async function Home() {
         <PodcastSection />
         {/* Enquiry Section */}
         <EnquirySection />
+        <BlogsSection posts={blogPosts} />
         {/* FAQ Section */}
         <FAQSection />
 

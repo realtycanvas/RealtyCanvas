@@ -193,11 +193,14 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     ]
   };
 
-  // FAQPage Schema - Only if post has FAQs
-  const faqLd = post.faqs && post.faqs.length > 0 ? {
+  const faqItems = Array.isArray((post as any).faqs)
+    ? (post as any).faqs.filter((faq: any) => faq && faq.question && faq.answer)
+    : [];
+
+  const faqLd = faqItems.length > 0 ? {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    "mainEntity": post.faqs.map(faq => ({
+    "mainEntity": faqItems.map((faq: any) => ({
       "@type": "Question",
       "name": faq.question,
       "acceptedAnswer": {
@@ -348,6 +351,29 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 />
               )}
             </article>
+
+            {faqItems.length > 0 && (
+              <section className="mt-12 space-y-4">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  Frequently Asked Questions
+                </h2>
+                <div className="space-y-4">
+                  {faqItems.map((faq: any, index: number) => (
+                    <div
+                      key={faq._key || faq.question || index}
+                      className="border border-gray-200 dark:border-gray-700 rounded-xl p-4 bg-gray-50 dark:bg-gray-800"
+                    >
+                      <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
+                        {faq.question}
+                      </h3>
+                      <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">
+                        {faq.answer}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
 
             {/* Author Bio */}
             {post.author && (
