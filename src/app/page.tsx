@@ -423,6 +423,58 @@ export default async function Home() {
     <>
       {/* Homepage Schema Markup - Server-side rendered with beforeInteractive */}
 
+      {/* Organization Schema - Global */}
+      <Script
+        id="organization-schema"
+        type="application/ld+json"
+        strategy="beforeInteractive"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "@id": `${baseUrl}/#organization`,
+            "url": baseUrl,
+            "name": "Realty Canvas",
+            "logo": `${baseUrl}/logo.webp`,
+            "description": "Premium real estate advisory in Gurgaon offering verified residential and commercial properties with transparent pricing and RERA compliance.",
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": "Gurgaon",
+              "addressRegion": "Haryana",
+              "addressCountry": "IN"
+            },
+            "areaServed": {
+              "@type": "City",
+              "name": "Gurgaon"
+            }
+          })
+        }}
+      />
+
+      {/* WebSite Schema - Global */}
+      <Script
+        id="website-schema"
+        type="application/ld+json"
+        strategy="beforeInteractive"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "@id": `${baseUrl}/#website`,
+            "url": baseUrl,
+            "name": "Realty Canvas",
+            "publisher": {
+              "@id": `${baseUrl}/#organization`
+            },
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": `${baseUrl}/projects?q={search_term_string}`,
+              "query-input": "required name=search_term_string"
+            }
+          })
+        }}
+      />
+
       {/* WebPage Schema */}
       <Script
         id="webpage-schema"
