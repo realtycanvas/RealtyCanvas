@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Script from 'next/script';
 import { prisma } from '@/lib/prisma';
 import { FeaturedDiagnostics } from '@/components/homepage';
 import { AdminFallbackBanner } from '@/components/homepage';
@@ -20,6 +21,7 @@ import {
 } from "@/components/homepage";
 import Sections from "@/components/homepage/Sections";
 import Newsletter from "@/components/homepage/Newsletter";
+
 
 // Define the Project type based on the Prisma schema
 type Project = {
@@ -111,7 +113,7 @@ export const metadata: Metadata = {
 async function getHomePageData(): Promise<HomePageData> {
   try {
     let dataSources: DataSources = { featuredSource: 'db', trendingSource: 'db' };
-    
+
     // Featured project titles to keep (editorial curation)
     const featuredProjectTitles = [
       'Elan The Presidential',
@@ -136,7 +138,7 @@ async function getHomePageData(): Promise<HomePageData> {
       'spj-vedatam',
       'aipl-joy-district',
     ];
-    
+
     // Fetch curated featured projects by slug first
     console.log('Fetching curated featured projects by slug:', curatedSlugs);
     let featuredProjectsRaw = await prisma.project.findMany({
@@ -387,37 +389,140 @@ export default async function Home() {
   // Fetch data on the server with ISR
   const { featuredProjects, trendingProjects, commercialProjects, residentialProjects, diagnostics, dataSources } = await getHomePageData();
 
-  return (
-    <main className="flex min-h-screen flex-col pt-16 bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
-      {/* Hero Section */}
-      <HeroSection />
-      {/* Benefits Section */}
-      <BenefitsSection />
-      {/* Admin-only diagnostics & fallback source banner */}
-      <AdminFallbackBanner dataSources={dataSources} counts={{ featured: featuredProjects.length, trending: trendingProjects.length }} />
-      <FeaturedDiagnostics diagnostics={diagnostics} />
-      {/* Featured Projects Section - Server-side rendered with ISR */}
-      <FeaturedProjectsSection projects={featuredProjects} loading={false} />
-      {/* Commercial Projects */}
-      <CommercialProjectsSection projects={commercialProjects} loading={false} />
-      {/* Residential Projects */}
-      <ResidentialProjectsSection projects={residentialProjects} loading={false} />
-      {/* Services Section */}
-      <ServicesSection />
-      {/* Newsletter Section */}
-      {/* <NewsletterSection /> */}
-      {/* Trending Projects Section - Server-side rendered with ISR */}
-      <Sections projects={trendingProjects} loading={false} />
-            {/* Testimonials Section */}
-      {/* <TestimonialsSection /> */}
-      {/* Podcast Section */}
-      <PodcastSection />
-      {/* Enquiry Section */}
-      <EnquirySection />
-      {/* FAQ Section */}
-      <FAQSection />
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.realtycanvas.in';
 
-    </main>
+  // FAQ data for schema markup (must match visible FAQ content)
+  const faqSchemaData = [
+    {
+      question: 'Who is Realty Canvas?',
+      answer: 'Realty Canvas is a Gurgaon-based real estate advisory focused on verified residential and commercial projects. We provide transparent pricing, RERA-compliant guidance, and end-to-end support from discovery to possession.',
+    },
+    {
+      question: 'What services does Realty Canvas offer?',
+      answer: 'We offer project discovery, price verification, site visits, deal negotiation, documentation assistance, loan facilitation, and post-purchase support including registration and possession.',
+    },
+    {
+      question: 'Why should I choose Realty Canvas?',
+      answer: 'We benchmark prices across builders, ensure paperwork is clean, and prioritize your ROI. Our team works directly with developer sales desks and uses verified information only.',
+    },
+    {
+      question: 'Does Realty Canvas charge any consultation fees?',
+      answer: 'Consultation is free for buyers. We are compensated by the developer channel without affecting your final price. You always receive transparent, all-inclusive quotes.',
+    },
+    {
+      question: 'Can Realty Canvas help me with home loans?',
+      answer: 'Yes. We coordinate with trusted lending partners to secure pre-approvals and process documentation. We aim for quick turnarounds with competitive interest rates.',
+    },
+    {
+      question: 'Where does Realty Canvas operate?',
+      answer: 'We primarily operate in Gurgaon and NCR across premium residential and Grade-A commercial corridors including Golf Course Extension Road, Dwarka Expressway, and New Gurgaon.',
+    },
+  ];
+
+  return (
+    <>
+      {/* Homepage Schema Markup - Server-side rendered with beforeInteractive */}
+
+      {/* WebPage Schema */}
+      <Script
+        id="webpage-schema"
+        type="application/ld+json"
+        strategy="beforeInteractive"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "@id": `${baseUrl}/#webpage`,
+            "url": baseUrl,
+            "name": "Realty Canvas | Verified Properties in Gurgaon | Residential & Commercial | Best Prices",
+            "description": "Discover verified residential commercial and residential homes in Gurgaon through Realty Canvas. Benefit from the most competitive prices and transparent deals, speedy paperwork, RERA compliance, and the best ROI with expert post-purchase assistance.",
+            "isPartOf": {
+              "@id": `${baseUrl}/#website`
+            },
+            "about": {
+              "@id": `${baseUrl}/#organization`
+            },
+            "breadcrumb": {
+              "@id": `${baseUrl}/#breadcrumb`
+            }
+          })
+        }}
+      />
+
+      {/* FAQPage Schema */}
+      <Script
+        id="faq-schema"
+        type="application/ld+json"
+        strategy="beforeInteractive"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": faqSchemaData.map(faq => ({
+              "@type": "Question",
+              "name": faq.question,
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": faq.answer
+              }
+            }))
+          })
+        }}
+      />
+
+      {/* BreadcrumbList Schema */}
+      <Script
+        id="breadcrumb-schema"
+        type="application/ld+json"
+        strategy="beforeInteractive"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "@id": `${baseUrl}/#breadcrumb`,
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": baseUrl
+              }
+            ]
+          })
+        }}
+      />
+
+      <main className="flex min-h-screen flex-col pt-16 bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
+        {/* Hero Section */}
+        <HeroSection />
+        {/* Benefits Section */}
+        <BenefitsSection />
+        {/* Admin-only diagnostics & fallback source banner */}
+        <AdminFallbackBanner dataSources={dataSources} counts={{ featured: featuredProjects.length, trending: trendingProjects.length }} />
+        <FeaturedDiagnostics diagnostics={diagnostics} />
+        {/* Featured Projects Section - Server-side rendered with ISR */}
+        <FeaturedProjectsSection projects={featuredProjects} loading={false} />
+        {/* Commercial Projects */}
+        <CommercialProjectsSection projects={commercialProjects} loading={false} />
+        {/* Residential Projects */}
+        <ResidentialProjectsSection projects={residentialProjects} loading={false} />
+        {/* Services Section */}
+        <ServicesSection />
+        {/* Newsletter Section */}
+        {/* <NewsletterSection /> */}
+        {/* Trending Projects Section - Server-side rendered with ISR */}
+        <Sections projects={trendingProjects} loading={false} />
+        {/* Testimonials Section */}
+        {/* <TestimonialsSection /> */}
+        {/* Podcast Section */}
+        <PodcastSection />
+        {/* Enquiry Section */}
+        <EnquirySection />
+        {/* FAQ Section */}
+        <FAQSection />
+
+      </main>
+    </>
   );
 }
 

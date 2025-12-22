@@ -165,8 +165,12 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "WebSite",
+              "@id": `${baseUrl}/#website`,
               "url": baseUrl,
               "name": "Realty Canvas",
+              "publisher": {
+                "@id": `${baseUrl}/#organization`
+              },
               "potentialAction": {
                 "@type": "SearchAction",
                 "target": `${baseUrl}/projects?q={search_term_string}`,
@@ -183,9 +187,21 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "Organization",
+              "@id": `${baseUrl}/#organization`,
               "url": baseUrl,
               "name": "Realty Canvas",
-              "logo": `${baseUrl}/logo.webp`
+              "logo": `${baseUrl}/logo.webp`,
+              "description": "Premium real estate advisory in Gurgaon offering verified residential and commercial properties with transparent pricing and RERA compliance.",
+              "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "Gurgaon",
+                "addressRegion": "Haryana",
+                "addressCountry": "IN"
+              },
+              "areaServed": {
+                "@type": "City",
+                "name": "Gurgaon"
+              }
             }, null, 2)
           }}
         />

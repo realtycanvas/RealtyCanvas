@@ -1,10 +1,10 @@
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
+import Script from 'next/script';
 import { unstable_noStore as noStore } from 'next/cache';
 import { prisma } from '@/lib/prisma';
 import { withWarmCache } from '@/lib/warm-cache-helper';
 import ProjectDetailClient from '@/app/projects/[id]/ProjectDetailClient';
-import JsonLd from '@/components/SEO/JsonLd';
 
 // Revalidate project detail pages every 5 minutes (ISR)
 export const revalidate = 300;
@@ -257,7 +257,8 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
     "provider": {
       "@type": "RealEstateAgent",
       "name": "Realty Canvas",
-      "url": baseUrl
+      "url": baseUrl,
+      "@id": `${baseUrl}/#organization`
     },
     "offer": {
       "@type": "Offer",
@@ -267,11 +268,54 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
     }
   };
 
+  // BreadcrumbList for project page
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": baseUrl
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Projects",
+        "item": `${baseUrl}/projects`
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": project.title,
+        "item": `${baseUrl}/projects/${project.slug}`
+      }
+    ]
+  };
+
   return (
     <>
-      <div style={{ display: 'none' }}>
-        <JsonLd data={jsonLd} />
-      </div>
+      {/* RealEstateListing Schema */}
+      <Script
+        id="real-estate-listing-schema"
+        type="application/ld+json"
+        strategy="beforeInteractive"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLd)
+        }}
+      />
+
+      {/* BreadcrumbList Schema */}
+      <Script
+        id="breadcrumb-schema"
+        type="application/ld+json"
+        strategy="beforeInteractive"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbLd)
+        }}
+      />
+
       <ProjectDetailClient project={project} slug={slug} />
     </>
   );
