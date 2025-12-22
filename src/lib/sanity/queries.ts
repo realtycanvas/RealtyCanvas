@@ -61,6 +61,16 @@ const mockBlogPosts: BlogPost[] = [
     title: 'The Future of Real Estate: Trends to Watch in 2024',
     slug: { current: 'future-real-estate-trends-2024' },
     excerpt: 'Discover the key trends shaping the real estate market in 2024, from smart homes to sustainable development.',
+    faqs: [
+      {
+        question: 'What does this article cover about real estate in 2024?',
+        answer: 'It explains the technology, buyer behavior, and policy trends likely to shape real estate in 2024.',
+      },
+      {
+        question: 'Who should read this 2024 real estate trends article?',
+        answer: 'Home buyers, investors, and brokers who want a quick overview of upcoming market shifts.',
+      },
+    ],
     publishedAt: '2024-01-15T10:00:00Z',
     readTime: 8,
     featured: true,
@@ -95,6 +105,16 @@ const mockBlogPosts: BlogPost[] = [
     title: 'Smart Investment Strategies for First-Time Property Buyers',
     slug: { current: 'smart-investment-strategies-first-time-buyers' },
     excerpt: 'Essential tips and strategies for first-time property buyers to make informed investment decisions.',
+    faqs: [
+      {
+        question: 'Is this guide suitable for first-time home buyers?',
+        answer: 'Yes, it explains budgeting, loan planning, and risk management for first-time buyers.',
+      },
+      {
+        question: 'Does the article help with choosing the right property?',
+        answer: 'It lists practical criteria like location, builder reputation, and rental potential.',
+      },
+    ],
     publishedAt: '2024-01-10T14:30:00Z',
     readTime: 6,
     featured: false,
@@ -129,6 +149,16 @@ const mockBlogPosts: BlogPost[] = [
     title: 'Sustainable Architecture: Building for the Future',
     slug: { current: 'sustainable-architecture-building-future' },
     excerpt: 'Exploring how sustainable architecture is revolutionizing the construction industry and creating eco-friendly living spaces.',
+    faqs: [
+      {
+        question: 'What is sustainable architecture?',
+        answer: 'It is an approach to design that reduces environmental impact using energy-efficient materials and systems.',
+      },
+      {
+        question: 'Why should property buyers care about sustainability?',
+        answer: 'Green buildings can reduce utility bills, improve comfort, and hold better long-term value.',
+      },
+    ],
     publishedAt: '2024-01-05T09:15:00Z',
     readTime: 10,
     featured: true,
