@@ -34,6 +34,7 @@ import RelatedProjects from "@/components/RelatedProjects";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { submitLeadCapture } from "@/lib/leadCapture";
+import { EnquirySection } from "@/components/homepage";
 
 type Unit = {
   id: string;
@@ -1041,6 +1042,9 @@ export default function ProjectDetailClient({
           </div>
         </div>
       </div>
+      
+      {/* Enquiry Section */}
+      <EnquirySection />
 
 
       {/* Gallery Modal */}

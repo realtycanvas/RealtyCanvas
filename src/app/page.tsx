@@ -14,6 +14,9 @@ import {
   ServicesSection,
   NewsletterSection,
   ContactSection,
+  TestimonialsSection,
+  PodcastSection,
+  EnquirySection,
 } from "@/components/homepage";
 import Sections from "@/components/homepage/Sections";
 import Newsletter from "@/components/homepage/Newsletter";
@@ -405,8 +408,15 @@ export default async function Home() {
       {/* <NewsletterSection /> */}
       {/* Trending Projects Section - Server-side rendered with ISR */}
       <Sections projects={trendingProjects} loading={false} />
+            {/* Testimonials Section */}
+      {/* <TestimonialsSection /> */}
+      {/* Podcast Section */}
+      <PodcastSection />
+      {/* Enquiry Section */}
+      <EnquirySection />
       {/* FAQ Section */}
       <FAQSection />
+
     </main>
   );
 }
