@@ -4,7 +4,7 @@ import { BlogPostPreview } from "@/lib/sanity/types";
 
 export default function BlogsSection({ posts }: { posts: BlogPostPreview[] }) {
   return (
-    <section className="py-16 bg-white dark:bg-gray-900">
+    <section className="lg:py-16 py-6 bg-white dark:bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-end justify-between gap-6 mb-10">
           <div>

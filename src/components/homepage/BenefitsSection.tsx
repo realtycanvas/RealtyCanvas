@@ -12,9 +12,9 @@ import SmartImage from '../ui/SmartImage';
 
 export default function BenefitsSection() {
   return (
-    <section className="lg:py-20 py-4 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
+    <section className="lg:py-20 py-4 px-6 md:px-0 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center justify-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 lg:gap-24 gap-4 items-center justify-center">
           {/* Left side - Benefits */}
           <div className="space-y-8">
             <div className="space-y-2">

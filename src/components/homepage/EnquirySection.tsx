@@ -3,20 +3,21 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Phone, Mail, MapPin } from 'lucide-react';
+import { FaWhatsapp } from 'react-icons/fa';
 import LeadCaptureForm from '../LeadCaptureForm';
 
 export default function EnquirySection() {
   return (
     <section className="py-20 bg-gray-50 dark:bg-gray-800">
       <div className="max-w-6xl mx-auto px-4">
-        <div className="flex flex-col lg:flex-row gap-44 items-start justify-between">
+        <div className="flex flex-col lg:flex-row lg:gap-32 gap-10 items-center justify-center">
           {/* Text Content */}
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="w-full lg:w-1/2 lg:sticky lg:top-24"
+            className="w-full lg:w-1/2"
           >
             <h2 className="text-3xl md:text-4xl font-bold text-[#0B1A3D] dark:text-white mb-6">
               Ready to Start <span className="text-[#FDB022]">Your Journey?</span>
@@ -26,30 +27,42 @@ export default function EnquirySection() {
             </p>
             
             <div className="space-y-6">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center shrink-0">
-                  <Phone className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+              <a 
+                href="https://wa.me/919555562626"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block bg-[#16A34A] hover:bg-[#20bd5a] p-6 rounded-xl shadow-md border border-transparent flex items-start gap-4 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group cursor-pointer"
+              >
+                <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center shrink-0 group-hover:bg-white/30 transition-colors">
+                  <FaWhatsapp className="w-7 h-7 text-white" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-[#0B1A3D] dark:text-white text-lg">Direct Contact</h3>
-                  <p className="text-gray-600 dark:text-gray-400">+91 9555562626</p>
-                  <p className="text-gray-600 dark:text-gray-400">sales@realtycanvas.in</p>
+                  <h3 className="font-semibold text-white text-lg flex items-center gap-2">
+                    Direct Contact
+                  </h3>
+                  <p className="text-white/90 mt-1 font-medium">+91 9555562626</p>
+                  <p className="text-white/80 text-sm">sales@realtycanvas.in</p>
                 </div>
-              </div>
+              </a>
               
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center shrink-0">
-                  <MapPin className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+              <a 
+                href="https://www.google.com/maps/search/?api=1&query=Landmark+Cyber+Park+Sector+67+Gurugram"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block bg-[#112D48] hover:bg-[#0b1e33] p-6 rounded-xl shadow-md border border-transparent flex items-start gap-4 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group cursor-pointer"
+              >
+                <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center shrink-0 group-hover:bg-white/20 transition-colors">
+                  <MapPin className="w-7 h-7 text-white" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-[#0B1A3D] dark:text-white text-lg">Visit Our Office</h3>
-                  <p className="text-gray-600 dark:text-gray-400">
-                    11st Floor, Landmark Cyber Park<br />
+                  <h3 className="font-semibold text-white text-lg">Visit Our Office</h3>
+                  <p className="text-white/90 mt-1 text-sm leading-relaxed">
+                    11th Floor, Landmark Cyber Park<br />
                     Sector 67, Gurugram - 122102<br />
                     Haryana, India
                   </p>
                 </div>
-              </div>
+              </a>
             </div>
           </motion.div>
 
@@ -59,7 +72,7 @@ export default function EnquirySection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="w-full lg:w-1/2 bg-white dark:bg-gray-900 p-8 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800"
+            className="w-full lg:w-1/2 bg-white  p-8 rounded-2xl shadow-xl border border-gray-100 "
           >
             <LeadCaptureForm showCancelButton={false} />
           </motion.div>

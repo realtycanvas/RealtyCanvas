@@ -85,7 +85,7 @@ export default function PodcastSection() {
   };
 
   return (
-    <section className="py-20 bg-white dark:bg-gray-900 overflow-hidden relative">
+    <section className="py-6 lg:py-16 bg-white  overflow-hidden relative">
       {/* Background decoration */}
       <div className="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
       <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
