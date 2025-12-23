@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import SmartImage from '@/components/ui/SmartImage';
 import { useState, useEffect, useRef } from 'react';
 import type { MouseEvent as ReactMouseEvent } from 'react';
@@ -24,9 +25,15 @@ const navigation = [
 ];
 
 export default function Navbar() {
+  const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showAdminLogin, setShowAdminLogin] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  
+  // Determine if we should show the solid navbar (scrolled or not on home page)
+  const isHomePage = pathname === '/';
+  const showSolidNav = isScrolled || !isHomePage;
+
   const { user, isAdmin, signOut } = useAuth();
 
   const callNowButtonRef = useRef<HTMLAnchorElement | null>(null);
@@ -145,19 +152,19 @@ export default function Navbar() {
   }
 
   return (
-    <nav className={`${isScrolled ? 'bg-white shadow-lg' : 'bg-transparent'} backdrop-blur-sm fixed w-full z-50 transition-all duration-300`}>
-      <div className={`max-w-7xl mx-auto px-2 sm:px-4 ${isScrolled ? 'bg-transparent' : 'bg-transparent hover:bg-black/20'} transition-colors duration-300 rounded-lg mx-4 mt-2`}>
-        <div className="flex justify-between items-center h-16 px-2 lg:px-4">
+    <nav className={`${showSolidNav ? 'bg-white shadow-lg' : 'bg-transparent'} backdrop-blur-sm fixed w-full z-50 transition-all duration-300`}>
+      <div className={`max-w-7xl mx-auto px-2 sm:px-4 ${showSolidNav ? 'bg-transparent' : 'bg-transparent hover:bg-black/20'} transition-colors duration-300 rounded-lg mx-4 mt-2`}>
+        <div className="flex justify-between items-center h-16 px-4 lg:px-4">
           {/* Logo */}
           <div className="">
             <Link href="/" className="flex items-center no-underline hover:no-underline focus:no-underline">
               {/* Logo - Light version only */}
               <SmartImage
-                src={isScrolled ? "/logo-original.webp" : "/logo-white.webp"}
+                src={showSolidNav ? "/logo-original.webp" : "/logo-white.webp"}
                 alt="Reality Canvas"
                 width={1200}
                 height={100}
-                className={`w-40 h-10 ${isScrolled ? '' : ''}`}
+                className={`w-40 h-10 ${showSolidNav ? '' : ''}`}
                 priority
               />
             </Link>
@@ -169,7 +176,7 @@ export default function Navbar() {
               <Link
                 key={item.name}
                 href={item.href}
-                className={`${isScrolled ? 'text-gray-700' : 'text-white'} hover:text-brand-primary px-4 py-2 text-base font-medium transition-colors duration-200 relative group no-underline hover:no-underline focus:no-underline`}
+                className={`${showSolidNav ? 'text-gray-700' : 'text-white'} hover:text-brand-primary px-4 py-2 text-base font-medium transition-colors duration-200 relative group no-underline hover:no-underline focus:no-underline`}
               >
                 {item.name}
                 <span className="absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-brand-primary to-brand-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></span>
@@ -200,7 +207,7 @@ export default function Navbar() {
             </Link>
             <button
               onClick={handleShare}
-              className={`w-full ${isScrolled ? 'text-gray-600 bg-[#F0F0F0]' : 'text-white bg-white/20 hover:bg-white/30'} p-3 flex items-center justify-center rounded-full transition-colors`}
+              className={`w-full ${showSolidNav ? 'text-gray-600 bg-[#F0F0F0]' : 'text-white bg-white/20 hover:bg-white/30'} p-3 flex items-center justify-center rounded-full transition-colors`}
             >
               <ShareIcon className="w-4 h-4 mr-2" />
               Share

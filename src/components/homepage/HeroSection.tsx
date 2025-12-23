@@ -8,7 +8,7 @@ import ProjectSearchBar from "../ProjectSearchBar";
 export default function HeroSection() {
   return (
     <section 
-      className="relative overflow-hidden min-h-[100dvh] md:min-h-[60vh] lg:min-h-[50vh] xl:min-h-[100vh] flex items-center justify-center py-0 mt-[-20vw] md:mt-[-6.25vw] lg:mt-[-4.15vw]"
+      className="relative overflow-hidden min-h-[100dvh] md:min-h-[60vh] lg:min-h-[50vh] xl:min-h-[100vh] flex items-center justify-center py-0 mt-[-20vw] md:mt-[-6.25vw] lg:mt-[-6.15vw] xl:mt-[-4.15vw]"
     >
      {/* Desktop Background Image - Visible on sm (640px) and up */}
       <SmartImage 

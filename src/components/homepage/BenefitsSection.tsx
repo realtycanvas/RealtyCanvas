@@ -104,7 +104,7 @@ export default function BenefitsSection() {
           </div>
 
           {/* Right side - Image */}
-          <div className="flex items-end border-2 lg:w-[380px] w-full lg:h-[600px] h-full border-gray-500 overflow-hidden rounded-tl-[200px] rounded-br-[200px]">
+          <div className="flex items-end border-2 lg:w-[380px] w-full max-w-[380px] mx-auto lg:mx-0 lg:h-[600px] h-[500px] border-gray-500 overflow-hidden rounded-tl-[200px] rounded-br-[200px]">
             <div className="relative  overflow-hidden ">
               <SmartImage
                 src="/bannernew.webp"
