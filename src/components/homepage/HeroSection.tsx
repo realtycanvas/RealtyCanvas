@@ -8,66 +8,73 @@ import ProjectSearchBar from "../ProjectSearchBar";
 export default function HeroSection() {
   return (
     <section 
-      className="relative overflow-hidden lg:mb-10 mb-2 h-[700px] md:h-[100vh]  flex items-center justify-center  py-0 lg:py-6 mt-[-10vw] md:mt-[-1vw]"
+      className="relative overflow-hidden min-h-[100dvh] md:min-h-[60vh] lg:min-h-[50vh] xl:min-h-[100vh] flex items-center justify-center py-0 mt-[-20vw] md:mt-[-6.25vw] lg:mt-[-4.15vw]"
     >
-     {/* Desktop Background Image */}
+     {/* Desktop Background Image - Visible on sm (640px) and up */}
       <SmartImage 
-        src="/home.webp"
+        src="/homepage.webp"
         alt="Hero Background"
         fill
         quality={100}
-        className="hidden md:block object-cover object-center "
+        className="hidden sm:block object-cover object-center"
         priority
       />
       
-      {/* Mobile Background Image */}
+      {/* Mobile Background Image - Visible below sm (640px) */}
       <SmartImage 
-        src="/home_page_banner_phone.png"
+        src="/home-mobile.webp"
         alt="Hero Background Mobile"
         fill
         quality={100}
-        className="block sm:hidden object-cover object-center "
+        className="block sm:hidden object-cover object-center"
         priority
       />
     
       {/* Background overlay for better text readability */}
-      <div className="absolute inset-0 bg-black/20 -z-10"></div>
+      {/* Base dark tint */}
+      <div className="absolute inset-0 bg-black/20 -z-20"></div>
+      
+      {/* Desktop Gradient - Left to Right */}
+      <div className="hidden lg:block absolute inset-0 bg-gradient-to-r from-[#000]/50 via-[#112D48]/20 to-transparent z-10"></div>
+      
+      {/* Mobile/Tablet Gradient - Top to Bottom */}
+      <div className="block lg:hidden absolute inset-0 bg-gradient-to-b from-[#000]/50 via-[#112D48]/20 to-transparent z-10"></div>
 
 
-      <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col items-center justify-center h-full">
-        <div className="flex flex-col items-center justify-center text-center   lg:space-y-6">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col items-center lg:items-start justify-center h-full mt-20 sm:mt-24 lg:mt-0 z-20">
+        <div className="flex flex-col items-center lg:items-start justify-center text-center lg:text-left space-y-6 sm:space-y-8 lg:space-y-10 w-full lg:w-[60%]">
           {/* Main Heading */}
-          <div className="lg:space-y-3 ">
-            <div className="flex flex-col sm:flex-row items-center  justify-center gap-1  md:gap-4">
-              <h1 className="text-3xl lg:text-5xl xl:text-6xl font-bold leading-tight text-white">
+          <div className="space-y-3 sm:space-y-4 max-w-4xl mx-auto lg:mx-0 lg:mr-auto">
+            <div className="flex flex-col sm:flex-row items-center lg:items-start justify-center lg:justify-start gap-2 sm:gap-3 md:gap-4 flex-wrap">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight text-white drop-shadow-lg text-center lg:text-left">
                 Find Your
               </h1>
-              <span className="text-3xl lg:text-5xl xl:text-6xl font-bold leading-tight bg-gradient-to-r from-brand-primary to-brand-primary bg-clip-text text-transparent">
+              <span className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight bg-gradient-to-r from-brand-primary to-brand-primary bg-clip-text text-transparent drop-shadow-sm text-center lg:text-left">
                 Dream Project
               </span>
             </div>
 
-            <p className="text-xs  md:text-base  font-semibold text-white/90 leading-relaxed max-w-[280px] lg:max-w-2xl mx-auto px-2 pb-4 lg:pb-0">
+            <p className="text-sm sm:text-base md:text-lg lg:text-xl font-medium text-gray-100 leading-relaxed max-w-xs sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto lg:mx-0 lg:mr-auto drop-shadow-md text-center lg:text-left">
               Discover premium residential homes and commercial spaces across Gurgaon with India&apos;s most trusted real estate consultant.
             </p>
           </div>
 
           {/* Action Buttons */}
-          <div className="flex flex-row gap-4  md:gap-4 justify-center items-center w-full max-w-[200px] ">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start items-center w-full max-w-xs sm:max-w-md md:max-w-lg mx-auto lg:mx-0 lg:mr-auto">
             <Link href="/projects" className="w-full sm:w-auto">
               <BrandButton
                 variant="primary"
                 size="lg"
-                className="rounded-xl  text-xs  md:text-sm px-3  md:px-4 py-2  md:py-3 w-full  "
+                className="rounded-xl text-sm sm:text-base px-6 py-3 sm:py-4 w-full sm:w-auto min-w-[160px] shadow-lg hover:scale-105 transition-transform"
               >
                 Explore Projects
               </BrandButton>
             </Link>
             <Link href="/contact" className="w-full sm:w-auto">
               <BrandButton
-                variant="primary"
+                variant="secondary"
                 size="lg"
-                className="rounded-xl  text-xs  md:text-sm px-4  md:px-6 py-2  md:py-3 w-full "
+                className="rounded-xl text-sm sm:text-base px-6 py-3 sm:py-4 w-full sm:w-auto min-w-[160px] !bg-[#112D48] !text-white hover:!bg-[#091a30] shadow-lg hover:scale-105 transition-transform"
               >
                 Get In Touch
               </BrandButton>
@@ -75,7 +82,7 @@ export default function HeroSection() {
           </div>
           
           {/* Search Bar */}
-          <div className="w-full max-w-[300px]  md:max-w-3xl mx-auto mt-3  px-2 sm:px-0 ">
+          <div className="w-full max-w-sm sm:max-w-xl md:max-w-3xl lg:max-w-4xl mx-auto lg:mx-0 lg:mr-auto mt-4 sm:mt-8 px-2 sm:px-0">
             <ProjectSearchBar
               onSearch={(filters) => {
                 // Navigate to projects page with filters

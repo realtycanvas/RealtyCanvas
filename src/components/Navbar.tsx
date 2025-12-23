@@ -4,7 +4,8 @@ import Link from 'next/link';
 import SmartImage from '@/components/ui/SmartImage';
 import { useState, useEffect, useRef } from 'react';
 import type { MouseEvent as ReactMouseEvent } from 'react';
-import { Bars3Icon, XMarkIcon, ChevronDownIcon, UserIcon, ArrowRightOnRectangleIcon, ShareIcon } from '@heroicons/react/24/outline';
+import { Bars3Icon, XMarkIcon, ChevronDownIcon, UserIcon, ArrowRightOnRectangleIcon, ShareIcon, PhoneIcon } from '@heroicons/react/24/outline';
+import { FaWhatsapp } from 'react-icons/fa';
 import { Menu, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
 // Import the auth context
@@ -145,18 +146,18 @@ export default function Navbar() {
 
   return (
     <nav className={`${isScrolled ? 'bg-white shadow-lg' : 'bg-transparent'} backdrop-blur-sm fixed w-full z-50 transition-all duration-300`}>
-      <div className={`max-w-6xl mx-auto px-2 sm:px-4  ${isScrolled ? 'bg-transparent' : 'bg-white/10'} rounded-lg mx-4 mt-2`}>
-        <div className="flex justify-between items-center h-16">
+      <div className={`max-w-7xl mx-auto px-2 sm:px-4 ${isScrolled ? 'bg-transparent' : 'bg-transparent hover:bg-black/20'} transition-colors duration-300 rounded-lg mx-4 mt-2`}>
+        <div className="flex justify-between items-center h-16 px-2 lg:px-4">
           {/* Logo */}
           <div className="">
             <Link href="/" className="flex items-center no-underline hover:no-underline focus:no-underline">
               {/* Logo - Light version only */}
               <SmartImage
-                src="/logo1.webp"
+                src={isScrolled ? "/logo-original.webp" : "/logo-white.webp"}
                 alt="Reality Canvas"
                 width={1200}
                 height={100}
-                className="w-40 h-10"
+                className={`w-40 h-10 ${isScrolled ? '' : ''}`}
                 priority
               />
             </Link>
@@ -168,7 +169,7 @@ export default function Navbar() {
               <Link
                 key={item.name}
                 href={item.href}
-                className="text-gray-700 hover:text-brand-primary dark:text-gray-300 dark:hover:text-brand-primary px-4 py-2 text-base font-medium transition-colors duration-200 relative group no-underline hover:no-underline focus:no-underline"
+                className={`${isScrolled ? 'text-gray-700' : 'text-white'} hover:text-brand-primary px-4 py-2 text-base font-medium transition-colors duration-200 relative group no-underline hover:no-underline focus:no-underline`}
               >
                 {item.name}
                 <span className="absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-brand-primary to-brand-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></span>
@@ -177,31 +178,29 @@ export default function Navbar() {
           </div>
 
           {/* Right side items */}
-          <div className="hidden lg:flex lg:items-center lg:space-x-4">
+          <div className="hidden lg:flex lg:items-center lg:space-x-4 pr-10">
             {/* Theme toggle removed - using light mode only */}
             <Link
               href="tel:9555562626"
               ref={callNowButtonRef}
-              className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-medium px-3 py-2 rounded-full transition-all duration-300 transform hover:scale-105 animate-pulse hover:animate-none whitespace-nowrap"
+              className="flex items-center gap-2 bg-[#FBB70F] hover:bg-[#e5a60d] text-[#112D48] font-medium px-3 py-2 rounded-full transition-all duration-300 transform hover:scale-105 animate-pulse hover:animate-none whitespace-nowrap shadow-lg"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
-              </svg>
+              <PhoneIcon className="h-4 w-4" />
               Call Now
             </Link>
             <Link
-              href="tel:9555562626"
+              href="https://wa.me/9555562626"
               ref={hotlineButtonRef}
-              className="flex items-center gap-2 bg-[#112D48] hover:bg-[#091a30] text-white font-medium px-3 py-2 rounded-full transition-all duration-300 transform hover:scale-105 whitespace-nowrap"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-medium px-3 py-2 rounded-full transition-all duration-300 transform hover:scale-105 whitespace-nowrap"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
-              </svg>
+              <FaWhatsapp className="h-4 w-4" />
               9555562626
             </Link>
             <button
               onClick={handleShare}
-              className="w-full text-gray-600 bg-[#F0F0F0] hover:bg-[#E0E0E0] p-3 flex items-center justify-center rounded-full"
+              className={`w-full ${isScrolled ? 'text-gray-600 bg-[#F0F0F0]' : 'text-white bg-white/20 hover:bg-white/30'} p-3 flex items-center justify-center rounded-full transition-colors`}
             >
               <ShareIcon className="w-4 h-4 mr-2" />
               Share
@@ -261,16 +260,16 @@ export default function Navbar() {
           </div>
 
           {/* Mobile menu button */}
-          <div className="lg:hidden flex items-center space-x-4">
+          <div className="lg:hidden flex items-center space-x-2">
             {/* Theme toggle removed - using light mode only */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors duration-200"
+              className="text-[#FBB70F] hover:text-[#e5a60d] transition-colors duration-200"
             >
               {mobileMenuOpen ? (
-                <XMarkIcon className="h-6 w-6" />
+                <XMarkIcon className="h-10 w-10" />
               ) : (
-                <Bars3Icon className="h-6 w-6" />
+                <Bars3Icon className="h-10 w-10" />
               )}
             </button>
           </div>
@@ -302,23 +301,21 @@ export default function Navbar() {
                 <Link
                   href="tel:9555562626"
                   ref={mobileCallNowButtonRef}
-                  className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-medium py-3 rounded-lg text-center w-full mb-2 transition-all duration-300 transform hover:scale-105 animate-pulse hover:animate-none"
+                  className="flex items-center justify-center gap-2 bg-[#FBB70F] hover:bg-[#e5a60d] text-[#112D48] font-medium py-3 rounded-lg text-center w-full mb-2 transition-all duration-300 transform hover:scale-105 animate-pulse hover:animate-none shadow-lg"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
-                  </svg>
+                  <PhoneIcon className="h-5 w-5" />
                   Call Now: 9555562626
                 </Link>
                 <Link
-                  href="tel:9555562626"
+                  href="https://wa.me/9555562626"
                   ref={mobileHotlineButtonRef}
-                  className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-lg text-center w-full mb-2 transition-all duration-300 transform hover:scale-105"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-medium py-3 rounded-lg text-center w-full mb-2 transition-all duration-300 transform hover:scale-105"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
-                  </svg>
+                  <FaWhatsapp className="h-5 w-5" />
                   9555562626
                 </Link>
                 {/* Admin-only Add Project Button */}

@@ -81,7 +81,7 @@ export default function ProjectSearchBar({ onSearch, className = '', compact = f
 
         {/* Project Category Dropdown */}
         <div>
-          <label className="text-xs font-medium text-muted-foreground mb-1 block">Category</label>
+          <label className="text-xs font-medium text-black mb-1 block">Category</label>
           <Menu as="div" className="relative">
             <Menu.Button className="w-full flex items-center justify-between pl-8 pr-2 h-8 border border-input rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-ring text-xs">
               <BuildingOfficeIcon className="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -121,7 +121,7 @@ export default function ProjectSearchBar({ onSearch, className = '', compact = f
 
         {/* Project Status Dropdown */}
         <div>
-          <label className="text-xs font-medium text-muted-foreground mb-1 block">Status</label>
+          <label className="text-xs font-medium text-black mb-1 block">Status</label>
           <Menu as="div" className="relative">
             <Menu.Button className="w-full flex items-center justify-between pl-8 pr-2 h-8 border border-input rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-ring text-xs">
               <HomeModernIcon className="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -161,7 +161,7 @@ export default function ProjectSearchBar({ onSearch, className = '', compact = f
 
         {/* Price Range Dropdown */}
         <div>
-          <label className="text-xs font-medium text-muted-foreground mb-1 block">Budget</label>
+          <label className="text-xs font-medium text-black mb-1 block">Budget</label>
           <Menu as="div" className="relative">
             <Menu.Button className="w-full flex items-center justify-between pl-8 pr-2 h-8 border border-input rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-ring text-xs">
               <Banknote className="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -302,7 +302,7 @@ export default function ProjectSearchBar({ onSearch, className = '', compact = f
           <label className="text-xs font-semibold text-white">Budget</label>
           <Menu as="div" className="relative">
             <Menu.Button className="w-full flex items-center justify-between pl-8 sm:pl-10 pr-3 sm:pr-4 py-1.5 sm:py-2 text-xs sm:text-sm border border-gray-200 dark:border-gray-600 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-brand-primary focus:border-transparent bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white transition-all duration-200">
-              <CurrencyDollarIcon className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 w-4 sm:w-5 h-4 sm:h-5 text-gray-400" />
+              <Banknote className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 w-4 sm:w-5 h-4 sm:h-5 text-gray-400" />
               <span className="truncate">{selectedPriceRange.label}</span>
               <svg className="w-4 sm:w-5 h-4 sm:h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />

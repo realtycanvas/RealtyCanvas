@@ -93,6 +93,7 @@ Add these environment variables in your Vercel project settings:
    - Install dependencies
    - Generate Prisma client
    - Build the Next.js application
+4. 'git push new-repo main' - for new update   
 
 ### Build Configuration
 
