@@ -17,7 +17,7 @@ const Footer = () => {
             {/* Company Info */}
             <div className="lg:col-span-2">
               <Link href="/" className="inline-block mb-6 no-underline hover:no-underline focus:no-underline">
-                <SmartImage src="/logo.webp" alt="Reality Canvas" width={1200} height={100} className="w-56 h-22" />
+                <SmartImage src="/logo-white.webp" alt="Reality Canvas" width={1200} height={100} className="w-56 h-22" />
               </Link>
               <p className="text-gray-300 text-sm leading-relaxed mb-6 max-w-xs lg:ml-8">
                 Your trusted partner in finding the perfect property that
