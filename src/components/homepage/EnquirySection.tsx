@@ -57,7 +57,7 @@ export default function EnquirySection() {
                 <div>
                   <h3 className="font-semibold text-white text-lg">Visit Our Office</h3>
                   <p className="text-white/90 mt-1 text-sm leading-relaxed">
-                    11th Floor, Landmark Cyber Park<br />
+                    1st Floor, Landmark Cyber Park<br />
                     Sector 67, Gurugram - 122102<br />
                     Haryana, India
                   </p>

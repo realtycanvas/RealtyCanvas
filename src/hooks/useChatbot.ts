@@ -14,7 +14,7 @@ export function useChatbot() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      content: "Hi! I'm RealityCanvas Assistant. I'm here to help you with real estate questions, property searches, buying/selling advice, and using our platform. How can I assist you today?",
+      content: "Hi! I'm RealtyCanvas Assistant. I'm here to help you with real estate questions, property searches, buying/selling advice, and using our platform. How can I assist you today?",
       role: 'assistant',
       timestamp: new Date()
     }
@@ -78,7 +78,7 @@ export function useChatbot() {
     setMessages([
       {
         id: '1',
-        content: "Hi! I'm RealityCanvas Assistant. I'm here to help you with real estate questions, property searches, buying/selling advice, and using our platform. How can I assist you today?",
+        content: "Hi! I'm RealtyCanvas Assistant. I'm here to help you with real estate questions, property searches, buying/selling advice, and using our platform. How can I assist you today?",
         role: 'assistant',
         timestamp: new Date()
       }

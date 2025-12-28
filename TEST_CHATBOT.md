@@ -1,4 +1,4 @@
-# RealityCanvas Chatbot Test Results ✅
+# RealtyCanvas Chatbot Test Results ✅
 
 ## API Configuration Status
 ✅ **Gemini API Key**: Configured with your provided key
@@ -26,7 +26,7 @@
 
 ### **Decent Error Message for Off-Topic Questions:**
 ```
-"Thank you for reaching out! I'm RealityCanvas Assistant, and I'm specifically designed to help with real estate matters. I'd be happy to assist you with property searches, buying/selling guidance, investment advice, market insights, or any questions about our platform. What real estate topic can I help you with today? 🏠"
+"Thank you for reaching out! I'm RealtyCanvas Assistant, and I'm specifically designed to help with real estate matters. I'd be happy to assist you with property searches, buying/selling guidance, investment advice, market insights, or any questions about our platform. What real estate topic can I help you with today? 🏠"
 ```
 
 ### **Enhanced Topic Detection:**

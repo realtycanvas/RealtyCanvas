@@ -22,7 +22,7 @@ const mockAuthor: Author = {
       markDefs: []
     }
   ],
-  email: 'sarah@realitycanvas.com',
+  email: 'sarah@RealtyCanvas.com',
   website: 'https://sarahjohnson.com',
   socialLinks: {
     twitter: '@sarahjohnson',

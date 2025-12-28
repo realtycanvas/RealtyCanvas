@@ -117,7 +117,7 @@ export default function AdminLoginPage() {
                       value={forgotEmail}
                       onChange={(e) => setForgotEmail(e.target.value)}
                       className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-500 focus:border-transparent bg-white text-gray-900 placeholder-gray-500 transition-colors"
-                      placeholder="admin@realitycanvas.com"
+                      placeholder="admin@RealtyCanvas.com"
                       required
                     />
                   </div>

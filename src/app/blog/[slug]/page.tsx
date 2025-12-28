@@ -108,11 +108,11 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
   }
 
   return {
-    title: `${post.title} | RealityCanvas Blog`,
-    description: post.excerpt || `Read ${post.title} on RealityCanvas Blog`,
+    title: `${post.title} | RealtyCanvas Blog`,
+    description: post.excerpt || `Read ${post.title} on RealtyCanvas Blog`,
     openGraph: {
       title: post.title,
-      description: post.excerpt || `Read ${post.title} on RealityCanvas Blog`,
+      description: post.excerpt || `Read ${post.title} on RealtyCanvas Blog`,
       images: post.mainImage ? [urlFor(post.mainImage).width(1200).height(630).url()] : [],
     },
   }

@@ -17,7 +17,7 @@ export default function Chatbot() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      content: "Hi! I'm RealityCanvas Assistant. I'm here to help you with real estate questions, property searches, buying/selling advice, and using our platform. How can I assist you today?",
+      content: "Hi! I'm RealtyCanvas Assistant. I'm here to help you with real estate questions, property searches, buying/selling advice, and using our platform. How can I assist you today?",
       role: 'assistant',
       timestamp: new Date()
     }
@@ -120,7 +120,7 @@ export default function Chatbot() {
     setMessages([
       {
         id: '1',
-        content: "Hi! I'm RealityCanvas Assistant. I'm here to help you with real estate questions, property searches, buying/selling advice, and using our platform. How can I assist you today?",
+        content: "Hi! I'm RealtyCanvas Assistant. I'm here to help you with real estate questions, property searches, buying/selling advice, and using our platform. How can I assist you today?",
         role: 'assistant',
         timestamp: new Date()
       }
@@ -138,7 +138,7 @@ export default function Chatbot() {
           isOpen ? 'rotate-45' : 'chatbot-pulse'
         }`}
         aria-label="Toggle chat"
-        title="RealityCanvas Assistant"
+        title="RealtyCanvas Assistant"
       >
         {isOpen ? (
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -163,7 +163,7 @@ export default function Chatbot() {
                 </svg>
               </div>
               <div>
-                <h3 className="font-semibold text-sm">RealityCanvas Assistant</h3>
+                <h3 className="font-semibold text-sm">RealtyCanvas Assistant</h3>
                 <p className="text-xs opacity-80">Real Estate Helper</p>
               </div>
             </div>
@@ -279,7 +279,7 @@ export default function Chatbot() {
               </BrandButton>
             </div>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">
-              Ask me about real estate, properties, or using RealityCanvas
+              Ask me about real estate, properties, or using RealtyCanvas
             </p>
           </div>
         </div>

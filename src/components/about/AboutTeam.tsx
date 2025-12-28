@@ -84,7 +84,7 @@ export default function AboutTeam() {
             <span className="text-brand-primary font-medium text-sm">Our Team</span>
           </div>
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            Meet the People Behind RealityCanvas
+            Meet the People Behind RealtyCanvas
           </h2>
           <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
             Our diverse team of experts brings together decades of experience in real estate, technology, design, and customer service to deliver exceptional results.

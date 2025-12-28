@@ -4,14 +4,14 @@ echo Pushing to Both GitHub Repositories
 echo ========================================
 echo.
 
-echo [1/2] Pushing to DigitallyNext/realitycanvas...
+echo [1/2] Pushing to DigitallyNext/RealtyCanvas...
 git push origin main
 if %errorlevel% neq 0 (
-    echo ❌ Failed to push to DigitallyNext/realitycanvas
+    echo ❌ Failed to push to DigitallyNext/RealtyCanvas
     pause
     exit /b %errorlevel%
 )
-echo ✅ Successfully pushed to DigitallyNext/realitycanvas
+echo ✅ Successfully pushed to DigitallyNext/RealtyCanvas
 echo.
 
 echo [2/2] Pushing to realtycanvas/RealtyCanvas...

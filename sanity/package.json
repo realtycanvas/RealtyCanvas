@@ -1,8 +1,8 @@
 {
-  "name": "realitycanvas-blog-studio",
+  "name": "RealtyCanvas-blog-studio",
   "private": true,
   "version": "1.0.0",
-  "description": "Sanity Studio for RealityCanvas Blog",
+  "description": "Sanity Studio for RealtyCanvas Blog",
   "keywords": [
     "sanity"
   ],

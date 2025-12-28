@@ -1,4 +1,4 @@
--- Database optimization script for RealityCanvas
+-- Database optimization script for RealtyCanvas
 -- This script adds indexes to improve query performance and reduce database load
 
 -- Project table indexes

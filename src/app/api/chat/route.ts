@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
     // Pre-check if the message is real estate related
     if (!isRealEstateRelated(message)) {
       return NextResponse.json({ 
-        response: "Thank you for reaching out! I'm RealityCanvas Assistant, and I'm specifically designed to help with real estate matters. I'd be happy to assist you with property searches, buying/selling guidance, investment advice, market insights, or any questions about our platform. What real estate topic can I help you with today? 🏠"
+        response: "Thank you for reaching out! I'm RealtyCanvas Assistant, and I'm specifically designed to help with real estate matters. I'd be happy to assist you with property searches, buying/selling guidance, investment advice, market insights, or any questions about our platform. What real estate topic can I help you with today? 🏠"
       });
     }
 

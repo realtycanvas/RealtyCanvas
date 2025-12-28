@@ -77,7 +77,7 @@ export default function ContactSection({
                       </div>
                       <div>
                         <p className="font-semibold text-gray-900 dark:text-white">Email</p>
-                        <p className="text-gray-600 dark:text-gray-300">info@realitycanvas.com</p>
+                        <p className="text-gray-600 dark:text-gray-300">info@RealtyCanvas.com</p>
                       </div>
                     </div>
 

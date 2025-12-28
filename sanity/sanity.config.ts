@@ -4,8 +4,8 @@ import {visionTool} from '@sanity/vision'
 import {schemaTypes} from './schemaTypes'
 
 export default defineConfig({
-  name: 'realitycanvas-blog',
-  title: 'RealityCanvas Blog',
+  name: 'RealtyCanvas-blog',
+  title: 'RealtyCanvas Blog',
 
   projectId: '5pondglc',
   dataset: 'production',

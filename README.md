@@ -1,4 +1,4 @@
-# RealityCanvas - Property Management Platform
+# RealtyCanvas - Property Management Platform
 
 A modern property management platform built with Next.js 15, Prisma, and Supabase.
 
@@ -35,8 +35,8 @@ Create a `.env` file in the root directory with the following variables:
 
 ```env
 # Database
-DATABASE_URL="postgresql://username:password@localhost:5432/realitycanvas"
-DIRECT_URL="postgresql://username:password@localhost:5432/realitycanvas"
+DATABASE_URL="postgresql://username:password@localhost:5432/RealtyCanvas"
+DIRECT_URL="postgresql://username:password@localhost:5432/RealtyCanvas"
 
 # Supabase
 NEXT_PUBLIC_SUPABASE_URL="your-supabase-project-url"

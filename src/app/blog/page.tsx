@@ -8,8 +8,8 @@ import BlogListInfinite from '@/components/blog/BlogListInfinite'
 import { normalizeBlogSearchQuery } from '@/lib/blog-search'
 
 export const metadata: Metadata = {
-  title: 'Blog | RealityCanvas',
-  description: 'Real estate insights, market trends, and expert advice from RealityCanvas.',
+  title: 'Blog | RealtyCanvas',
+  description: 'Real estate insights, market trends, and expert advice from RealtyCanvas.',
 }
 
 // Force dynamic rendering so pagination and searchParams work correctly
@@ -93,7 +93,7 @@ export default async function BlogPage({
     "@context": "https://schema.org",
     "@type": "CollectionPage",
     "name": "Reality Canvas Blog",
-    "description": "Real estate insights, market trends, and expert advice from RealityCanvas.",
+    "description": "Real estate insights, market trends, and expert advice from RealtyCanvas.",
     "url": `${baseUrl}/blog`,
     "isPartOf": {
       "@type": "WebSite",
