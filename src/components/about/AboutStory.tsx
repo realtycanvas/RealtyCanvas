@@ -10,7 +10,11 @@ export default function AboutStory() {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const carouselRef = useRef<HTMLDivElement | null>(null);
   const instagramPosts: string[] = [
+    "https://www.instagram.com/p/DRxBjdIAUBr",
+    "https://www.instagram.com/p/DO-Fnu0km8p/",
+    "https://www.instagram.com/p/DLKDVfiyBpm",
     "https://www.instagram.com/p/C_kQ1vyBPZM/",
+
     // "https://www.instagram.com/p/C_sU8iZhvgC/",
     "https://www.instagram.com/p/C_9-goHh3D7/",
     "https://www.instagram.com/p/DA2gHp8h-LP/",
