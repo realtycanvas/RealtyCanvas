@@ -235,6 +235,7 @@ const BLOG_POST_FIELDS = `
     question,
     answer
   },
+  faqsJson,
   seo
 `
 

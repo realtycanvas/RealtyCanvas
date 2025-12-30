@@ -41,6 +41,82 @@ const portableTextComponents = {
         </pre>
       </div>
     ),
+    table: ({ value }: any) => {
+      const rows = value.rows || []
+      return (
+        <div className="my-8 overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700 border border-gray-200 dark:border-gray-700 rounded-lg">
+            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+              {rows.map((row: any, rowIndex: number) => (
+                <tr key={rowIndex} className={rowIndex === 0 ? "bg-gray-50 dark:bg-gray-900" : ""}>
+                  {row.cells.map((cell: string, cellIndex: number) => {
+                    const CellTag = rowIndex === 0 ? 'th' : 'td'
+                    return (
+                      <CellTag
+                        key={cellIndex}
+                        className={`px-6 py-4 whitespace-nowrap text-sm ${rowIndex === 0
+                          ? "font-semibold text-gray-900 dark:text-white text-left"
+                          : "text-gray-700 dark:text-gray-300"
+                          }`}
+                      >
+                        {cell}
+                      </CellTag>
+                    )
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )
+    },
+    projectSnapshot: ({ value }: any) => {
+      console.log('projectSnapshot value:', JSON.stringify(value, null, 2))
+      const title = value.title || 'Project Snapshot'
+      let rows: any[] = []
+
+      // Parse JSON data
+      try {
+        if (value.jsonData) {
+          rows = JSON.parse(value.jsonData)
+          console.log('Parsed rows:', rows)
+        } else {
+          console.log('No jsonData found in value')
+        }
+      } catch (e) {
+        console.error('Failed to parse projectSnapshot JSON:', e)
+      }
+
+      if (rows.length === 0) {
+        console.log('No rows to render, returning null')
+        return null
+      }
+      return (
+        <div className="my-8">
+          {title && (
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+              {title}
+            </h3>
+          )}
+          <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                {rows.map((row: any, index: number) => (
+                  <tr key={index} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                    <td className="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-800/50 w-1/3 border-r border-gray-200 dark:border-gray-700">
+                      {row.field}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">
+                      {row.details}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )
+    },
   },
   block: {
     h2: ({ children }: any) => (
@@ -193,24 +269,34 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     ]
   };
 
-  const faqItems = Array.isArray((post as any).faqs)
-    ? (post as any).faqs.filter((faq: any) => faq && faq.question && faq.answer)
-    : [];
+  // Parse FAQs from JSON or legacy array format
+  let faqItems: any[] = [];
+  try {
+    if ((post as any).faqsJson) {
+      faqItems = JSON.parse((post as any).faqsJson);
+    } else if (Array.isArray((post as any).faqs)) {
+      faqItems = (post as any).faqs;
+    }
+    faqItems = faqItems.filter((faq: any) => faq && faq.question && faq.answer);
+  } catch (e) {
+    console.error('Failed to parse FAQs:', e);
+    faqItems = [];
+  }
 
   const faqLd =
     faqItems.length > 0
       ? {
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          "mainEntity": faqItems.map((faq: any) => ({
-            "@type": "Question",
-            "name": faq.question,
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": faq.answer,
-            },
-          })),
-        }
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": faqItems.map((faq: any) => ({
+          "@type": "Question",
+          "name": faq.question,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": faq.answer,
+          },
+        })),
+      }
       : null;
 
   return (

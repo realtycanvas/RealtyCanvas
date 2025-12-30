@@ -82,5 +82,39 @@ export const blockContent = defineType({
         },
       ],
     }),
+    defineArrayMember({
+      type: 'table',
+    }),
+    defineArrayMember({
+      type: 'object',
+      name: 'projectSnapshot',
+      title: 'Project Snapshot Table',
+      fields: [
+        {
+          name: 'title',
+          title: 'Table Title',
+          type: 'string',
+          initialValue: 'Project Snapshot',
+        },
+        {
+          name: 'jsonData',
+          title: 'Table Data (Paste JSON)',
+          type: 'text',
+          description: 'Paste JSON array: [{"field": "Name", "details": "Value"}, ...]',
+          rows: 10,
+        },
+      ],
+      preview: {
+        select: {
+          title: 'title',
+        },
+        prepare(selection) {
+          return {
+            title: selection.title || 'Project Snapshot',
+            subtitle: 'JSON Table',
+          }
+        },
+      },
+    }),
   ],
 })
