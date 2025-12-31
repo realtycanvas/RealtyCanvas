@@ -93,7 +93,7 @@ export default function AboutStory() {
           >
             <div className="relative rounded-2xl overflow-hidden">
               <img
-                src="/building.png"
+                src="/building2.webp"
                 alt="Realty Canvas Building"
                 className="w-full h-[600px] object-cover"
               />
