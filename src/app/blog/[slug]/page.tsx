@@ -8,6 +8,7 @@ import { getBlogPostBySlug, getRelatedBlogPosts } from "@/lib/sanity/queries"
 import { urlFor } from "@/lib/sanity/client"
 import BlogPostCard from "@/components/blog/BlogPostCard"
 import ShareButton from "@/components/blog/ShareButton"
+import TableOfContents from "@/components/blog/TableOfContents"
 
 interface BlogPostPageProps {
   params: Promise<{
@@ -428,7 +429,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       )}
 
       {/* Content */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid lg:grid-cols-4 gap-12">
           {/* Main Content */}
           <div className="lg:col-span-3">
@@ -482,15 +483,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                     )}
                   </div>
                   <div>
-                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white">
                       {post.author.name}
                     </h3>
                     {post.author.bio && (
-                      <div className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                        <PortableText
-                          value={post.author.bio}
-                          components={portableTextComponents}
-                        />
+                      <div className="mt-2 text-gray-600 dark:text-gray-300 prose prose-sm dark:prose-invert">
+                        <PortableText value={post.author.bio} />
                       </div>
                     )}
                   </div>
@@ -499,30 +497,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             )}
           </div>
 
-          {/* Sidebar */}
-          <div className="lg:col-span-1 translate-y-20">
-            <div className="sticky top-8 space-y-8">
-              {/* Table of Contents placeholder */}
-              <div className="bg-white dark:bg-gray-800 rounded-xl  p-6 border border-gray-200 dark:border-gray-700">
-                <div className="flex items-center gap-2 mb-4">
-                  <h3 className="font-semibold text-gray-900 dark:text-white">
-                    Quick Navigation
-                  </h3>
-                </div>
-                <div className="space-y-2 text-sm">
-                  <Link href="#" className="block text-gray-600 dark:text-gray-300 hover:text-brand-primary transition-colors">
-                    Introduction
-                  </Link>
-                  <Link href="#" className="block text-gray-600 dark:text-gray-300 hover:text-brand-primary transition-colors">
-                    Key Points
-                  </Link>
-                  <Link href="#" className="block text-gray-600 dark:text-gray-300 hover:text-brand-primary transition-colors">
-                    Conclusion
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
+          {/* Sidebar - Table of Contents */}
+          <aside className="hidden lg:block lg:col-span-1">
+             <TableOfContents />
+          </aside>
         </div>
       </div>
 
