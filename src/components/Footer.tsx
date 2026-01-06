@@ -98,6 +98,14 @@ const Footer = () => {
                 </li>
                 <li>
                   <Link
+                    href="/sitemap"
+                    className="text-gray-300 hover:text-white hover:translate-x-2 transition-all duration-200 block"
+                  >
+                    Sitemap
+                  </Link>
+                </li>
+                <li>
+                  <Link
                     href="/contact"
                     className="text-gray-300 hover:text-white hover:translate-x-2 transition-all duration-200 block"
                   >
