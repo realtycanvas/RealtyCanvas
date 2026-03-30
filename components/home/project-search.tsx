@@ -168,6 +168,7 @@ export default function ProjectSearchBar({ onSearch, className = '', compact = f
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const suggestionRef = useRef<HTMLDivElement>(null);
+  const suggestionLimit = 50;
 
   const handleSearch = () => {
     const filters: SearchFilters = {
@@ -201,6 +202,7 @@ export default function ProjectSearchBar({ onSearch, className = '', compact = f
         setIsFetching(true);
         const params = new URLSearchParams({
           page: '1',
+          limit: String(suggestionLimit),
           search: searchQuery.trim(),
           category: 'ALL',
           status: 'ALL',
@@ -208,7 +210,7 @@ export default function ProjectSearchBar({ onSearch, className = '', compact = f
         const res = await fetch(`/api/projects?${params}`, { signal: controller.signal });
         if (!res.ok) return;
         const data = await res.json();
-        const items = Array.isArray(data?.data) ? data.data.slice(0, 4) : [];
+        const items = Array.isArray(data?.data) ? data.data : [];
         setSuggestions(items);
         setShowSuggestions(items.length > 0);
       } catch (error: unknown) {
@@ -346,7 +348,7 @@ export default function ProjectSearchBar({ onSearch, className = '', compact = f
             className="w-full h-10 px-3 rounded border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#FBB70F] bg-white text-sm"
           />
           {showSuggestions ? (
-            <div className="absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden">
+            <div className="absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded shadow-xl overflow-hidden max-h-96 overflow-y-auto">
               {suggestions.map((item) => (
                 <button
                   key={item.id}
@@ -357,7 +359,7 @@ export default function ProjectSearchBar({ onSearch, className = '', compact = f
                   }}
                   className="w-full text-left flex items-center gap-3 px-3 py-2 hover:bg-gray-50 transition-colors"
                 >
-                  <span className="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 shrink-0">
+                  <span className="w-12 h-12 rounded overflow-hidden bg-gray-100 shrink-0">
                     <img src={item.featuredImage} alt={item.title} className="w-full h-full object-cover" />
                   </span>
                   <span className="flex-1 min-w-0">
@@ -371,6 +373,20 @@ export default function ProjectSearchBar({ onSearch, className = '', compact = f
                   </span>
                 </button>
               ))}
+              {suggestions.length >= suggestionLimit ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowSuggestions(false);
+                    const params = new URLSearchParams();
+                    if (searchQuery.trim()) params.set('search', searchQuery.trim());
+                    router.push(`/projects${params.toString() ? `?${params.toString()}` : ''}`);
+                  }}
+                  className="w-full text-left px-3 py-2 text-sm font-semibold text-blue-600 hover:bg-gray-50 transition-colors"
+                >
+                  View all results
+                </button>
+              ) : null}
               {isFetching ? <div className="px-3 py-2 text-xs text-gray-500">Searching...</div> : null}
             </div>
           ) : null}

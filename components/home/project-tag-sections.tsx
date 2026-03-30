@@ -31,7 +31,7 @@ const useProjectTagSection = (tag: string) => {
   useEffect(() => {
     const run = async () => {
       try {
-        const res = await fetch(`/api/projects?projectTag=${encodeURIComponent(tag)}&limit=6&page=1`);
+        const res = await fetch(`/api/projects?projectTag=${encodeURIComponent(tag)}&limit=3&page=1`);
         const json = await res.json();
         setData({
           totalCount: json?.pagination?.totalCount || 0,
@@ -69,9 +69,7 @@ const ProjectTagSection = ({ tag, title, className }: { tag: string; title: Reac
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-start justify-between gap-4 mb-10">
           <div className="text-xl sm:text-3xl md:text-4xl font-bold text-gray-900">{title}</div>
-          {data.totalCount > data.projects.length && (
-            <ViewAllLink href={`/projects?projectTag=${encodeURIComponent(tag)}`} label="View All" />
-          )}
+          <ViewAllLink href={`/projects?projectTag=${encodeURIComponent(tag)}`} label="View All" />
         </div>
 
         <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

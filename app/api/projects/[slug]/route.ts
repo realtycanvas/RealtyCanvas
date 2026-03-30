@@ -13,6 +13,21 @@ interface Props {
 
 const PROJECTS_TAG = 'projects-list';
 
+const parsePriceToRupees = (raw: unknown): number | null => {
+  if (typeof raw !== 'string') return null;
+  const s = raw.trim();
+  if (!s) return null;
+  const lower = s.toLowerCase();
+  const numStr = lower.replace(/[^0-9.]/g, '');
+  if (!numStr) return null;
+  const n = Number.parseFloat(numStr);
+  if (!Number.isFinite(n) || n <= 0) return null;
+  const isCrore = /\b(crore|crores|cr)\b/.test(lower);
+  const isLakh = /\b(lakh|lakhs|lac|lacs)\b/.test(lower);
+  const multiplier = isCrore ? 10000000 : isLakh ? 100000 : 1;
+  return Math.round(n * multiplier);
+};
+
 export async function GET(request: NextRequest, { params }: Props) {
   try {
     const { slug } = await params;
@@ -193,7 +208,7 @@ export async function PUT(request: NextRequest, { params }: Props) {
         launchDate: body.launchDate ? new Date(body.launchDate) : null,
         basePrice: body.basePrice?.trim() || null,
         priceRange: body.priceRange?.trim() || null,
-        priceMin: body.priceMin ?? null,
+        priceMin: parsePriceToRupees(body.basePrice) ?? body.priceMin ?? null,
         priceMax: body.priceMax ?? null,
         featuredImage: body.featuredImage.trim(),
         landArea: body.landArea?.trim() || null,
