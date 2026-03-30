@@ -55,6 +55,7 @@ type Project = {
   subtitle: string | null;
   description: string;
   category: string;
+  type: string | null;
   status: string;
   address: string;
   locality: string | null;
@@ -577,26 +578,26 @@ export default function ProjectDetailClient({
               <Section title="Price & Unit Size Overview">
                 {(project.priceRange || project.basePrice) && (
                   <div className="flex flex-wrap gap-3 sm:gap-4 mb-4 sm:mb-6">
-                    {project.priceRange && (
+                    {/* {project.priceRange && (
                       <div className="bg-yellow-50 border border-yellow-200 rounded px-4 py-2.5 sm:px-5 sm:py-3 min-w-0">
                         <p className="text-xs text-gray-500 mb-0.5 sm:mb-1">Price Range</p>
                         <p className="text-base sm:text-lg font-bold text-yellow-700">{project.priceRange}</p>
                       </div>
-                    )}
+                    )} */}
                     {project.basePrice && (
                       <div className="bg-gray-50 border border-gray-200 rounded px-4 py-2.5 sm:px-5 sm:py-3 min-w-0">
                         <p className="text-xs text-gray-500 mb-0.5 sm:mb-1">Base Price</p>
                         <p className="text-base sm:text-lg font-bold text-gray-900">{project.basePrice}</p>
                       </div>
                     )}
-                    {project.priceMin && project.priceMax && (
+                    {/* {project.priceMin && project.priceMax && (
                       <div className="bg-gray-50 border border-gray-200 rounded px-4 py-2.5 sm:px-5 sm:py-3 min-w-0">
                         <p className="text-xs text-gray-500 mb-0.5 sm:mb-1">Pricing Band</p>
                         <p className="text-base sm:text-lg font-bold text-gray-900">
                           ₹{formatNumber(project.priceMin)} – ₹{formatNumber(project.priceMax)}
                         </p>
                       </div>
-                    )}
+                    )} */}
                   </div>
                 )}
 
@@ -855,6 +856,7 @@ export default function ProjectDetailClient({
                     { label: 'Apartments', value: project.numberOfApartments },
                     { label: 'Floors', value: project.numberOfFloors },
                     { label: 'Total Units', value: project.totalUnits },
+                    { label: 'Type', value: project.type },
                     { label: 'Category', value: formatCategory(project.category) },
                   ]
                     .filter(({ value }) => value !== null && value !== undefined && value !== '')

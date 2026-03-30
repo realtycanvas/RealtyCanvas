@@ -362,6 +362,7 @@ export async function POST(request: NextRequest) {
         slug,
         description: body.description.trim(),
         category: body.category || 'COMMERCIAL',
+        type: body.type?.trim() || null,
         status: body.status || 'PLANNED',
         address: body.address.trim(),
         locality: body.locality?.trim() || null,

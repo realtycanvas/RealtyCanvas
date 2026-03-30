@@ -17,6 +17,7 @@ model Project {
   subtitle            String?
   description         String
   category            ProjectCategory @default(COMMERCIAL)
+  type                String?
   status              ProjectStatus   @default(PLANNED)
   reraId              String?
   developerName       String?

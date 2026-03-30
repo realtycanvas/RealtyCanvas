@@ -90,6 +90,7 @@ type Project = {
   subtitle: string | null;
   description: string;
   category: string;
+  type: string | null;
   status: string;
   address: string;
   locality: string | null;
@@ -219,6 +220,7 @@ async function getProjectBySlug(slug: string): Promise<Project | null> {
     subtitle: project.subtitle ?? null,
     description: project.description,
     category: project.category,
+    type: project.type ?? null,
     status: project.status,
     address: project.address,
     locality: project.locality ?? null,

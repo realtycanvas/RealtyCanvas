@@ -193,6 +193,7 @@ export async function PUT(request: NextRequest, { params }: Props) {
         slug: nextSlug,
         description: body.description.trim(),
         category: body.category || 'COMMERCIAL',
+        type: body.type?.trim() || null,
         status: body.status || 'PLANNED',
         address: body.address.trim(),
         locality: body.locality?.trim() || null,

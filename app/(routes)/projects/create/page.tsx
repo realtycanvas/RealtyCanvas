@@ -49,6 +49,7 @@ type ProjectResponse = {
   subtitle?: string | null;
   description: string;
   category: string;
+  type?: string | null;
   status: string;
   address: string;
   locality?: string | null;
@@ -238,6 +239,7 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
     slug: '',
     description: '',
     category: 'COMMERCIAL',
+    type: '',
     status: 'PLANNED',
     isActive: true,
     // Location
@@ -384,6 +386,7 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
             slug: project.slug || '',
             description: project.description || '',
             category: project.category || 'COMMERCIAL',
+            type: project.type || '',
             status: project.status || 'PLANNED',
             isActive: project.isActive ?? true,
             address: project.address || '',
@@ -796,6 +799,10 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
                           </option>
                         ))}
                       </Select>
+                    </div>
+                    <div>
+                      <Label>Type</Label>
+                      <Input name="type" value={f.type} onChange={change} placeholder="e.g. Retail, Office, Plots" />
                     </div>
                     <div>
                       <Label req>Status</Label>
