@@ -46,7 +46,6 @@ export default function AdminShell({ title, description, children, contentScroll
       { href: '/admin/dashboard', label: 'Dashboard', active: pathname.startsWith('/admin/dashboard') },
       { href: '/admin/projects', label: 'Projects', active: pathname.startsWith('/admin/projects') },
       { href: '/admin/lead', label: 'Lead', active: pathname.startsWith('/admin/lead') },
-      { href: '/admin/banner', label: 'Banner', active: pathname.startsWith('/admin/banner') },
     ],
     [pathname]
   );

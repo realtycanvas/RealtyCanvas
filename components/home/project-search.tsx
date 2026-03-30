@@ -212,7 +212,7 @@ export default function ProjectSearchBar({ onSearch, className = '', compact = f
         const data = await res.json();
         const items = Array.isArray(data?.data) ? data.data : [];
         setSuggestions(items);
-        setShowSuggestions(items.length > 0);
+        setShowSuggestions(true);
       } catch (error: unknown) {
         const isAbort = error instanceof DOMException && error.name === 'AbortError';
         if (!isAbort) {
@@ -349,30 +349,34 @@ export default function ProjectSearchBar({ onSearch, className = '', compact = f
           />
           {showSuggestions ? (
             <div className="absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded shadow-xl overflow-hidden max-h-96 overflow-y-auto">
-              {suggestions.map((item) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => {
-                    setShowSuggestions(false);
-                    router.push(`/projects/${item.slug}`);
-                  }}
-                  className="w-full text-left flex items-center gap-3 px-3 py-2 hover:bg-gray-50 transition-colors"
-                >
-                  <span className="w-12 h-12 rounded overflow-hidden bg-gray-100 shrink-0">
-                    <img src={item.featuredImage} alt={item.title} className="w-full h-full object-cover" />
-                  </span>
-                  <span className="flex-1 min-w-0">
-                    <span className="block text-sm font-semibold text-gray-900 truncate">{item.title}</span>
-                    <span className="block text-xs text-gray-500 truncate">
-                      {item.subtitle || item.developerName || item.city || item.state || ''}
+              {suggestions.length > 0 ? (
+                suggestions.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => {
+                      setShowSuggestions(false);
+                      router.push(`/projects/${item.slug}`);
+                    }}
+                    className="w-full text-left flex items-center gap-3 px-3 py-2 hover:bg-gray-50 transition-colors"
+                  >
+                    <span className="w-12 h-12 rounded overflow-hidden bg-gray-100 shrink-0">
+                      <img src={item.featuredImage} alt={item.title} className="w-full h-full object-cover" />
                     </span>
-                  </span>
-                  <span className="text-[10px] px-2 py-1 rounded bg-gray-100 text-gray-600 uppercase">
-                    {item.status.replace(/_/g, ' ')}
-                  </span>
-                </button>
-              ))}
+                    <span className="flex-1 min-w-0">
+                      <span className="block text-sm font-semibold text-gray-900 truncate">{item.title}</span>
+                      <span className="block text-xs text-gray-500 truncate">
+                        {item.subtitle || item.developerName || item.city || item.state || ''}
+                      </span>
+                    </span>
+                    <span className="text-[10px] px-2 py-1 rounded bg-gray-100 text-gray-600 uppercase">
+                      {item.status.replace(/_/g, ' ')}
+                    </span>
+                  </button>
+                ))
+              ) : isFetching ? null : (
+                <div className="px-3 py-3 text-sm text-gray-600">No projects found matching your search</div>
+              )}
               {suggestions.length >= suggestionLimit ? (
                 <button
                   type="button"
