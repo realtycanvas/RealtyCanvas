@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import ProjectDetailClient from '@/components/projects/project-detail-client';
 import JsonLd from '@/components/common/JsonLd';
 import { prisma } from '@/lib/prisma';
+import { ProjectCategory } from '@/app/generated/prisma/client';
 
 type Highlight = {
   id: string;
@@ -135,12 +136,61 @@ type Project = {
   seo: ProjectSeo | null;
 };
 
+type RelatedProject = {
+  id: string;
+  slug: string;
+  title: string;
+  subtitle: string | null;
+  category: string;
+  status: string;
+  city: string | null;
+  state: string | null;
+  featuredImage: string;
+  basePrice: string | null;
+  priceRange: string | null;
+};
+
 const normalizeImageAltMap = (value: unknown): Record<string, string> | null => {
   if (!value || typeof value !== 'object') {
     return null;
   }
   return value as Record<string, string>;
 };
+
+async function getRelatedProjects(category: string, slug: string): Promise<RelatedProject[]> {
+  const related = await prisma.project.findMany({
+    where: { isActive: true, category: category as ProjectCategory, slug: { not: slug } },
+    take: 3,
+    orderBy: { updatedAt: 'desc' },
+    select: {
+      id: true,
+      slug: true,
+      title: true,
+      subtitle: true,
+      category: true,
+      status: true,
+      city: true,
+      state: true,
+      featuredImage: true,
+      basePrice: true,
+      priceRange: true,
+    },
+  });
+
+  return related.map((p) => ({
+    id: p.id,
+    slug: p.slug,
+    title: p.title,
+    subtitle: p.subtitle ?? null,
+    category: p.category,
+    status: p.status,
+    city: p.city ?? null,
+    state: p.state ?? null,
+    featuredImage: p.featuredImage,
+    basePrice: p.basePrice ?? null,
+    priceRange: p.priceRange ?? null,
+  }));
+}
 
 async function getProjectBySlug(slug: string): Promise<Project | null> {
   const project = await prisma.project.findFirst({
@@ -318,6 +368,8 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
     notFound();
   }
 
+  const relatedProjects = await getRelatedProjects(project.category, project.slug);
+
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.realtycanvas.in';
   const projectUrl = `${baseUrl}/projects/${project.slug}`;
 
@@ -385,7 +437,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
       <JsonLd data={realEstateLd} />
       <JsonLd data={breadcrumbLd} />
       {faqLd ? <JsonLd data={faqLd} /> : null}
-      <ProjectDetailClient project={project} />
+      <ProjectDetailClient project={project} relatedProjects={relatedProjects} />
     </main>
   );
 }

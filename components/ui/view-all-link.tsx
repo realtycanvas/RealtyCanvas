@@ -9,7 +9,7 @@ type ViewAllLinkProps = {
   className?: string;
 };
 
-export default function ViewAllLink({ href, label = 'View All →', className }: ViewAllLinkProps) {
+export default function ViewAllLink({ href, label = 'View All', className }: ViewAllLinkProps) {
   const router = useRouter();
 
   return (

@@ -8,6 +8,8 @@ import FaqItem from './faq-item';
 import { usePathname } from 'next/navigation';
 import LeadModal from '../common/lead-modal';
 import { ClipboardDocumentIcon } from '@heroicons/react/24/outline';
+import EnquirySection from '../home/enquiry-section';
+import ViewAllLink from '../ui/view-all-link';
 
 // ─── Types (unchanged) ─────────────────────────────────────────────────────────
 
@@ -93,6 +95,20 @@ type Project = {
   nearbyPoints: NearbyPoint[];
   offerings: Offering[];
   seo: ProjectSeo | null;
+};
+
+type RelatedProject = {
+  id: string;
+  slug: string;
+  title: string;
+  subtitle: string | null;
+  category: string;
+  status: string;
+  city: string | null;
+  state: string | null;
+  featuredImage: string;
+  basePrice: string | null;
+  priceRange: string | null;
 };
 
 // ─── Helpers ───────────────────────────────────────────────────────────────────
@@ -234,7 +250,13 @@ const VideoThumbnail = ({
 
 // ─── Main Component ────────────────────────────────────────────────────────────
 
-export default function ProjectDetailClient({ project }: { project: Project }) {
+export default function ProjectDetailClient({
+  project,
+  relatedProjects,
+}: {
+  project: Project;
+  relatedProjects: RelatedProject[];
+}) {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [viewAllPhotos, setViewAllPhotos] = useState(false);
   const [isLeadModalOpen, setIsLeadModalOpen] = useState(false);
@@ -339,6 +361,9 @@ export default function ProjectDetailClient({ project }: { project: Project }) {
   const whatsappHref = `https://wa.me/919555562626?text=${encodeURIComponent(
     `Hi, I'm interested in *${project.title}*\n📍 ${[project.address, project.city].filter(Boolean).join(', ')}`
   )}`;
+
+  const showRelatedCategory = project.category === 'COMMERCIAL' || project.category === 'RESIDENTIAL';
+  const viewAllHref = showRelatedCategory ? `/projects?category=${encodeURIComponent(project.category)}` : '/projects';
 
   return (
     // ✅ pb-20 lg:pb-0 — clears the mobile floating CTA bar
@@ -587,6 +612,9 @@ export default function ProjectDetailClient({ project }: { project: Project }) {
                               Approx Unit Size
                             </th>
                             <th className="py-2.5 px-3 sm:py-3 sm:px-4 font-semibold text-xs sm:text-sm">
+                             Floor
+                            </th>
+                            <th className="py-2.5 px-3 sm:py-3 sm:px-4 font-semibold text-xs sm:text-sm">
                               Indicative Price
                             </th>
                             <th className="py-2.5 px-3 sm:py-3 sm:px-4 font-semibold text-xs sm:text-sm">
@@ -605,6 +633,9 @@ export default function ProjectDetailClient({ project }: { project: Project }) {
                               </td>
                               <td className="py-2.5 px-3 sm:py-3 sm:px-4 text-gray-700 text-xs sm:text-sm">
                                 {row.reraArea}
+                              </td>
+                              <td className="py-2.5 px-3 sm:py-3 sm:px-4 text-gray-700 text-xs sm:text-sm">
+                                {row.floorNumbers || '—'}
                               </td>
                               <td className="py-2.5 px-3 sm:py-3 sm:px-4 text-yellow-700 font-semibold text-xs sm:text-sm">
                                 {row.price}
@@ -779,6 +810,8 @@ export default function ProjectDetailClient({ project }: { project: Project }) {
                 <div className="flex flex-wrap justify-around p-3 sm:p-4 gap-2 sm:gap-3">
                   {[
                     { label: 'Land Area', value: project.landArea },
+                    { label: 'Towers', value: project.numberOfTowers },
+                    { label: 'Apartments', value: project.numberOfApartments },
                     { label: 'Floors', value: project.numberOfFloors },
                     { label: 'Total Units', value: project.totalUnits },
                     { label: 'Category', value: formatCategory(project.category) },
@@ -822,7 +855,63 @@ export default function ProjectDetailClient({ project }: { project: Project }) {
             </div>
           </div>
         </div>
+
+        {relatedProjects.length > 0 && (
+          <section className="my-12 md:my-16 lg:my-20">
+            <div className="flex items-center justify-between gap-3 mb-4 sm:mb-6">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Related Projects</h2>
+              <ViewAllLink href={viewAllHref} />
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+              {relatedProjects.map((item) => (
+                <Link
+                  key={item.id}
+                  href={`/projects/${item.slug}`}
+                  className="bg-white rounded shadow-sm border overflow-hidden hover:shadow-md transition-shadow duration-300"
+                >
+                  <div className="relative h-44 bg-gray-200">
+                    {item.featuredImage ? (
+                      <Image
+                        src={item.featuredImage}
+                        alt={item.title}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      />
+                    ) : null}
+                    <div className="absolute top-2 left-2 flex gap-2">
+                      <span className="px-3 py-1 rounded text-[10px] font-medium bg-gray-100 text-gray-800">
+                        {formatCategory(item.category)}
+                      </span>
+                      <span className={`px-3 py-1 rounded text-[10px] font-medium ${getStatusStyle(item.status)}`}>
+                        {formatCategory(item.status)}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="p-4">
+                    <h3 className="text-base font-bold text-gray-900 mb-1 line-clamp-2">{item.title}</h3>
+                    {item.subtitle ? <p className="text-xs text-gray-600 mb-2 line-clamp-2">{item.subtitle}</p> : null}
+                    <div className="space-y-1 text-xs">
+                      {(item.city || item.state) && (
+                        <p className="text-gray-700">
+                          <span className="font-semibold">Location:</span> {[item.city, item.state].filter(Boolean).join(', ')}
+                        </p>
+                      )}
+                      {(item.basePrice || item.priceRange) && (
+                        <p className="text-yellow-600 font-semibold">
+                          <span className="font-semibold">Base Price:</span> {item.basePrice || item.priceRange}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
+
       </div>
+        <EnquirySection />
 
       {/* ── Mobile Floating CTA Bar ─────────────────────────────────────────── */}
       {/* ✅ lg:hidden — replaces sidebar CTAs on mobile; safe-area-inset for iOS home bar */}
