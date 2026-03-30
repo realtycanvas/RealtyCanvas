@@ -35,6 +35,7 @@ type FloorPlan = {
 
 type PricingTableRow = {
   id: string;
+  unitArea: string | null;
   type: string;
   reraArea: string;
   price: string;

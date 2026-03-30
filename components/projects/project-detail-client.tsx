@@ -26,6 +26,7 @@ type FloorPlan = {
 };
 type PricingTableRow = {
   id: string;
+  unitArea: string | null;
   type: string;
   reraArea: string;
   price: string;
@@ -602,58 +603,98 @@ export default function ProjectDetailClient({
                 {project.pricingTable.length > 0 && (
                   <div className="overflow-x-auto -mx-4 sm:mx-0">
                     <div className="min-w-120 px-4 sm:px-0">
-                      <table className="min-w-full text-sm">
-                        <thead>
-                          <tr className="bg-gray-50 text-left text-gray-600">
-                            <th className="py-2.5 px-3 sm:py-3 sm:px-4 font-semibold rounded-tl text-xs sm:text-sm">
-                              Property Type
-                            </th>
-                            <th className="py-2.5 px-3 sm:py-3 sm:px-4 font-semibold text-xs sm:text-sm">
-                              Approx Unit Size
-                            </th>
-                            <th className="py-2.5 px-3 sm:py-3 sm:px-4 font-semibold text-xs sm:text-sm">
-                             Floor
-                            </th>
-                            <th className="py-2.5 px-3 sm:py-3 sm:px-4 font-semibold text-xs sm:text-sm">
-                              Indicative Price
-                            </th>
-                            <th className="py-2.5 px-3 sm:py-3 sm:px-4 font-semibold text-xs sm:text-sm">
-                              Price / Sq.ft
-                            </th>
-                            <th className="py-2.5 px-3 sm:py-3 sm:px-4 font-semibold rounded-tr text-xs sm:text-sm">
-                              Status
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {project.pricingTable.map((row, idx) => (
-                            <tr key={row.id} className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                              <td className="py-2.5 px-3 sm:py-3 sm:px-4 font-medium text-gray-900 text-xs sm:text-sm">
-                                {row.type}
-                              </td>
-                              <td className="py-2.5 px-3 sm:py-3 sm:px-4 text-gray-700 text-xs sm:text-sm">
-                                {row.reraArea}
-                              </td>
-                              <td className="py-2.5 px-3 sm:py-3 sm:px-4 text-gray-700 text-xs sm:text-sm">
-                                {row.floorNumbers || '—'}
-                              </td>
-                              <td className="py-2.5 px-3 sm:py-3 sm:px-4 text-yellow-700 font-semibold text-xs sm:text-sm">
-                                {row.price}
-                              </td>
-                              <td className="py-2.5 px-3 sm:py-3 sm:px-4 text-gray-600 text-xs sm:text-sm">
-                                {row.pricePerSqft || '—'}
-                              </td>
-                              <td className="py-2.5 px-3 sm:py-3 sm:px-4 text-gray-600 text-xs sm:text-sm">
-                                {row.availabilityStatus === 'available'
-                                  ? 'Available'
-                                  : row.availabilityStatus === 'not-available'
-                                    ? 'Not Available'
-                                    : row.availabilityStatus || '—'}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                      {(() => {
+                        const showUnitArea = project.pricingTable.some((row) => (row.unitArea || '').trim().length > 0);
+                        const showReraArea = project.pricingTable.some((row) => (row.reraArea || '').trim().length > 0);
+                        const showFloor = project.pricingTable.some(
+                          (row) => (row.floorNumbers || '').trim().length > 0
+                        );
+                        const showPricePerSqft = project.pricingTable.some(
+                          (row) => (row.pricePerSqft || '').trim().length > 0
+                        );
+                        const showStatus = project.pricingTable.some(
+                          (row) => (row.availabilityStatus || '').trim().length > 0
+                        );
+
+                        return (
+                          <table className="min-w-full text-sm">
+                            <thead>
+                              <tr className="bg-gray-50 text-left text-gray-600">
+                                {showUnitArea ? (
+                                  <th className="py-2.5 px-3 sm:py-3 sm:px-4 font-semibold text-xs sm:text-sm">Unit</th>
+                                ) : null}
+                                <th className="py-2.5 px-3 sm:py-3 sm:px-4 font-semibold text-xs sm:text-sm">
+                                  Property Type
+                                </th>
+                                {showReraArea ? (
+                                  <th className="py-2.5 px-3 sm:py-3 sm:px-4 font-semibold text-xs sm:text-sm">
+                                    Approx Unit Size
+                                  </th>
+                                ) : null}
+                                {showFloor ? (
+                                  <th className="py-2.5 px-3 sm:py-3 sm:px-4 font-semibold text-xs sm:text-sm">
+                                    Floor
+                                  </th>
+                                ) : null}
+                                <th className="py-2.5 px-3 sm:py-3 sm:px-4 font-semibold text-xs sm:text-sm">
+                                  Indicative Price
+                                </th>
+                                {showPricePerSqft ? (
+                                  <th className="py-2.5 px-3 sm:py-3 sm:px-4 font-semibold text-xs sm:text-sm">
+                                    Price / Sq.ft
+                                  </th>
+                                ) : null}
+                                {showStatus ? (
+                                  <th className="py-2.5 px-3 sm:py-3 sm:px-4 font-semibold text-xs sm:text-sm">
+                                    Status
+                                  </th>
+                                ) : null}
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {project.pricingTable.map((row, idx) => (
+                                <tr key={row.id} className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                                  {showUnitArea ? (
+                                    <td className="py-2.5 px-3 sm:py-3 sm:px-4 font-medium text-gray-900 text-xs sm:text-sm">
+                                      {row.unitArea || '—'}
+                                    </td>
+                                  ) : null}
+                                  <td className="py-2.5 px-3 sm:py-3 sm:px-4 font-medium text-gray-900 text-xs sm:text-sm">
+                                    {row.type}
+                                  </td>
+                                  {showReraArea ? (
+                                    <td className="py-2.5 px-3 sm:py-3 sm:px-4 text-gray-700 text-xs sm:text-sm">
+                                      {row.reraArea || '—'}
+                                    </td>
+                                  ) : null}
+                                  {showFloor ? (
+                                    <td className="py-2.5 px-3 sm:py-3 sm:px-4 text-gray-700 text-xs sm:text-sm">
+                                      {row.floorNumbers || '—'}
+                                    </td>
+                                  ) : null}
+                                  <td className="py-2.5 px-3 sm:py-3 sm:px-4 text-yellow-700 font-semibold text-xs sm:text-sm">
+                                    {row.price}
+                                  </td>
+                                  {showPricePerSqft ? (
+                                    <td className="py-2.5 px-3 sm:py-3 sm:px-4 text-gray-600 text-xs sm:text-sm">
+                                      {row.pricePerSqft || '—'}
+                                    </td>
+                                  ) : null}
+                                  {showStatus ? (
+                                    <td className="py-2.5 px-3 sm:py-3 sm:px-4 text-gray-600 text-xs sm:text-sm">
+                                      {row.availabilityStatus === 'available'
+                                        ? 'Available'
+                                        : row.availabilityStatus === 'not-available'
+                                          ? 'Not Available'
+                                          : row.availabilityStatus || '—'}
+                                    </td>
+                                  ) : null}
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        );
+                      })()}
                     </div>
                     <p className="text-xs text-gray-400 mt-3 px-4 sm:px-0">
                       * Prices and sizes are indicative and subject to change at developer discretion.
@@ -894,7 +935,8 @@ export default function ProjectDetailClient({
                     <div className="space-y-1 text-xs">
                       {(item.city || item.state) && (
                         <p className="text-gray-700">
-                          <span className="font-semibold">Location:</span> {[item.city, item.state].filter(Boolean).join(', ')}
+                          <span className="font-semibold">Location:</span>{' '}
+                          {[item.city, item.state].filter(Boolean).join(', ')}
                         </p>
                       )}
                       {(item.basePrice || item.priceRange) && (
@@ -909,9 +951,8 @@ export default function ProjectDetailClient({
             </div>
           </section>
         )}
-
       </div>
-        <EnquirySection />
+      <EnquirySection />
 
       {/* ── Mobile Floating CTA Bar ─────────────────────────────────────────── */}
       {/* ✅ lg:hidden — replaces sidebar CTAs on mobile; safe-area-inset for iOS home bar */}

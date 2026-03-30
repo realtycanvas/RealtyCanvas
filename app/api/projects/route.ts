@@ -406,6 +406,7 @@ export async function POST(request: NextRequest) {
         pricingTable: {
           create: (body.pricingTable || []).map(
             (p: {
+              unitArea?: string;
               type?: string;
               reraArea?: string;
               price?: string;
@@ -414,6 +415,7 @@ export async function POST(request: NextRequest) {
               floorNumbers?: string;
               features?: unknown;
             }) => ({
+              unitArea: p.unitArea?.trim() || null,
               type: p.type?.trim() || '',
               reraArea: p.reraArea?.trim() || '',
               price: p.price?.trim() || '',

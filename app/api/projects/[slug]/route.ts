@@ -258,6 +258,7 @@ export async function PUT(request: NextRequest, { params }: Props) {
           deleteMany: {},
           create: (body.pricingTable || []).map(
             (p: {
+              unitArea?: string;
               type?: string;
               reraArea?: string;
               price?: string;
@@ -266,6 +267,7 @@ export async function PUT(request: NextRequest, { params }: Props) {
               floorNumbers?: string;
               features?: unknown;
             }) => ({
+              unitArea: p.unitArea?.trim() || null,
               type: p.type?.trim() || '',
               reraArea: p.reraArea?.trim() || '',
               price: p.price?.trim() || '',

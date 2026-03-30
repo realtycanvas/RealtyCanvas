@@ -213,6 +213,7 @@ model PricingTable {
   type           String
   reraArea       String
   price          String
+  unitArea       String?
   pricePerSqft   String?
   availabilityStatus String?
   floorNumbers   String?

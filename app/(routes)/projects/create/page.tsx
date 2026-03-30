@@ -17,7 +17,7 @@ const priceRanges = [
   { label: '₹1Cr - ₹5Cr', min: 10000000, max: 50000000 },
   { label: '₹5Cr - ₹10Cr', min: 50000000, max: 100000000 },
   { label: '₹10Cr - ₹25Cr', min: 100000000, max: 250000000 },
-  { label: '₹25Cr+', min: 250000000, max: 1000000000 },
+  { label: '₹25Cr+', min: 250000000, max: 0 },
 ];
 
 const TABS = [
@@ -94,6 +94,7 @@ type ProjectResponse = {
   amenities?: { category: string; name: string; details: string | null }[];
   offerings?: { icon: string | null; title: string; description: string }[];
   pricingTable?: {
+    unitArea?: string | null;
     type: string;
     reraArea: string;
     price: string;
@@ -303,6 +304,7 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
   const [offerings, setOfferings] = useState([{ icon: '', title: '', description: '' }]);
   const [pricing, setPricing] = useState([
     {
+      unitArea: '',
       type: '',
       reraArea: '',
       price: '',
@@ -459,6 +461,7 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
           setPricing(
             project.pricingTable?.length
               ? project.pricingTable.map((p) => ({
+                  unitArea: p.unitArea || '',
                   type: p.type || '',
                   reraArea: p.reraArea || '',
                   price: p.price || '',
@@ -468,6 +471,7 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
                 }))
               : [
                   {
+                    unitArea: '',
                     type: '',
                     reraArea: '',
                     price: '',
@@ -551,7 +555,7 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
 
   const selectPriceRange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const r = priceRanges.find((x) => x.label === e.target.value);
-    if (r) setF((p) => ({ ...p, priceMin: String(r.min), priceMax: String(r.max) }));
+    if (r) setF((p) => ({ ...p, priceMin: String(r.min), priceMax: r.max > 0 ? String(r.max) : '' }));
   };
 
   // ── Generic array helpers ──────────────────────────────────────────────────
@@ -658,6 +662,7 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
         .filter((p) => p.type.trim())
         .map((p) => ({
           ...p,
+          unitArea: p.unitArea?.trim() || '',
           availabilityStatus: p.availabilityStatus || null,
         })),
 
@@ -1128,6 +1133,14 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
                     <RowBox key={i} onDel={() => delRow(setPricing, i)}>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pr-8">
                         <div>
+                          <Label>Unit</Label>
+                          <Input
+                            value={row.unitArea}
+                            onChange={(e) => updRow(setPricing, i, 'unitArea', e.target.value)}
+                            placeholder="e.g. Unit Type 12 / Shop 14"
+                          />
+                        </div>
+                        <div>
                           <Label>Property Type</Label>
                           <Input
                             value={row.type}
@@ -1183,6 +1196,7 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
                   <AddBtn
                     onClick={() =>
                       addRow(setPricing, {
+                        unitArea: '',
                         type: '',
                         reraArea: '',
                         price: '',
