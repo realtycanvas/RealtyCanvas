@@ -32,7 +32,7 @@ export default function AboutHero() {
             {/* Description */}
             <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
               Realty Canvas is your trusted real estate marketplace in Gurgaon, helping homebuyers, business owners, and
-              investors discover properties they'll truly love—backed by local insights, personalized recommendations,
+              investors discover properties they'll truly love backed by local insights, personalized recommendations,
               and transparent guidance every step of the way.
             </p>
           </motion.div>
