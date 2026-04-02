@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import JsonLd from '@/components/common/JsonLd';
+import Breadcrumb from '@/components/ui/breadcrumb';
 import AboutHero from '@/components/common/about/about-hero';
 import AboutStory from '@/components/common/about/about-story';
 import AboutMission from '@/components/common/about/about-mission';
@@ -37,7 +38,7 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.realtycanvas.in';
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen bg-white dark:bg-gray-900 pt-20">
       <JsonLd
         data={{
           '@context': 'https://schema.org',
@@ -60,6 +61,7 @@ export default function AboutPage() {
           ],
         }}
       />
+      <Breadcrumb items={[{ label: 'About' }]} />
       <AboutHero />
       <AboutStory />
       <AboutMission />

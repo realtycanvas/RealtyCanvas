@@ -3,6 +3,7 @@ import { normalizeBlogSearchQuery } from '@/lib/blog-search';
 import { BlogPostPreview } from '@/lib/sanity/types';
 import { getAllBlogPosts, getBlogPostCount, getFeaturedBlogPosts } from '@/lib/sanity/queries';
 import BlogHero from '@/components/common/blog/blog-hero';
+import Breadcrumb from '@/components/ui/breadcrumb';
 import JsonLd from '@/components/common/JsonLd';
 import FeaturedPost from '@/components/common/blog/feaatured-post';
 import BlogListInfinite from '@/components/common/blog/blog-list-infinite';
@@ -80,7 +81,8 @@ export default async function BlogPage({
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 ">
+    <div className="min-h-screen bg-white dark:bg-gray-900 pt-20">
+      <Breadcrumb items={[{ label: 'Blog' }]} />
       <JsonLd data={jsonLd} />
       {/* Hero Section */}
       <BlogHero />

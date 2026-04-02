@@ -242,7 +242,7 @@ export default function ProjectsListingClient({ user }: ProjectsListingClientPro
   };
 
   return (
-    <div className="min-h-screen pt-24 mt-4 md:mt-10">
+    <div className="min-h-screen mt-4 md:mt-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Search */}
         <div className="w-full flex flex-col md:flex-row md:justify-between md:items-center gap-4">

@@ -40,7 +40,7 @@ export default function NotFound() {
               Gurgaon Premium Projects
             </div>
             <div className="rounded border border-gray-200 dark:border-gray-800 bg-white/70 dark:bg-gray-900/60 px-4 py-3">
-              Commercial & Residential
+              Commercial & Residential Real estate projects
             </div>
             <div className="rounded border border-gray-200 dark:border-gray-800 bg-white/70 dark:bg-gray-900/60 px-4 py-3">
               Verified Listings

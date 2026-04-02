@@ -7,6 +7,7 @@ import { Calendar, Clock, User, ArrowLeft, Share2, BookOpen } from 'lucide-react
 import { getBlogPostBySlug, getRelatedBlogPosts } from '@/lib/sanity/queries';
 import { urlFor } from '@/lib/sanity/client';
 import ShareButton from '@/components/common/blog/share-button';
+import Breadcrumb from '@/components/ui/breadcrumb';
 import TableOfContents from '@/components/common/blog/table-of-contents';
 import BlogPostCard from '@/components/common/blog/blog-post-card';
 
@@ -267,6 +268,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   return (
     <div className="min-h-screen mt-20">
+      <Breadcrumb items={[{ label: 'Blog', href: '/blog' }, { label: post.title }]} />
       {/* BlogPosting Schema */}
       <Script
         id="blog-posting-schema"

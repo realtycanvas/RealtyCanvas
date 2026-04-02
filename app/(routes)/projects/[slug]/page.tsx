@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import ProjectDetailClient from '@/components/projects/project-detail-client';
 import JsonLd from '@/components/common/JsonLd';
+import Breadcrumb from '@/components/ui/breadcrumb';
 import { prisma } from '@/lib/prisma';
 import { ProjectCategory } from '@/app/generated/prisma/client';
 
@@ -436,7 +437,8 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
       : null;
 
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen bg-white dark:bg-gray-900 pt-20">
+      <Breadcrumb items={[{ label: 'Projects', href: '/projects' }, { label: project.title }]} />
       <JsonLd data={realEstateLd} />
       <JsonLd data={breadcrumbLd} />
       {faqLd ? <JsonLd data={faqLd} /> : null}

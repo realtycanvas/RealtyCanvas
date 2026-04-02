@@ -1,11 +1,10 @@
 import BlogPostCard from '@/components/common/blog/blog-post-card';
-import { getAllBlogPosts, getBlogPostCount } from '@/lib/sanity/queries';
+import { getLatestBlogPosts } from '@/lib/sanity/queries';
 import { BlogPostPreview } from '@/lib/sanity/types';
 import ViewAllLink from '@/components/ui/view-all-link';
 
 export default async function LatestBlogsSection() {
-  const pageSize = 3;
-  const [postsRaw, totalCount] = await Promise.all([getAllBlogPosts(pageSize, 0), getBlogPostCount()]);
+  const postsRaw = await getLatestBlogPosts(3);
 
   const posts = postsRaw.filter((post): post is BlogPostPreview => post != null && post.title != null);
   if (!posts.length) return null;
@@ -26,7 +25,7 @@ export default async function LatestBlogsSection() {
               Market insights, micromarket breakdowns, and buyer guides from Realty Canvas.
             </p>
           </div>
-          {typeof totalCount === 'number' && totalCount > posts.length && <ViewAllLink href="/blog" />}
+          <ViewAllLink href="/blog" />
         </div>
 
         <div className="mt-8 grid gap-8 md:grid-cols-2 lg:grid-cols-3">

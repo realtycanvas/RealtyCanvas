@@ -2,8 +2,10 @@
 
 import { useState } from 'react';
 import { PhoneIcon, EnvelopeIcon, MapPinIcon, ClockIcon, BuildingOfficeIcon } from '@heroicons/react/24/outline';
-import JsonLd from '@/components/common/JsonLd';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
+import JsonLd from '@/components/common/JsonLd';
+import Breadcrumb from '@/components/ui/breadcrumb';
 
 export default function ContactPage() {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.realtycanvas.in';
@@ -49,6 +51,7 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 pt-20">
+      <Breadcrumb items={[{ label: 'Contact' }]} />
       <JsonLd
         data={{
           '@context': 'https://schema.org',
@@ -95,18 +98,39 @@ export default function ContactPage() {
           ],
         }}
       />
-      <div className="relative overflow-hidden bg-linear-to-br from-brand-secondary via-brand-secondary/95 to-brand-secondary/90 py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="inline-flex items-center px-4 py-2 rounded-full bg-brand-primary/10 border border-brand-primary/20 mb-6">
-            <span className="text-brand-primary font-medium text-sm">Contact Realty Canvas</span>
+
+      <section className="relative overflow-hidden bg-linear-to-br from-brand-secondary via-brand-secondary/95 to-brand-secondary/90 py-20">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23feb711' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'%3E%3C/circle%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-50"></div>
+
+        {/* Floating Elements */}
+        <div className="absolute top-20 left-10 w-32 h-32 bg-linear-to-r from-brand-primary/20 to-brand-primary/10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-32 right-16 w-40 h-40 bg-linear-to-r from-brand-primary/15 to-brand-primary/5 rounded-full blur-3xl"></div>
+        <div className="absolute top-1/3 right-1/4 w-24 h-24 bg-linear-to-r from-brand-primary/10 to-brand-primary/5 rounded-full blur-2xl"></div>
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="space-y-6"
+            >
+              {/* Badge */}
+              <div className="inline-flex items-center px-4 py-2 rounded-full bg-brand-primary/10 border border-brand-primary/20">
+                <span className="text-brand-primary font-medium text-sm">Contact Realty Canvas</span>
+              </div>
+
+              {/* Main Heading */}
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">Let’s Connect</h1>
+
+              {/* Description */}
+              <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+                We help homebuyers, business owners, and investors discover properties they’ll truly love backed by
+                local insights and personalized recommendations.
+              </p>
+            </motion.div>
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Let’s Connect</h1>
-          <p className="text-base md:text-lg text-gray-300 max-w-3xl mx-auto">
-            We help homebuyers, business owners, and investors discover properties they’ll truly love—backed by local
-            insights and personalized recommendations.
-          </p>
         </div>
-      </div>
+      </section>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1  gap-8">

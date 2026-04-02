@@ -385,8 +385,7 @@ export default function ProjectDetailClient({
       />
 
       {/* ✅ px-3 sm:px-4, py-4 sm:py-6 lg:py-8, mt-16 sm:mt-20 */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 lg:py-8 mt-20">
-        {/* Back + CTA — ✅ flex-wrap so it never overflows on 320px */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 lg:py-8 mt-4 md:mt-0">
         <div className="flex flex-wrap items-center justify-between gap-3 mb-4 sm:mb-6">
           <Link href="/projects" className="text-blue-600 hover:text-blue-800 font-medium text-sm sm:text-base">
             ← Back to Projects
