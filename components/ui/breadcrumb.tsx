@@ -8,7 +8,7 @@ export interface BreadcrumbItem {
 
 export default function Breadcrumb({ items }: { items: BreadcrumbItem[] }) {
   return (
-    <nav aria-label="Breadcrumb" className="bg-gray-100 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+    <nav aria-label="Breadcrumb" className="bg-linear-to-r from-blue-50/80 via-white/70 to-blue-50/80 dark:from-gray-800/80 dark:via-gray-900/70 dark:to-gray-800/80 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-700/50 shadow-xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <ol className="flex items-center gap-1.5 py-3 text-sm flex-wrap">
           <li className="flex items-center">
@@ -31,7 +31,7 @@ export default function Breadcrumb({ items }: { items: BreadcrumbItem[] }) {
                   {item.label}
                 </Link>
               ) : (
-                <span className="text-gray-900 dark:text-white font-medium truncate max-w-50 sm:max-w-none">
+                <span className="text-[#FBB70F] font-medium truncate max-w-50 sm:max-w-none">
                   {item.label}
                 </span>
               )}
