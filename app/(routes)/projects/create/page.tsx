@@ -332,6 +332,8 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
     },
   ]);
   const [faqs, setFaqs] = useState([{ question: '', answer: '' }]);
+  const [faqJsonInput, setFaqJsonInput] = useState('');
+  const [faqJsonError, setFaqJsonError] = useState('');
 
   // ── Auth check ─────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -1566,6 +1568,108 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
               {/* FAQs */}
               <Card title="FAQs" desc="Shown in the Frequently Asked Questions accordion.">
                 <div className="space-y-4">
+                  {/* Bulk actions */}
+                  <div className="flex flex-wrap gap-2 pb-2 border-b border-gray-100">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const json = JSON.stringify(
+                          faqs.filter((fq) => fq.question.trim()),
+                          null,
+                          2
+                        );
+                        navigator.clipboard.writeText(json);
+                        alert('FAQ JSON copied to clipboard!');
+                      }}
+                      className="px-3 py-1.5 text-xs font-medium rounded border border-gray-300 text-gray-600 hover:bg-gray-50 transition"
+                    >
+                      Export JSON
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (faqs.some((fq) => fq.question.trim()) && !confirm('Remove all FAQs?')) return;
+                        setFaqs([{ question: '', answer: '' }]);
+                      }}
+                      className="px-3 py-1.5 text-xs font-medium rounded border border-red-200 text-red-500 hover:bg-red-50 transition"
+                    >
+                      Clear All
+                    </button>
+                  </div>
+
+                  {/* Bulk JSON import */}
+                  <details className="group">
+                    <summary className="cursor-pointer text-xs font-medium text-blue-600 hover:text-blue-700 select-none">
+                      Import FAQs from JSON
+                    </summary>
+                    <div className="mt-2 space-y-2">
+                      <Textarea
+                        value={faqJsonInput}
+                        onChange={(e) => {
+                          setFaqJsonInput(e.target.value);
+                          setFaqJsonError('');
+                        }}
+                        rows={5}
+                        placeholder='Paste JSON array, e.g. [{"question":"...","answer":"..."},...]'
+                      />
+                      {faqJsonError && <p className="text-xs text-red-500">{faqJsonError}</p>}
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            try {
+                              const parsed = JSON.parse(faqJsonInput);
+                              if (!Array.isArray(parsed)) throw new Error('Must be a JSON array');
+                              const mapped = parsed
+                                .filter((item: Record<string, unknown>) => item.question)
+                                .map((item: Record<string, unknown>) => ({
+                                  question: String(item.question || ''),
+                                  answer: String(item.answer || ''),
+                                }));
+                              if (mapped.length === 0) throw new Error('No valid FAQs found');
+                              setFaqs((prev) => {
+                                const existing = prev.filter((fq) => fq.question.trim());
+                                return existing.length ? [...existing, ...mapped] : mapped;
+                              });
+                              setFaqJsonInput('');
+                              setFaqJsonError('');
+                            } catch (err) {
+                              setFaqJsonError(err instanceof Error ? err.message : 'Invalid JSON');
+                            }
+                          }}
+                          className="px-3 py-1.5 text-xs font-medium rounded bg-blue-600 text-white hover:bg-blue-700 transition"
+                        >
+                          Append to existing
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            try {
+                              const parsed = JSON.parse(faqJsonInput);
+                              if (!Array.isArray(parsed)) throw new Error('Must be a JSON array');
+                              const mapped = parsed
+                                .filter((item: Record<string, unknown>) => item.question)
+                                .map((item: Record<string, unknown>) => ({
+                                  question: String(item.question || ''),
+                                  answer: String(item.answer || ''),
+                                }));
+                              if (mapped.length === 0) throw new Error('No valid FAQs found');
+                              setFaqs(mapped);
+                              setFaqJsonInput('');
+                              setFaqJsonError('');
+                            } catch (err) {
+                              setFaqJsonError(err instanceof Error ? err.message : 'Invalid JSON');
+                            }
+                          }}
+                          className="px-3 py-1.5 text-xs font-medium rounded border border-blue-300 text-blue-600 hover:bg-blue-50 transition"
+                        >
+                          Replace all
+                        </button>
+                      </div>
+                    </div>
+                  </details>
+
+                  {/* FAQ rows */}
                   {faqs.map((fq, i) => (
                     <RowBox key={i} onDel={() => delRow(setFaqs, i)}>
                       <div className="space-y-2 pr-8">
