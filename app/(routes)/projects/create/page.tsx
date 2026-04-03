@@ -574,6 +574,14 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
   function delRow<T>(set: React.Dispatch<React.SetStateAction<T[]>>, i: number) {
     set((p) => p.filter((_, j) => j !== i));
   }
+  function moveRow<T>(set: React.Dispatch<React.SetStateAction<T[]>>, from: number, to: number) {
+    set((p) => {
+      if (to < 0 || to >= p.length) return p;
+      const next = [...p];
+      [next[from], next[to]] = [next[to], next[from]];
+      return next;
+    });
+  }
   function updRow<T extends Record<string, unknown>>(
     set: React.Dispatch<React.SetStateAction<T[]>>,
     i: number,
@@ -1561,6 +1569,29 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
                   {faqs.map((fq, i) => (
                     <RowBox key={i} onDel={() => delRow(setFaqs, i)}>
                       <div className="space-y-2 pr-8">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-xs font-medium text-gray-400">#{i + 1}</span>
+                          <div className="flex gap-1 ml-auto">
+                            <button
+                              type="button"
+                              disabled={i === 0}
+                              onClick={() => moveRow(setFaqs, i, i - 1)}
+                              title="Move up"
+                              className="w-6 h-6 flex items-center justify-center rounded text-gray-400 hover:bg-gray-200 hover:text-gray-600 transition disabled:opacity-30 disabled:cursor-not-allowed"
+                            >
+                              ↑
+                            </button>
+                            <button
+                              type="button"
+                              disabled={i === faqs.length - 1}
+                              onClick={() => moveRow(setFaqs, i, i + 1)}
+                              title="Move down"
+                              className="w-6 h-6 flex items-center justify-center rounded text-gray-400 hover:bg-gray-200 hover:text-gray-600 transition disabled:opacity-30 disabled:cursor-not-allowed"
+                            >
+                              ↓
+                            </button>
+                          </div>
+                        </div>
                         <div>
                           <Label>Question</Label>
                           <Input

@@ -71,7 +71,9 @@ export default function FAQSection({ faqs }: { faqs?: FAQ[] }) {
               </button>
               {openIndex === i && (
                 <div className="px-5 pb-5 pt-0">
-                  <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">{faq.answer}</p>
+                  <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed whitespace-pre-wrap">
+                    {faq.answer}
+                  </p>
                 </div>
               )}
             </div>

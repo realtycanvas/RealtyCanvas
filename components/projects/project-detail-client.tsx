@@ -505,7 +505,9 @@ export default function ProjectDetailClient({
 
             {/* Short Description */}
             <div className="bg-white rounded p-4 sm:p-6 shadow">
-              <p className="text-gray-700 leading-relaxed text-sm sm:text-base">{project.description}</p>
+              <p className="text-gray-700 leading-relaxed whitespace-pre-wrap text-sm sm:text-base">
+                {project.description}
+              </p>
             </div>
 
             {/* 1. Project Overview */}
@@ -565,7 +567,9 @@ export default function ProjectDetailClient({
                     >
                       <div className="text-2xl sm:text-3xl mb-2 sm:mb-3">{offering.icon || '•'}</div>
                       <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">{offering.title}</h3>
-                      <p className="text-gray-600 leading-relaxed text-sm">{offering.description}</p>
+                      <p className="text-gray-600 leading-relaxed whitespace-pre-wrap text-sm">
+                        {offering.description}
+                      </p>
                     </div>
                   ))}
                 </div>
