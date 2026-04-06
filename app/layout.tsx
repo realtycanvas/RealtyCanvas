@@ -17,7 +17,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en" suppressHydrationWarning>
       <body className={`${InterClassName} antialiased`}>
         <SEO />
-        <NextTopLoader color="#FBB70F" />
+        <NextTopLoader color="#FBB70F" showSpinner={false} />
         <ClientLayout>
           <Navbar />
           {children}

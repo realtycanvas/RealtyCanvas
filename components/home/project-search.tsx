@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'nextjs-toploader/app';
 import { BrandButton } from '@/components/ui/BrandButton';
 import { BanknoteIcon, BuildingIcon, ChevronDown, MagnifyIcon } from '../ui/icon';
 import {

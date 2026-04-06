@@ -8,12 +8,14 @@ import ProjectTagSection from '@/components/home/project-tag-sections';
 import LatestBlogsSection from '@/components/home/latest-blogs-section';
 import AutoLeadPopup from '@/components/home/auto-lead-popup';
 import FeaturedBlogPreview from '@/components/home/featured-blog-preview';
+import BannerSection from '@/components/home/banner-section';
 
 const page = () => {
   return (
     <div className="">
       <AutoLeadPopup />
       <HeroSection />
+      <BannerSection />
       <div className="pt-0">
         <FeaturedBlogPreview />
       </div>

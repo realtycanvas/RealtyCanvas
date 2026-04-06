@@ -7,7 +7,7 @@ export default function NotFound() {
       <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-[#FBB70F]/20 blur-3xl" />
       <div className="absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-[#112D48]/20 blur-3xl" />
 
-      <div className="relative z-10 max-w-6xl mx-auto px-6 py-16 flex flex-col lg:flex-row items-center gap-12">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 py-16 flex flex-col lg:flex-row items-center gap-12">
         <div className="flex-1">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FBB70F]/15 text-[#FBB70F] text-xs font-semibold uppercase tracking-wider">
             Page not found

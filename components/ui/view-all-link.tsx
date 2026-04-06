@@ -1,7 +1,7 @@
 'use client';
 
+import { useRouter } from 'nextjs-toploader/app';
 import { BrandButton } from '@/components/ui/BrandButton';
-import { useRouter } from 'next/navigation';
 
 type ViewAllLinkProps = {
   href: string;

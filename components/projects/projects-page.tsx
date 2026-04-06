@@ -1,7 +1,7 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'nextjs-toploader/app';
 import ProjectsListingClient from './projects-listing-client';
 
 interface User {

@@ -7,7 +7,8 @@ import { defaultNavItems } from '@/data/navbar.data';
 import { useEffect, useMemo, useState } from 'react';
 import { formatPhoneLink, formatWhatsappLink } from '@/helpers/navbar.helper';
 import { BarsIcon, CloseIcon, PhoneIcon, ShareIcon, WhatsappIcon } from '../ui/icon';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
+import { useRouter } from 'nextjs-toploader/app';
 import { LogoutModal } from '../common/logout-modal';
 
 interface User {

@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'nextjs-toploader/app';
+import { useSearchParams } from 'next/navigation';
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { mapTypeToProjectTag, priceRanges, projectCategories, projectStatuses } from '@/lib/project-search-config';
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'nextjs-toploader/app';
 import { EyeIcon, EyeSlashIcon, LockClosedIcon, UserIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
 import Link from 'next/link';

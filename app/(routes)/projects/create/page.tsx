@@ -1,6 +1,7 @@
 'use client';
 
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'nextjs-toploader/app';
+import { useSearchParams } from 'next/navigation';
 import { Suspense, useState, useEffect } from 'react';
 import { PROJECT_TAGS } from '@/lib/project-tags';
 import ImageUpload from '@/components/ui/image-upload';
