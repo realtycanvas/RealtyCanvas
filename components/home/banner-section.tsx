@@ -8,6 +8,7 @@ const BannerSection = () => {
         href="https://www.outlookindia.com/xhub/featured-insights/senior-living-is-emerging-as-indias-next-big-real-estate-opportunity-sunil-bhambhani"
         className="relative w-full overflow-hidden rounded"
         target="_blank"
+        rel="noopener nofollow noreferrer"
       >
         <Image
           src="/banner/outlook-feature.webp"
