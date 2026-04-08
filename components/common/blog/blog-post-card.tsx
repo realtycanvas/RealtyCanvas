@@ -99,9 +99,9 @@ export default function BlogPostCard({ post, index = 0 }: BlogPostCardProps) {
           </h3>
 
           {/* Excerpt */}
-          {post.excerpt && (
+          {/* {post.excerpt && (
             <p className="text-gray-600 dark:text-gray-300 line-clamp-3 leading-relaxed text-sm">{post.excerpt}</p>
-          )}
+          )} */}
 
           {/* Meta — Date + Read Time */}
           <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
