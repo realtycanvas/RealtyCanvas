@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
+import { useAuth } from '@/hooks/use-auth';
 import Image from 'next/image';
 import Link from 'next/link';
 import { MapPin } from 'lucide-react';
@@ -47,7 +48,7 @@ type ProjectSeo = {
   longFormTitle: string | null;
   longFormContent: string | null;
 };
-type User = { email: string; role: string };
+
 type Project = {
   id: string;
   slug: string;
@@ -265,7 +266,7 @@ export default function ProjectDetailClient({
   const [activeVideoIndex, setActiveVideoIndex] = useState(0);
   const [viewAllVideos, setViewAllVideos] = useState(false);
   const [toast, setToast] = useState('');
-  const [user, setUser] = useState<User | null>(null);
+  const { user } = useAuth();
 
   const pathname = usePathname();
 
@@ -312,23 +313,6 @@ export default function ProjectDetailClient({
     setToast(message);
     window.setTimeout(() => setToast(''), 2500);
   };
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const res = await fetch('/api/auth/me');
-        const data = await res.json();
-        if (data.user) {
-          setUser(data.user);
-        } else {
-          setUser(null);
-        }
-      } catch {
-        setUser(null);
-      }
-    };
-    checkAuth();
-  }, []);
 
   const youtubeOrigin = (() => {
     const raw = process.env.NEXT_PUBLIC_BASE_URL;

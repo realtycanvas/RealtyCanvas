@@ -1,35 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'nextjs-toploader/app';
+import { useAuth } from '@/hooks/use-auth';
 import ProjectsListingClient from './projects-listing-client';
 
-interface User {
-  email: string;
-  role: string;
-}
-
 export default function ProjectsPage() {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-  const router = useRouter();
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const res = await fetch('/api/auth/me');
-        const data = await res.json();
-        if (data.user) {
-          setUser(data.user);
-        }
-      } catch {
-        console.error('Failed to check authentication');
-      } finally {
-        setLoading(false);
-      }
-    };
-    checkAuth();
-  }, [router]);
+  const { user, loading } = useAuth();
 
   if (loading) {
     return (

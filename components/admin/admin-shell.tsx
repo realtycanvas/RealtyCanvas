@@ -3,7 +3,8 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'nextjs-toploader/app';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
+import { useAuth } from '@/hooks/use-auth';
 
 type AdminShellProps = {
   title: string;
@@ -12,35 +13,16 @@ type AdminShellProps = {
   contentScrollable?: boolean;
 };
 
-type User = {
-  email: string;
-  role: string;
-};
-
 export default function AdminShell({ title, description, children, contentScrollable = true }: AdminShellProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<User | null>(null);
+  const { user, loading } = useAuth();
 
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const response = await fetch('/api/auth/me');
-        const data = await response.json();
-        if (!data.user) {
-          router.push('/admin/login');
-          return;
-        }
-        setUser(data.user);
-      } catch {
-        router.push('/admin/login');
-      } finally {
-        setLoading(false);
-      }
-    };
-    checkAuth();
-  }, [router]);
+    if (!loading && !user) {
+      router.push('/admin/login');
+    }
+  }, [loading, user, router]);
 
   const links = useMemo(
     () => [

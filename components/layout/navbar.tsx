@@ -10,11 +10,7 @@ import { BarsIcon, CloseIcon, PhoneIcon, ShareIcon, WhatsappIcon } from '../ui/i
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'nextjs-toploader/app';
 import { LogoutModal } from '../common/logout-modal';
-
-interface User {
-  email: string;
-  role: string;
-}
+import { useAuth } from '@/hooks/use-auth';
 
 const Navbar = ({
   brandName = 'Realty Canvas',
@@ -28,9 +24,9 @@ const Navbar = ({
   const pathname = usePathname();
   const router = useRouter();
 
+  const { user, signOut } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
@@ -39,19 +35,6 @@ const Navbar = ({
 
   const telHref = useMemo(() => formatPhoneLink(phoneNumber), [phoneNumber]);
   const waHref = useMemo(() => formatWhatsappLink(whatsappNumber), [whatsappNumber]);
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const res = await fetch('/api/auth/me');
-        const data = await res.json();
-        setUser(data.user);
-      } catch {
-        setUser(null);
-      }
-    };
-    checkAuth();
-  }, []);
 
   useEffect(() => {
     let ticking = false;
@@ -99,9 +82,8 @@ const Navbar = ({
   const handleLogout = async () => {
     setIsLoggingOut(true);
     try {
-      const res = await fetch('/api/auth/logout', { method: 'POST' });
-      if (res.ok) {
-        setUser(null);
+      const ok = await signOut();
+      if (ok) {
         setShowLogoutModal(false);
         router.push('/admin/login');
       }

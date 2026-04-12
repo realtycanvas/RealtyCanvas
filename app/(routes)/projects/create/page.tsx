@@ -3,6 +3,7 @@
 import { useRouter } from 'nextjs-toploader/app';
 import { useSearchParams } from 'next/navigation';
 import { Suspense, useState, useEffect } from 'react';
+import { useAuth } from '@/hooks/use-auth';
 import { PROJECT_TAGS } from '@/lib/project-tags';
 import ImageUpload from '@/components/ui/image-upload';
 
@@ -337,21 +338,19 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
   const [faqJsonError, setFaqJsonError] = useState('');
 
   // ── Auth check ─────────────────────────────────────────────────────────────
+  const { user: authUser, loading: authLoading } = useAuth();
+
   useEffect(() => {
+    if (!authLoading && !authUser) {
+      router.push('/admin/login');
+    }
+  }, [authLoading, authUser, router]);
+
+  // ── Load project for editing ──────────────────────────────────────────────
+  useEffect(() => {
+    if (authLoading || !authUser) return;
     let active = true;
     const run = async () => {
-      try {
-        const authRes = await fetch('/api/auth/me');
-        const authData = await authRes.json();
-        if (!authData.user) {
-          router.push('/admin/login');
-          return;
-        }
-      } catch {
-        router.push('/admin/login');
-        return;
-      }
-
       if (editSlug) {
         setIsEditing(true);
         setSlugLocked(true);
@@ -541,7 +540,7 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
     return () => {
       active = false;
     };
-  }, [router, editSlug]);
+  }, [authLoading, authUser, editSlug]);
 
   // ── Handlers ───────────────────────────────────────────────────────────────
   const change = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {

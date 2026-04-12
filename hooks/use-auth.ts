@@ -1,13 +1,14 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React from 'react';
 
 interface AuthUser {
   email: string;
   role: string;
 }
 
-interface UseAuthResult {
+interface AuthContextValue {
   user: AuthUser | null;
   loading: boolean;
   isAdmin: boolean;
@@ -15,7 +16,9 @@ interface UseAuthResult {
   signOut: () => Promise<boolean>;
 }
 
-export function useAuth(): UseAuthResult {
+const AuthContext = createContext<AuthContextValue | null>(null);
+
+export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -50,11 +53,18 @@ export function useAuth(): UseAuthResult {
 
   const isAdmin = useMemo(() => user?.role?.toLowerCase() === 'admin', [user?.role]);
 
-  return {
-    user,
-    loading,
-    isAdmin,
-    refreshUser,
-    signOut,
-  };
+  const value = useMemo(
+    () => ({ user, loading, isAdmin, refreshUser, signOut }),
+    [user, loading, isAdmin, refreshUser, signOut]
+  );
+
+  return React.createElement(AuthContext.Provider, { value }, children);
+}
+
+export function useAuth(): AuthContextValue {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
 }

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Preloader from '@/components/common/Preloader';
 import { Toaster } from 'react-hot-toast';
+import { AuthProvider } from '@/hooks/use-auth';
 
 interface ClientLayoutProps {
   children: React.ReactNode;
@@ -62,7 +63,9 @@ const ClientLayout: React.FC<ClientLayoutProps> = ({ children }) => {
           },
         }}
       />
-      <div className={isLoading ? 'opacity-0' : 'opacity-100 transition-opacity duration-500'}>{children}</div>
+      <AuthProvider>
+        <div className={isLoading ? 'opacity-0' : 'opacity-100 transition-opacity duration-500'}>{children}</div>
+      </AuthProvider>
     </>
   );
 };
