@@ -265,6 +265,8 @@ export default function ProjectDetailClient({
   const [isLeadModalOpen, setIsLeadModalOpen] = useState(false);
   const [activeVideoIndex, setActiveVideoIndex] = useState(0);
   const [viewAllVideos, setViewAllVideos] = useState(false);
+  const [activeFloorPlanIndex, setActiveFloorPlanIndex] = useState(0);
+  const [viewAllFloorPlans, setViewAllFloorPlans] = useState(false);
   const [toast, setToast] = useState('');
   const { user } = useAuth();
 
@@ -744,8 +746,15 @@ export default function ProjectDetailClient({
             {project.floorPlans.length > 0 && (
               <Section title="Floor Plans & Layouts">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-                  {project.floorPlans.map((plan) => (
-                    <div key={plan.id} className="border border-gray-200 rounded overflow-hidden">
+                  {project.floorPlans.map((plan, index) => (
+                    <div
+                      key={plan.id}
+                      className="border border-gray-200 rounded overflow-hidden cursor-pointer hover:shadow-lg transition-shadow"
+                      onClick={() => {
+                        setActiveFloorPlanIndex(index);
+                        setViewAllFloorPlans(true);
+                      }}
+                    >
                       <div className="relative aspect-video">
                         <Image
                           src={normalizeImageSrc(plan.imageUrl)}
@@ -1025,6 +1034,87 @@ export default function ProjectDetailClient({
                         width={96}
                         height={80}
                         // ✅ smaller filmstrip thumbnails on mobile
+                        className="w-16 h-12 sm:w-24 sm:h-20 object-cover rounded"
+                      />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Floor Plan Gallery Modal ─────────────────────────────────────── */}
+      {viewAllFloorPlans && project.floorPlans.length > 0 && (
+        <div className="fixed inset-0 z-50 bg-black/80 flex items-end sm:items-center justify-center sm:p-4">
+          <div className="bg-white rounded-t-2xl sm:rounded w-full sm:max-w-6xl h-[92vh] sm:h-[90vh] overflow-hidden flex flex-col">
+            <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b">
+              <div>
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900">
+                  Floor Plans ({activeFloorPlanIndex + 1} / {project.floorPlans.length})
+                </h3>
+                <p className="text-xs sm:text-sm text-gray-500">
+                  {project.floorPlans[activeFloorPlanIndex].level}
+                  {project.floorPlans[activeFloorPlanIndex].title
+                    ? ` • ${project.floorPlans[activeFloorPlanIndex].title}`
+                    : ''}
+                </p>
+              </div>
+              <button
+                onClick={() => setViewAllFloorPlans(false)}
+                className="cursor-pointer px-3 py-1.5 rounded bg-gray-200 hover:bg-gray-300 text-sm font-medium"
+              >
+                Close
+              </button>
+            </div>
+            <div className="flex-1 grid grid-rows-[1fr_auto] overflow-hidden">
+              <div className="relative bg-black overflow-hidden">
+                <Image
+                  src={normalizeImageSrc(project.floorPlans[activeFloorPlanIndex].imageUrl)}
+                  alt={`${project.floorPlans[activeFloorPlanIndex].level} floor plan`}
+                  fill
+                  className="object-contain"
+                  sizes="(max-width: 768px) 100vw, 80vw"
+                />
+                {project.floorPlans.length > 1 && (
+                  <>
+                    <button
+                      onClick={() =>
+                        setActiveFloorPlanIndex(
+                          (activeFloorPlanIndex - 1 + project.floorPlans.length) % project.floorPlans.length
+                        )
+                      }
+                      className="cursor-pointer absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 rounded-full w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-lg sm:text-xl font-bold"
+                    >
+                      ‹
+                    </button>
+                    <button
+                      onClick={() =>
+                        setActiveFloorPlanIndex((activeFloorPlanIndex + 1) % project.floorPlans.length)
+                      }
+                      className="cursor-pointer absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 rounded-full w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-lg sm:text-xl font-bold"
+                    >
+                      ›
+                    </button>
+                  </>
+                )}
+              </div>
+              <div className="p-3 sm:p-4 overflow-x-auto bg-white border-t">
+                <div className="flex gap-2 sm:gap-3">
+                  {project.floorPlans.map((plan, index) => (
+                    <button
+                      key={plan.id}
+                      onClick={() => setActiveFloorPlanIndex(index)}
+                      className={`cursor-pointer rounded border-2 shrink-0 ${
+                        index === activeFloorPlanIndex ? 'border-yellow-500' : 'border-gray-200'
+                      }`}
+                    >
+                      <Image
+                        src={normalizeImageSrc(plan.imageUrl)}
+                        alt={`${plan.level} floor plan`}
+                        width={96}
+                        height={80}
                         className="w-16 h-12 sm:w-24 sm:h-20 object-cover rounded"
                       />
                     </button>
