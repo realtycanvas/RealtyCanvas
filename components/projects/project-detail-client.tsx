@@ -1110,13 +1110,15 @@ export default function ProjectDetailClient({
                         index === activeFloorPlanIndex ? 'border-yellow-500' : 'border-gray-200'
                       }`}
                     >
-                      <Image
-                        src={normalizeImageSrc(plan.imageUrl)}
-                        alt={`${plan.level} floor plan`}
-                        width={96}
-                        height={80}
-                        className="w-16 h-12 sm:w-24 sm:h-20 object-cover rounded"
-                      />
+                      <div className="relative w-16 h-12 sm:w-24 sm:h-20">
+                        <Image
+                          src={normalizeImageSrc(plan.imageUrl)}
+                          alt={`${plan.level} floor plan`}
+                          fill
+                          className="object-cover rounded"
+                          sizes="96px"
+                        />
+                      </div>
                     </button>
                   ))}
                 </div>
