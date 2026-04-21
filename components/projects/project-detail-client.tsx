@@ -1090,9 +1090,7 @@ export default function ProjectDetailClient({
                       ‹
                     </button>
                     <button
-                      onClick={() =>
-                        setActiveFloorPlanIndex((activeFloorPlanIndex + 1) % project.floorPlans.length)
-                      }
+                      onClick={() => setActiveFloorPlanIndex((activeFloorPlanIndex + 1) % project.floorPlans.length)}
                       className="cursor-pointer absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 rounded-full w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-lg sm:text-xl font-bold"
                     >
                       ›
