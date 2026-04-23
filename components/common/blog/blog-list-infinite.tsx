@@ -108,7 +108,7 @@ export default function BlogListInfinite({ initialPosts, totalCount, pageSize, s
           </div>
         }
       >
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-5 sm:gap-6 lg:gap-8 md:grid-cols-2 lg:grid-cols-3">
           {posts.map((post, index) => (
             <BlogPostCard key={post._id} post={post} index={index} />
           ))}

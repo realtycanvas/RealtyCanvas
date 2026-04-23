@@ -90,6 +90,7 @@ type ProjectResponse = {
   sitePlanTitle?: string | null;
   sitePlanDescription?: string | null;
   projectTags?: string[];
+  categoryType?: string | null;
   isActive?: boolean;
   galleryImages?: string[];
   videoUrls?: string[];
@@ -230,6 +231,7 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
   const [success, setSuccess] = useState('');
   const [slugLocked, setSlugLocked] = useState(false);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [categoryType, setCategoryType] = useState<string>('NONE');
   const [isEditing, setIsEditing] = useState(false);
   const [initialSlug, setInitialSlug] = useState('');
 
@@ -382,6 +384,7 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
 
           setInitialSlug(project.slug || editSlug);
           setSelectedTags(project.projectTags || []);
+          setCategoryType(project.categoryType || 'NONE');
           setF({
             title: project.title || '',
             subtitle: project.subtitle || '',
@@ -647,6 +650,7 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
     const payload = {
       ...core,
       projectTags: selectedTags,
+      categoryType,
       latitude: core.latitude ? parseFloat(core.latitude) : null,
       longitude: core.longitude ? parseFloat(core.longitude) : null,
       priceMin: priceMin ? parseInt(priceMin) : null,
@@ -883,6 +887,32 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
                         Selected: {selectedTags.map((t) => PROJECT_TAGS.find((p) => p.value === t)?.label).join(', ')}
                       </p>
                     )}
+                  </div>
+
+                  {/* Category Type */}
+                  <div>
+                    <Label>Category Type</Label>
+                    <p className="text-xs text-gray-400 mb-2">Controls which special homepage sections this project appears in.</p>
+                    <div className="flex gap-3">
+                      {[
+                        { value: 'NONE', label: 'None', desc: 'No special category' },
+                        { value: 'PLOTS', label: '🌿 Plots', desc: 'Best Plots in Gurugram' },
+                      ].map((opt) => (
+                        <button
+                          key={opt.value}
+                          type="button"
+                          onClick={() => setCategoryType(opt.value)}
+                          className={`flex-1 px-3 py-2 rounded border text-sm text-left transition ${
+                            categoryType === opt.value
+                              ? 'border-yellow-400 bg-yellow-50 text-yellow-800 font-medium'
+                              : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
+                          }`}
+                        >
+                          <div className="font-medium">{opt.label}</div>
+                          <div className="text-xs text-gray-400 mt-0.5">{opt.desc}</div>
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </Card>

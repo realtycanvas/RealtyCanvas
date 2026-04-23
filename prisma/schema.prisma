@@ -61,6 +61,7 @@ model Project {
   seoDescription      String?
   seoKeywords         String[]        @default([])
   projectTags         String[]        @default([])
+  categoryType        CategoryType    @default(NONE)
   isActive            Boolean         @default(true)
   totalClicks         Int             @default(0)
   createdAt           DateTime        @default(now())
@@ -327,6 +328,11 @@ model Offering {
 // ─────────────────────────────────────────────
 // ENUMS
 // ─────────────────────────────────────────────
+enum CategoryType {
+  NONE
+  PLOTS
+}
+
 enum LeadStatus {
   NEW
   CONTACTED

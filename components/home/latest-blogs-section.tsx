@@ -1,16 +1,16 @@
-import BlogPostCard from '@/components/common/blog/blog-post-card';
 import { getLatestBlogPosts } from '@/lib/sanity/queries';
 import { BlogPostPreview } from '@/lib/sanity/types';
 import ViewAllLink from '@/components/ui/view-all-link';
+import LatestBlogsCarousel from '@/components/home/latest-blogs-carousel';
 
 export default async function LatestBlogsSection() {
-  const postsRaw = await getLatestBlogPosts(3);
+  const postsRaw = await getLatestBlogPosts(8);
 
   const posts = postsRaw.filter((post): post is BlogPostPreview => post != null && post.title != null);
   if (!posts.length) return null;
 
   return (
-    <section className="py-20 bg-gray-50 relative overflow-hidden">
+    <section className="py-20 bg-gray-50 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
@@ -28,11 +28,7 @@ export default async function LatestBlogsSection() {
           <ViewAllLink href="/blog" />
         </div>
 
-        <div className="mt-8 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {posts.map((post, index) => (
-            <BlogPostCard key={post._id} post={post} index={index} />
-          ))}
-        </div>
+        <LatestBlogsCarousel posts={posts} />
       </div>
     </section>
   );

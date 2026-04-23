@@ -6,6 +6,7 @@ import EnquirySection from '@/components/home/enquiry-section';
 import FAQSection from '@/components/home/FAQ-section';
 import ProjectTagSection from '@/components/home/project-tag-sections';
 import LatestBlogsSection from '@/components/home/latest-blogs-section';
+import TestimonialsSection from '@/components/home/testimonials-section';
 import AutoLeadPopup from '@/components/home/auto-lead-popup';
 import FeaturedBlogPreview from '@/components/home/featured-blog-preview';
 import BannerSection from '@/components/home/banner-section';
@@ -35,6 +36,15 @@ const page = () => {
         title={
           <h2>
             <span className="text-[#FDB022]">Trending</span> Projects in Gurugram
+          </h2>
+        }
+      />
+      <ProjectTagSection
+        className="mt-[-50px]"
+        categoryType="PLOTS"
+        title={
+          <h2>
+            <span className="text-[#FDB022]">Best Plots</span> in Gurugram
           </h2>
         }
       />
@@ -85,6 +95,7 @@ const page = () => {
       <PodcastSection />
       <EnquirySection />
       <LatestBlogsSection />
+      <TestimonialsSection />
       <FAQSection />
     </div>
   );

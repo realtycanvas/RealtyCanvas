@@ -87,18 +87,18 @@ export default async function BlogPage({
       {/* Hero Section */}
       <BlogHero />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
         {/* Featured Posts Section */}
         {featuredPosts.length > 0 && (
-          <section className="mb-20">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Featured Stories</h2>
-              <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+          <section className="mb-12 sm:mb-20">
+            <div className="text-center mb-8 sm:mb-12">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4">Featured Stories</h2>
+              <p className="text-sm sm:text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
                 Don't miss these hand-picked articles from our editorial team
               </p>
             </div>
 
-            <div className="space-y-12">
+            <div className="space-y-6 sm:space-y-12">
               {featuredPosts.slice(0, 2).map((post, index) => (
                 <FeaturedPost key={post._id} post={post} />
               ))}

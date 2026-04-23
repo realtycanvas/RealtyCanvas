@@ -21,11 +21,11 @@ interface BlogPostPageProps {
 const portableTextComponents = {
   types: {
     image: ({ value }: any) => (
-      <div className="my-8">
+      <div className="my-4 sm:my-8">
         <img
-          src={urlFor(value).width(500).url()}
+          src={urlFor(value).width(800).url()}
           alt={value.alt || 'Blog post image'}
-          className="w-full rounded-lg shadow-lg"
+          className="w-full max-w-full rounded-lg shadow-lg"
         />
         {value.caption && (
           <p className="text-sm text-gray-600 dark:text-gray-400 text-center mt-2 italic">{value.caption}</p>
@@ -33,8 +33,8 @@ const portableTextComponents = {
       </div>
     ),
     code: ({ value }: any) => (
-      <div className="my-6">
-        <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto">
+      <div className="my-3 sm:my-6 max-w-full overflow-x-auto">
+        <pre className="bg-gray-900 text-gray-100 p-3 sm:p-4 rounded-lg min-w-0">
           <code className={`language-${value.language || 'text'}`}>{value.code}</code>
         </pre>
       </div>
@@ -42,7 +42,7 @@ const portableTextComponents = {
     table: ({ value }: any) => {
       const rows = value.rows || [];
       return (
-        <div className="my-8 overflow-x-auto">
+        <div className="my-4 sm:my-8 overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700 border border-gray-200 dark:border-gray-700 rounded-lg">
             <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
               {rows.map((row: any, rowIndex: number) => (
@@ -52,7 +52,7 @@ const portableTextComponents = {
                     return (
                       <CellTag
                         key={cellIndex}
-                        className={`px-6 py-4 whitespace-nowrap text-sm ${
+                        className={`px-3 sm:px-6 py-2 sm:py-4 text-sm ${
                           rowIndex === 0
                             ? 'font-semibold text-gray-900 dark:text-white text-left'
                             : 'text-gray-700 dark:text-gray-300'
@@ -88,17 +88,17 @@ const portableTextComponents = {
         return null;
       }
       return (
-        <div className="my-8">
-          {title && <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">{title}</h3>}
+        <div className="my-4 sm:my-8">
+          {title && <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4">{title}</h3>}
           <div className="overflow-x-auto rounded border border-gray-200 dark:border-gray-700 shadow-sm">
             <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
               <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                 {rows.map((row: any, index: number) => (
                   <tr key={index} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                    <td className="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-800/50 w-1/3 border-r border-gray-200 dark:border-gray-700">
+                    <td className="px-3 sm:px-6 py-2 sm:py-4 text-sm font-medium text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-800/50 w-1/3 border-r border-gray-200 dark:border-gray-700">
                       {row.field}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">{row.details}</td>
+                    <td className="px-3 sm:px-6 py-2 sm:py-4 text-sm text-gray-700 dark:text-gray-300">{row.details}</td>
                   </tr>
                 ))}
               </tbody>
@@ -110,14 +110,14 @@ const portableTextComponents = {
   },
   block: {
     h2: ({ children }: any) => (
-      <h2 className="text-2xl font-bold text-gray-900 dark:text-white mt-8 mb-4">{children}</h2>
+      <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mt-5 sm:mt-8 mb-3 sm:mb-4">{children}</h2>
     ),
     h3: ({ children }: any) => (
-      <h3 className="text-xl font-semibold text-gray-900 dark:text-white mt-6 mb-3">{children}</h3>
+      <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mt-4 sm:mt-6 mb-2 sm:mb-3">{children}</h3>
     ),
     normal: ({ children }: any) => <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">{children}</p>,
     blockquote: ({ children }: any) => (
-      <blockquote className="border-l-4 border-brand-primary pl-6 py-2 my-6 bg-gray-50 dark:bg-gray-800 rounded-r-lg">
+      <blockquote className="border-l-4 border-brand-primary pl-4 sm:pl-6 py-2 my-4 sm:my-6 bg-gray-50 dark:bg-gray-800 rounded-r-lg">
         <div className="text-gray-800 dark:text-gray-200 italic">{children}</div>
       </blockquote>
     ),
@@ -302,11 +302,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       )}
       {/* Hero Section */}
       <div className="relative bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
           {/* Back Button */}
           <Link
             href="/blog"
-            className="inline-flex items-center gap-2 text-brand-primary hover:text-brand-secondary transition-colors mb-8 group"
+            className="inline-flex items-center gap-2 text-brand-primary hover:text-brand-secondary transition-colors mb-4 sm:mb-8 group"
           >
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
             <span className="font-medium">Back to Blog</span>
@@ -327,17 +327,17 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           )}
 
           {/* Title */}
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 leading-tight">
             {post.title}
           </h1>
 
           {/* Excerpt */}
           {post.excerpt && (
-            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">{post.excerpt}</p>
+            <p className="text-sm sm:text-lg lg:text-xl text-gray-600 dark:text-gray-300 mb-6 sm:mb-8 leading-relaxed">{post.excerpt}</p>
           )}
 
           {/* Meta Information */}
-          <div className="flex flex-wrap items-center gap-6 text-gray-500 dark:text-gray-400 mb-8">
+          <div className="flex flex-wrap items-center gap-3 sm:gap-6 text-gray-500 dark:text-gray-400 mb-6 sm:mb-8">
             <div className="flex items-center gap-2">
               <Calendar className="w-5 h-5" />
               <span>
@@ -383,23 +383,24 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
       {/* Featured Image */}
       {post.mainImage && imageUrl && (
-        <div className="relative h-125 overflow-hidden">
-          <img src={imageUrl} alt={post.mainImage.alt || post.title} className="w-full h-full object-contain" />
-          <div className="absolute inset-0 " />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="relative h-52 sm:h-80 lg:h-125 overflow-hidden rounded">
+            <img src={imageUrl} alt={post.mainImage.alt || post.title} className="w-full h-full object-cover" />
+          </div>
         </div>
       )}
 
       {/* Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid lg:grid-cols-4 gap-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 overflow-x-hidden">
+        <div className="grid lg:grid-cols-4 gap-8 lg:gap-12">
           {/* Main Content */}
-          <div className="lg:col-span-3">
-            <article className="prose prose-lg dark:prose-invert max-w-none">
+          <div className="lg:col-span-3 min-w-0">
+            <article className="prose sm:prose-lg dark:prose-invert max-w-none">
               {post.body && <PortableText value={post.body} components={portableTextComponents} />}
             </article>
 
             {faqItems.length > 0 && (
-              <section className="mt-12 space-y-4">
+              <section className="mt-8 sm:mt-12 space-y-4">
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Frequently Asked Questions</h2>
                 <div className="space-y-4">
                   {faqItems.map((faq: any, index: number) => (
@@ -417,9 +418,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
             {/* Author Bio */}
             {post.author && (
-              <div className="mt-12 p-6 bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700">
-                <div className="flex items-start gap-4">
-                  <div className="w-16 h-16 rounded-full overflow-hidden shrink-0 bg-gray-200 dark:bg-gray-700">
+              <div className="mt-8 sm:mt-12 p-4 sm:p-6 bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700">
+                <div className="flex items-start gap-3 sm:gap-4">
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full overflow-hidden shrink-0 bg-gray-200 dark:bg-gray-700">
                     {post.author.image ? (
                       <img
                         src={
@@ -458,9 +459,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       {/* Related Posts */}
       {relatedPosts && relatedPosts.length > 0 && (
         <div className="bg-[#F9FAFB] border-t border-gray-200 dark:border-gray-700">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-8 text-center">Related Articles</h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
+            <h2 className="text-xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-8 text-center">Related Articles</h2>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8">
               {relatedPosts.map((relatedPost, index) => (
                 <BlogPostCard key={relatedPost._id} post={relatedPost} index={index} />
               ))}

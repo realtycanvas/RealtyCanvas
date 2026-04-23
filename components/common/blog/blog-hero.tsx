@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 
 export default function BlogHero() {
   return (
-    <section className="relative overflow-hidden bg-linear-to-br from-brand-secondary via-brand-secondary/95 to-brand-secondary/90 py-20">
+    <section className="relative overflow-hidden bg-linear-to-br from-brand-secondary via-brand-secondary/95 to-brand-secondary/90 py-12 sm:py-16 lg:py-20">
       <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23feb711' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'%3E%3C/circle%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-50"></div>
 
       {/* Floating Elements */}
@@ -25,12 +25,12 @@ export default function BlogHero() {
             </div>
 
             {/* Main Heading */}
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
+            <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
               Real Estate Insights & News
             </h1>
 
             {/* Description */}
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-sm sm:text-lg lg:text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
               Stay ahead of the market with expert analysis, investment strategies, and the latest trends in real
               estate.
             </p>

@@ -58,7 +58,7 @@ export default function FeaturedPost({ post }: FeaturedPostProps) {
           </div>
 
           {/* Content Section */}
-          <div className="p-8 lg:p-10 flex flex-col justify-center">
+          <div className="p-5 sm:p-8 lg:p-10 flex flex-col justify-center">
             {/* Categories - Desktop */}
             {post.categories && post.categories.length > 0 && (
               <div className="hidden lg:flex flex-wrap gap-2 mb-4">
@@ -74,20 +74,20 @@ export default function FeaturedPost({ post }: FeaturedPostProps) {
             )}
 
             {/* Title */}
-            <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white mb-4 line-clamp-3 group-hover:text-brand-primary transition-colors duration-300">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4 line-clamp-3 group-hover:text-brand-primary transition-colors duration-300">
               {post.title}
             </h2>
 
             {/* Excerpt */}
             {post.excerpt && (
-              <p className="text-gray-600 dark:text-gray-300 mb-6 line-clamp-4 text-lg leading-relaxed">
+              <p className="text-gray-600 dark:text-gray-300 mb-4 sm:mb-6 line-clamp-3 sm:line-clamp-4 text-sm sm:text-lg leading-relaxed">
                 {post.excerpt}
               </p>
             )}
 
             {/* Meta Information */}
-            <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 mb-6">
-              <div className="flex items-center gap-6">
+            <div className="flex flex-wrap items-center gap-3 sm:gap-6 text-sm text-gray-500 dark:text-gray-400 mb-5 sm:mb-6">
+              <div className="flex flex-wrap items-center gap-3 sm:gap-6">
                 <div className="flex items-center gap-2">
                   <Calendar className="w-4 h-4" />
                   <span>
@@ -109,7 +109,7 @@ export default function FeaturedPost({ post }: FeaturedPostProps) {
             </div>
 
             {/* Author & CTA */}
-            <div className="flex items-center justify-between">
+            <div className="flex flex-wrap items-center justify-between gap-3">
               {post.author && (
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-linear-to-br from-brand-primary to-brand-secondary rounded flex items-center justify-center">

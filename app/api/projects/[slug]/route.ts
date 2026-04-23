@@ -237,6 +237,7 @@ export async function PUT(request: NextRequest, { params }: Props) {
         galleryImages: body.galleryImages || [],
         videoUrls: body.videoUrls || [],
         projectTags: body.projectTags || [],
+        categoryType: body.categoryType || 'NONE',
         isActive: body.isActive ?? true,
         highlights: {
           deleteMany: {},
@@ -345,9 +346,10 @@ export async function PUT(request: NextRequest, { params }: Props) {
     revalidatePath(`/projects/${project.slug}`);
     revalidateTag(PROJECTS_TAG, 'default');
     return NextResponse.json(project);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Project update error:', error);
-    return NextResponse.json({ error: 'Failed to update project' }, { status: 500 });
+    const msg = error?.message || error?.meta?.cause || 'Failed to update project';
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }
 

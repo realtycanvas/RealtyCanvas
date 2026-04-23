@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import { Prisma, ProjectCategory, ProjectStatus } from '@/app/generated/prisma/client';
+import { Prisma, ProjectCategory, ProjectStatus, CategoryType } from '@/app/generated/prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
 import { unstable_cache, revalidatePath, revalidateTag } from 'next/cache';
 import { PROJECT_TAGS, getTagMeta } from '@/lib/project-tags';
@@ -31,13 +31,14 @@ function getProjectsFromDB(filters: {
   status: string;
   city: string;
   projectTag?: string;
+  categoryType?: string;
   includeInactive?: boolean;
   minPrice?: number;
   maxPrice?: number;
 }) {
   return unstable_cache(
     async () => {
-      const { page, limit, search, category, status, city, projectTag, includeInactive, minPrice, maxPrice } = filters;
+      const { page, limit, search, category, status, city, projectTag, categoryType, includeInactive, minPrice, maxPrice } = filters;
       const skip = (page - 1) * limit;
 
       const where: Prisma.ProjectWhereInput = includeInactive ? {} : { isActive: true };
@@ -55,6 +56,7 @@ function getProjectsFromDB(filters: {
       if (status !== 'ALL') where.status = status as ProjectStatus;
       if (city) where.city = { contains: city, mode: 'insensitive' };
       if (projectTag) where.projectTags = { has: projectTag };
+      if (categoryType && categoryType !== 'NONE') where.categoryType = categoryType as CategoryType;
       const hasMin = typeof minPrice === 'number' && minPrice > 0;
       const hasMax = typeof maxPrice === 'number' && maxPrice > 0;
 
@@ -165,6 +167,7 @@ export async function GET(request: NextRequest) {
     const city = searchParams.get('city')?.trim() || '';
     const slug = searchParams.get('slug')?.trim() || '';
     const projectTag = searchParams.get('projectTag')?.trim() || '';
+    const categoryType = searchParams.get('categoryType')?.trim() || '';
     const groupByTags = searchParams.get('groupByTags') === '1';
     const includeInactive = searchParams.get('includeInactive') === '1';
     const minPriceRaw = searchParams.get('minPrice')?.trim() || '';
@@ -285,6 +288,7 @@ export async function GET(request: NextRequest) {
       status,
       city,
       projectTag,
+      categoryType,
       includeInactive,
       minPrice: Number.isFinite(minPrice) ? minPrice : 0,
       maxPrice: Number.isFinite(maxPrice) ? maxPrice : 0,
@@ -406,6 +410,7 @@ export async function POST(request: NextRequest) {
         galleryImages: body.galleryImages || [],
         videoUrls: body.videoUrls || [],
         projectTags: body.projectTags || [],
+        categoryType: body.categoryType || 'NONE',
         isActive: body.isActive ?? true,
         highlights: {
           create: (body.highlights || []).map(
