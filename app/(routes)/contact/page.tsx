@@ -30,8 +30,21 @@ export default function ContactPage() {
     setIsSubmitting(true);
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      const res = await fetch('/api/lead-capture', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.name,
+          phone: formData.phone,
+          email: formData.email,
+          propertyType: formData.propertyType || 'residential',
+          city: 'Gurugram',
+          state: 'Haryana',
+          timeline: 'Flexible',
+          sourcePath: '/contact',
+        }),
+      });
+      if (!res.ok) throw new Error('Failed');
       setSubmitStatus('success');
       setFormData({
         name: '',
@@ -240,7 +253,7 @@ export default function ContactPage() {
             {/* Google Maps Embed */}
             <div className="relative w-full h-96 rounded overflow-hidden shadow-lg">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3507.8234567890123!2d77.06789!3d28.4567!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sLandmark%20Cyber%20Park%2C%20Sector%2067%2C%20Gurugram!5e0!3m2!1sen!2sin!4v1234567890"
+                src="https://maps.google.com/maps?q=Landmark+Cyber+Park,+Sector+67,+Gurugram,+Haryana+122102&output=embed"
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}

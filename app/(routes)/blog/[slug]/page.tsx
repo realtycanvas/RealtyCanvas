@@ -186,13 +186,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     '@type': 'BlogPosting',
     headline: post.title,
     description: post.excerpt,
-    image: imageUrl ? [imageUrl] : [],
+    image: imageUrl ? [imageUrl] : undefined,
     datePublished: post.publishedAt,
-    dateModified: post.publishedAt, // Using published as modified since we don't track modified
     author: {
       '@type': 'Person',
-      name: post.author?.name || 'Reality Canvas Team',
-      url: post.author?.slug?.current ? `${baseUrl}/author/${post.author.slug.current}` : undefined,
+      name: post.author?.name || 'Realty Canvas Team',
     },
     publisher: {
       '@type': 'Organization',

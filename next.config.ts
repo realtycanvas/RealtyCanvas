@@ -100,24 +100,9 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
       {
-        protocol: 'http',
-        hostname: '187.127.128.90', // no port, nginx handles it on 80
-        pathname: '/uploads/**',
-      },
-      {
-        protocol: 'http',
-        hostname: 'cdn.realtycanvas.in',
-        pathname: '/**',
-      },
-      {
         protocol: 'https',
         hostname: 'cdn.realtycanvas.in',
         pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: '187.127.128.90',
-        pathname: '/uploads/**',
       },
       {
         protocol: 'https',

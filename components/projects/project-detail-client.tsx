@@ -392,7 +392,7 @@ export default function ProjectDetailClient({
               </Link>
             )}
             <Link
-              href="tel:9555562626"
+              href="tel:+919555562626"
               className="px-3 py-1.5 sm:px-4 sm:py-2 rounded bg-green-600 hover:bg-green-700 text-white font-semibold text-sm sm:text-base"
             >
               Call Now
@@ -962,7 +962,7 @@ export default function ProjectDetailClient({
           Enquire
         </button>
         <Link
-          href="tel:9555562626"
+          href="tel:+919555562626"
           className="flex-1 py-2.5 rounded bg-green-600 text-white font-semibold text-sm text-center"
         >
           Call Now
