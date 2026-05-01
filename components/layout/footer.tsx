@@ -235,6 +235,7 @@ const Footer = () => {
             
             <div className="flex flex-wrap gap-2">
               {[
+                {label: 'Residential Plots in Gurgaon' , href: '/residential-plots-in-gurgaon'},
                 { label: 'Birla Arika',               href: '/projects/birla-arika-sector-31-nh8-gurgaon' },
                 { label: 'Elan The Statement',        href: '/projects/elan-the-statement-sector-49-sohna-road-gurgaon' },
                 { label: 'Max Estate 360',            href: '/projects/max-estate-360-residences-sector-36a-gurgaon' },

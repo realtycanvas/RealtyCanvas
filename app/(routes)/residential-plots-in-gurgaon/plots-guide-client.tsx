@@ -136,7 +136,7 @@ export default function PlotsGuideClient() {
       <div className="bg-white min-h-screen">
         {/* ── HERO ── */}
         <section className="bg-[#0d1b25] py-10 sm:py-14 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-7xl mx-auto">
+          <div className="max-w-7xl mx-auto ml-30.5">
             <p className="text-xs font-semibold text-[#feb711] tracking-[0.2em] uppercase mb-3">
               2026 Investment Guide
             </p>
