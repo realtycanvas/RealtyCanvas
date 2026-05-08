@@ -115,7 +115,7 @@ const ProjectTagSection = ({
           <ViewAllLink
             href={
               categoryType === 'PLOTS'
-                ? '/gurugram-residential-plots'
+                ? '/residential-plots-in-gurgaon'
                 : categoryType
                   ? `/projects?categoryType=${encodeURIComponent(categoryType)}`
                   : `/projects?projectTag=${encodeURIComponent(tag || '')}`

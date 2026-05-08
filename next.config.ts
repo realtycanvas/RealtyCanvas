@@ -9,6 +9,15 @@ const nextConfig: NextConfig = {
       { source: '/logo-original.webp', destination: '/logo/logo-original.webp' },
     ];
   },
+  async redirects() {
+    return [
+      {
+        source: '/gurugram-residential-plots',
+        destination: '/residential-plots-in-gurgaon',
+        permanent: true,
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       // Unsplash

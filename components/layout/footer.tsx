@@ -241,7 +241,7 @@ const Footer = () => {
                 { label: 'Max Estate 360',            href: '/projects/max-estate-360-residences-sector-36a-gurgaon' },
                 { label: 'Adani The Marq',            href: '/projects/adani-the-marq-sector-102-gurgaon' },
                 { label: 'Elan Imperial',             href: '/projects/elan-imperial-sector-82-gurgaon' },
-                { label: 'BPTP Downtown 66',          href: '/projects/bptp-downtown-66' },
+                { label: 'BPTP Downtown 66',          href: '/projects/bptp-downtown-66-sector-66-gurgaon' },
                 { label: 'DLF Privana South',         href: '/projects/dlf-privana-south-sector-77-gurgaon' },
                 { label: 'SPJ Vedatam',               href: '/projects/spj-vedatam-sector-14-gurgaon' },
                 { label: 'M3M Jewel',                 href: '/projects/m3m-jewel-sector-25-gurgaon' },
