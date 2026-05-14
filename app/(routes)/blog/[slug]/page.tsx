@@ -389,11 +389,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       )}
 
       {/* Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 overflow-x-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         <div className="grid lg:grid-cols-4 gap-8 lg:gap-12">
           {/* Main Content */}
           <div className="lg:col-span-3 min-w-0">
-            <article className="prose sm:prose-lg dark:prose-invert max-w-none">
+            <article className="prose sm:prose-lg dark:prose-invert max-w-none prose-table:block prose-table:overflow-x-auto prose-table:max-w-full">
               {post.body && <PortableText value={post.body} components={portableTextComponents} />}
             </article>
 
