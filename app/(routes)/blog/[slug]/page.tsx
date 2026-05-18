@@ -473,9 +473,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             return (
               <aside className="hidden lg:block lg:col-span-1">
                 {embedUrl ? (
-                  <div className="sticky top-24 max-h-[calc(100vh-8rem)] flex flex-col gap-4">
-                    <div className="bg-white dark:bg-gray-800 rounded shadow-sm border border-gray-100 dark:border-gray-700 p-3 shrink-0">
-                      <div className="relative w-full aspect-[9/16] max-h-[55vh] mx-auto bg-black rounded overflow-hidden">
+                  <div className="sticky top-24 h-[calc(100vh-8rem)] flex flex-col gap-3">
+                    <div className="bg-white dark:bg-gray-800 rounded shadow-sm border border-gray-100 dark:border-gray-700 p-2 shrink-0">
+                      <div className="relative w-45 aspect-9/16 mx-auto bg-black rounded overflow-hidden">
                         <iframe
                           src={embedUrl}
                           title="Featured video"

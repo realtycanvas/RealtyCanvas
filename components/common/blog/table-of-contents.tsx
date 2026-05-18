@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface TOCItem {
   id: string;
@@ -16,6 +16,26 @@ interface Props {
 export default function TableOfContents({ embedded = false }: Props = {}) {
   const [headings, setHeadings] = useState<TOCItem[]>([]);
   const [activeId, setActiveId] = useState<string>('');
+  const navRef = useRef<HTMLElement>(null);
+
+  // Keep the active link visible inside the TOC scroll container
+  useEffect(() => {
+    if (!activeId || !navRef.current) return;
+    const container = navRef.current;
+    const link = container.querySelector<HTMLAnchorElement>(`a[data-id="${activeId}"]`);
+    if (!link) return;
+
+    const containerRect = container.getBoundingClientRect();
+    const linkRect = link.getBoundingClientRect();
+    const isAbove = linkRect.top < containerRect.top;
+    const isBelow = linkRect.bottom > containerRect.bottom;
+
+    if (isAbove || isBelow) {
+      const targetTop =
+        link.offsetTop - container.clientHeight / 2 + link.clientHeight / 2;
+      container.scrollTo({ top: Math.max(0, targetTop), behavior: 'smooth' });
+    }
+  }, [activeId]);
 
   useEffect(() => {
     // Find all H1-H5 headings in the article content
@@ -95,17 +115,15 @@ export default function TableOfContents({ embedded = false }: Props = {}) {
   if (headings.length === 0) return null;
 
   const card = (
-    <div className="bg-white dark:bg-gray-800 rounded shadow-sm border border-gray-100 dark:border-gray-700 h-full flex flex-col">
-      <h4 className="text-lg font-bold text-gray-900 dark:text-white px-6 pt-6 pb-2 border-b border-gray-100 dark:border-gray-700 shrink-0">
-        Quick Navigation
-      </h4>
-      <nav className="space-y-1 relative z-0 overflow-y-auto custom-scrollbar flex-1 min-h-0 px-6 py-4">
+    <div className="bg-white dark:bg-gray-800 rounded shadow-sm border border-gray-100 dark:border-gray-700 h-full flex flex-col overflow-hidden">
+      <nav ref={navRef} className="space-y-1 relative z-0 overflow-y-auto custom-scrollbar flex-1 min-h-0 px-5 py-4">
         {headings.map((item) => {
           const isActive = activeId === item.id;
           return (
             <Link
               key={item.id}
               href={`#${item.id}`}
+              data-id={item.id}
               onClick={(e) => {
                 e.preventDefault();
                 document.getElementById(item.id)?.scrollIntoView({
