@@ -86,6 +86,13 @@ export const blogPost = defineType({
       initialValue: 5,
     }),
     defineField({
+      name: 'youtubeUrl',
+      title: 'YouTube Short / Video URL (optional)',
+      type: 'url',
+      description:
+        'Paste a YouTube Shorts or regular YouTube URL (e.g. https://youtube.com/shorts/ABC123def45 or https://youtu.be/ABC123def45). If set, the video autoplays muted in a loop at the top of the sidebar above the Quick Navigation.',
+    }),
+    defineField({
       name: 'seo',
       title: 'SEO',
       type: 'object',

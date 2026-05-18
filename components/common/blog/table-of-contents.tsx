@@ -9,7 +9,11 @@ interface TOCItem {
   level: number;
 }
 
-export default function TableOfContents() {
+interface Props {
+  embedded?: boolean;
+}
+
+export default function TableOfContents({ embedded = false }: Props = {}) {
   const [headings, setHeadings] = useState<TOCItem[]>([]);
   const [activeId, setActiveId] = useState<string>('');
 
@@ -90,43 +94,51 @@ export default function TableOfContents() {
 
   if (headings.length === 0) return null;
 
+  const card = (
+    <div className="bg-white dark:bg-gray-800 rounded shadow-sm border border-gray-100 dark:border-gray-700 h-full flex flex-col">
+      <h4 className="text-lg font-bold text-gray-900 dark:text-white px-6 pt-6 pb-2 border-b border-gray-100 dark:border-gray-700 shrink-0">
+        Quick Navigation
+      </h4>
+      <nav className="space-y-1 relative z-0 overflow-y-auto custom-scrollbar flex-1 min-h-0 px-6 py-4">
+        {headings.map((item) => {
+          const isActive = activeId === item.id;
+          return (
+            <Link
+              key={item.id}
+              href={`#${item.id}`}
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById(item.id)?.scrollIntoView({
+                  behavior: 'smooth',
+                  block: 'start',
+                });
+                setActiveId(item.id);
+              }}
+              className={`block transition-colors duration-200 hover:text-brand-primary leading-snug py-1.5 ${
+                isActive ? 'text-brand-primary' : 'text-gray-600 dark:text-gray-400'
+              }`}
+              style={{
+                paddingLeft: `${(item.level - 1) * 16}px`,
+                fontSize: getFontSize(item.level),
+                fontWeight: getFontWeight(item.level, isActive),
+                opacity: item.level > 2 && !isActive ? 0.85 : 1,
+              }}
+            >
+              {item.text}
+            </Link>
+          );
+        })}
+      </nav>
+    </div>
+  );
+
+  if (embedded) {
+    return card;
+  }
+
   return (
-    <div className="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto custom-scrollbar">
-      <div className="bg-white dark:bg-gray-800 rounded shadow-sm border border-gray-100 dark:border-gray-700 p-6">
-        <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-4 sticky top-0 bg-white dark:bg-gray-800 z-10 pb-2 border-b border-gray-100 dark:border-gray-700">
-          Quick Navigation
-        </h4>
-        <nav className="space-y-1 relative z-0">
-          {headings.map((item) => {
-            const isActive = activeId === item.id;
-            return (
-              <Link
-                key={item.id}
-                href={`#${item.id}`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  document.getElementById(item.id)?.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start',
-                  });
-                  setActiveId(item.id);
-                }}
-                className={`block transition-colors duration-200 hover:text-brand-primary leading-snug py-1.5 ${
-                  isActive ? 'text-brand-primary' : 'text-gray-600 dark:text-gray-400'
-                }`}
-                style={{
-                  paddingLeft: `${(item.level - 1) * 16}px`,
-                  fontSize: getFontSize(item.level),
-                  fontWeight: getFontWeight(item.level, isActive),
-                  opacity: item.level > 2 && !isActive ? 0.85 : 1,
-                }}
-              >
-                {item.text}
-              </Link>
-            );
-          })}
-        </nav>
-      </div>
+    <div className="sticky top-24 max-h-[calc(100vh-8rem)]">
+      {card}
     </div>
   );
 }

@@ -17,6 +17,23 @@ interface BlogPostPageProps {
   }>;
 }
 
+function extractYouTubeId(url?: string): string | null {
+  if (!url) return null;
+  const trimmed = url.trim();
+  const patterns = [
+    /youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/,
+    /youtube\.com\/watch\?(?:.*&)?v=([a-zA-Z0-9_-]{11})/,
+    /youtu\.be\/([a-zA-Z0-9_-]{11})/,
+    /youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/,
+  ];
+  for (const pattern of patterns) {
+    const match = trimmed.match(pattern);
+    if (match) return match[1];
+  }
+  if (/^[a-zA-Z0-9_-]{11}$/.test(trimmed)) return trimmed;
+  return null;
+}
+
 // Custom components for PortableText
 const portableTextComponents = {
   types: {
@@ -447,10 +464,38 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             )}
           </div>
 
-          {/* Sidebar - Table of Contents */}
-          <aside className="hidden lg:block lg:col-span-1">
-            <TableOfContents />
-          </aside>
+          {/* Sidebar - YouTube Short (optional) + Table of Contents */}
+          {(() => {
+            const ytId = extractYouTubeId(post.youtubeUrl);
+            const embedUrl = ytId
+              ? `https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&mute=1&loop=1&playlist=${ytId}&controls=1&modestbranding=1&rel=0&iv_load_policy=3&playsinline=1`
+              : null;
+            return (
+              <aside className="hidden lg:block lg:col-span-1">
+                {embedUrl ? (
+                  <div className="sticky top-24 max-h-[calc(100vh-8rem)] flex flex-col gap-4">
+                    <div className="bg-white dark:bg-gray-800 rounded shadow-sm border border-gray-100 dark:border-gray-700 p-3 shrink-0">
+                      <div className="relative w-full aspect-[9/16] max-h-[55vh] mx-auto bg-black rounded overflow-hidden">
+                        <iframe
+                          src={embedUrl}
+                          title="Featured video"
+                          loading="lazy"
+                          allow="autoplay; encrypted-media; picture-in-picture"
+                          allowFullScreen
+                          className="absolute inset-0 w-full h-full"
+                        />
+                      </div>
+                    </div>
+                    <div className="flex-1 min-h-0">
+                      <TableOfContents embedded />
+                    </div>
+                  </div>
+                ) : (
+                  <TableOfContents />
+                )}
+              </aside>
+            );
+          })()}
         </div>
       </div>
 

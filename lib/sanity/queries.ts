@@ -234,6 +234,7 @@ const BLOG_POST_FIELDS = `
   body,
   featured,
   readTime,
+  youtubeUrl,
   faqs[]{
     question,
     answer
