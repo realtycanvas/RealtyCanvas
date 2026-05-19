@@ -16,12 +16,12 @@ interface Props {
 export default function TableOfContents({ embedded = false }: Props = {}) {
   const [headings, setHeadings] = useState<TOCItem[]>([]);
   const [activeId, setActiveId] = useState<string>('');
-  const navRef = useRef<HTMLElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   // Keep the active link visible inside the TOC scroll container
   useEffect(() => {
-    if (!activeId || !navRef.current) return;
-    const container = navRef.current;
+    if (!activeId || !scrollRef.current) return;
+    const container = scrollRef.current;
     const link = container.querySelector<HTMLAnchorElement>(`a[data-id="${activeId}"]`);
     if (!link) return;
 
@@ -114,49 +114,58 @@ export default function TableOfContents({ embedded = false }: Props = {}) {
 
   if (headings.length === 0) return null;
 
-  const card = (
-    <div className="bg-white dark:bg-gray-800 rounded shadow-sm border border-gray-100 dark:border-gray-700 h-full flex flex-col overflow-hidden">
-      <nav ref={navRef} className="space-y-1 relative z-0 overflow-y-auto custom-scrollbar flex-1 min-h-0 px-5 py-4">
-        {headings.map((item) => {
-          const isActive = activeId === item.id;
-          return (
-            <Link
-              key={item.id}
-              href={`#${item.id}`}
-              data-id={item.id}
-              onClick={(e) => {
-                e.preventDefault();
-                document.getElementById(item.id)?.scrollIntoView({
-                  behavior: 'smooth',
-                  block: 'start',
-                });
-                setActiveId(item.id);
-              }}
-              className={`block transition-colors duration-200 hover:text-brand-primary leading-snug py-1.5 ${
-                isActive ? 'text-brand-primary' : 'text-gray-600 dark:text-gray-400'
-              }`}
-              style={{
-                paddingLeft: `${(item.level - 1) * 16}px`,
-                fontSize: getFontSize(item.level),
-                fontWeight: getFontWeight(item.level, isActive),
-                opacity: item.level > 2 && !isActive ? 0.85 : 1,
-              }}
-            >
-              {item.text}
-            </Link>
-          );
-        })}
-      </nav>
-    </div>
-  );
+  const items = headings.map((item) => {
+    const isActive = activeId === item.id;
+    return (
+      <Link
+        key={item.id}
+        href={`#${item.id}`}
+        data-id={item.id}
+        onClick={(e) => {
+          e.preventDefault();
+          document.getElementById(item.id)?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+          });
+          setActiveId(item.id);
+        }}
+        className={`block transition-colors duration-200 hover:text-brand-primary leading-snug py-1.5 ${
+          isActive ? 'text-brand-primary' : 'text-gray-600 dark:text-gray-400'
+        }`}
+        style={{
+          paddingLeft: `${(item.level - 1) * 16}px`,
+          fontSize: getFontSize(item.level),
+          fontWeight: getFontWeight(item.level, isActive),
+          opacity: item.level > 2 && !isActive ? 0.85 : 1,
+        }}
+      >
+        {item.text}
+      </Link>
+    );
+  });
 
   if (embedded) {
-    return card;
+    // Embedded inside a fixed-height parent (video sidebar).
+    // Card fills the parent, inner scroll container handles overflow.
+    return (
+      <div className="bg-white dark:bg-gray-800 rounded shadow-sm border border-gray-100 dark:border-gray-700 h-full flex flex-col overflow-hidden">
+        <div
+          ref={scrollRef}
+          className="overflow-y-auto custom-scrollbar flex-1 min-h-0 px-5 py-4"
+        >
+          <nav className="space-y-1 relative z-0">{items}</nav>
+        </div>
+      </div>
+    );
   }
 
+  // Standalone — sticky wrapper auto-sizes to content, clipped at viewport with scroll.
   return (
-    <div className="sticky top-24 max-h-[calc(100vh-8rem)]">
-      {card}
+    <div
+      ref={scrollRef}
+      className="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto custom-scrollbar bg-white dark:bg-gray-800 rounded shadow-sm border border-gray-100 dark:border-gray-700"
+    >
+      <nav className="space-y-1 relative z-0 px-5 py-4">{items}</nav>
     </div>
   );
 }
