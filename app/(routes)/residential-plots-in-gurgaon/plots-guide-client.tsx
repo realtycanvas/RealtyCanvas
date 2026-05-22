@@ -136,17 +136,34 @@ export default function PlotsGuideClient() {
       <div className="bg-white min-h-screen">
         {/* ── HERO ── */}
         <section className="bg-[#0d1b25] py-10 sm:py-14 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-7xl mx-auto ml-30.5">
-            <p className="text-xs font-semibold text-[#feb711] tracking-[0.2em] uppercase mb-3">
-              2026 Investment Guide
-            </p>
-            <h1 className="text-2xl sm:text-4xl font-bold text-white mb-3">
-              Residential Plots in <span className="text-[#feb711]">Gurgaon</span>
-            </h1>
-            <p className="text-sm sm:text-base text-gray-400 max-w-2xl leading-relaxed">
-              Explore detailed sector maps showing layouts, road networks, planning zones, and nearby infrastructure.
-              Use the maps to evaluate connectivity and current property inventory across Gurgaon.
-            </p>
+          <div className="max-w-7xl mx-auto">
+            <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+              {/* Left: text */}
+              <div>
+                <p className="text-xs font-semibold text-[#feb711] tracking-[0.2em] uppercase mb-3">
+                  2026 Investment Guide
+                </p>
+                <h1 className="text-2xl sm:text-4xl font-bold text-white mb-3">
+                  Residential Plots in <span className="text-[#feb711]">Gurgaon</span>
+                </h1>
+                <p className="text-sm sm:text-base text-gray-400 max-w-2xl leading-relaxed">
+                  Explore detailed sector maps showing layouts, road networks, planning zones, and nearby infrastructure.
+                  Use the maps to evaluate connectivity and current property inventory across Gurgaon.
+                </p>
+              </div>
+
+              {/* Right: visual */}
+              <div className="relative w-full aspect-2/1 lg:aspect-auto lg:h-48 xl:h-56">
+                <Image
+                  src="/residential-plots-hero.png"
+                  alt="Stilt plus 4 map approved plots available across Gurgaon"
+                  fill
+                  priority
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  className="object-contain object-right"
+                />
+              </div>
+            </div>
           </div>
         </section>
 
