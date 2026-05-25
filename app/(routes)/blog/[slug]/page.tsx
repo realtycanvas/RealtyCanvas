@@ -197,6 +197,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const imageUrl = post.mainImage?.asset?.url || (post.mainImage ? urlFor(post.mainImage).url() : '');
   const postUrl = `${baseUrl}/blog/${post.slug.current}`;
 
+  const ytId = extractYouTubeId(post.youtubeUrl);
+  const embedUrl = ytId
+    ? `https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&mute=1&loop=1&playlist=${ytId}&controls=1&modestbranding=1&rel=0&iv_load_policy=3&playsinline=1`
+    : null;
+
   // BlogPosting Schema
   const blogPostingLd = {
     '@context': 'https://schema.org',
@@ -414,6 +419,24 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               {post.body && <PortableText value={post.body} components={portableTextComponents} />}
             </article>
 
+            {/* Mobile/Tablet inline video (hidden on lg+ where it shows in the sidebar) */}
+            {embedUrl && (
+              <div className="lg:hidden mt-8 sm:mt-12">
+                <div className="bg-white dark:bg-gray-800 rounded shadow-sm border border-gray-100 dark:border-gray-700 p-2">
+                  <div className="relative w-50 sm:w-56 aspect-9/16 mx-auto bg-black rounded overflow-hidden">
+                    <iframe
+                      src={embedUrl}
+                      title="Featured video"
+                      loading="lazy"
+                      allow="autoplay; encrypted-media; picture-in-picture"
+                      allowFullScreen
+                      className="absolute inset-0 w-full h-full"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
             {faqItems.length > 0 && (
               <section className="mt-8 sm:mt-12 space-y-4">
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Frequently Asked Questions</h2>
@@ -464,38 +487,30 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             )}
           </div>
 
-          {/* Sidebar - YouTube Short (optional) + Table of Contents */}
-          {(() => {
-            const ytId = extractYouTubeId(post.youtubeUrl);
-            const embedUrl = ytId
-              ? `https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&mute=1&loop=1&playlist=${ytId}&controls=1&modestbranding=1&rel=0&iv_load_policy=3&playsinline=1`
-              : null;
-            return (
-              <aside className="hidden lg:block lg:col-span-1">
-                {embedUrl ? (
-                  <div className="sticky top-24 h-[calc(100vh-8rem)] flex flex-col gap-3">
-                    <div className="bg-white dark:bg-gray-800 rounded shadow-sm border border-gray-100 dark:border-gray-700 p-2 shrink-0">
-                      <div className="relative w-45 aspect-9/16 mx-auto bg-black rounded overflow-hidden">
-                        <iframe
-                          src={embedUrl}
-                          title="Featured video"
-                          loading="lazy"
-                          allow="autoplay; encrypted-media; picture-in-picture"
-                          allowFullScreen
-                          className="absolute inset-0 w-full h-full"
-                        />
-                      </div>
-                    </div>
-                    <div className="flex-1 min-h-0">
-                      <TableOfContents embedded />
-                    </div>
+          {/* Sidebar - YouTube Short (optional) + Table of Contents (desktop only) */}
+          <aside className="hidden lg:block lg:col-span-1">
+            {embedUrl ? (
+              <div className="sticky top-24 h-[calc(100vh-8rem)] flex flex-col gap-3">
+                <div className="bg-white dark:bg-gray-800 rounded shadow-sm border border-gray-100 dark:border-gray-700 p-2 shrink-0">
+                  <div className="relative w-45 aspect-9/16 mx-auto bg-black rounded overflow-hidden">
+                    <iframe
+                      src={embedUrl}
+                      title="Featured video"
+                      loading="lazy"
+                      allow="autoplay; encrypted-media; picture-in-picture"
+                      allowFullScreen
+                      className="absolute inset-0 w-full h-full"
+                    />
                   </div>
-                ) : (
-                  <TableOfContents />
-                )}
-              </aside>
-            );
-          })()}
+                </div>
+                <div className="flex-1 min-h-0">
+                  <TableOfContents embedded />
+                </div>
+              </div>
+            ) : (
+              <TableOfContents />
+            )}
+          </aside>
         </div>
       </div>
 
