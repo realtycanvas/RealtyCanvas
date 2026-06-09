@@ -312,7 +312,7 @@ export async function getLatestBlogPosts(limit = 3): Promise<BlogPostPreview[]> 
     ${BLOG_POST_PREVIEW_FIELDS}
   }`;
 
-  return client.fetch(query);
+  return client.fetch(query, {}, { next: { revalidate: 60 } });
 }
 
 // Query functions
