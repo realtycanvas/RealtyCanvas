@@ -18,7 +18,7 @@ const globalSchema = {
   '@context': 'https://schema.org',
   '@graph': [
     {
-      '@type': 'Organization',
+      '@type': ['RealEstateAgent', 'Organization'],
       '@id': `${BASE_URL}/#organization`,
       name: 'Realty Canvas',
       url: BASE_URL,
@@ -28,6 +28,7 @@ const globalSchema = {
         width: 200,
         height: 60,
       },
+      image: `${BASE_URL}/logo/logo-white.webp`,
       description:
         'Realty Canvas is a Gurugram-based real estate advisory specialising in verified residential and commercial projects across Gurgaon and NCR.',
       telephone: '+919555562626',
@@ -40,6 +41,10 @@ const globalSchema = {
         addressRegion: 'Haryana',
         addressCountry: 'IN',
       },
+      areaServed: [
+        { '@type': 'City', name: 'Gurugram' },
+        { '@type': 'AdministrativeArea', name: 'Delhi NCR' },
+      ],
       sameAs: [
         'https://www.facebook.com/realtycanvasofficial',
         'https://www.instagram.com/realtycanvas.official/?igsh=NnQ3Nmx2YzBhbDU4',

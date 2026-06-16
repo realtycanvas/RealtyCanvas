@@ -1,5 +1,4 @@
 import { Metadata } from 'next';
-import Script from 'next/script';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { PortableText } from '@portabletext/react';
@@ -10,6 +9,7 @@ import ShareButton from '@/components/common/blog/share-button';
 import Breadcrumb from '@/components/ui/breadcrumb';
 import TableOfContents from '@/components/common/blog/table-of-contents';
 import BlogPostCard from '@/components/common/blog/blog-post-card';
+import JsonLd from '@/components/common/JsonLd';
 
 interface BlogPostPageProps {
   params: Promise<{
@@ -289,37 +289,14 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   return (
     <div className="min-h-screen mt-20">
       <Breadcrumb items={[{ label: 'Blog', href: '/blog' }, { label: post.title }]} />
-      {/* BlogPosting Schema */}
-      <Script
-        id="blog-posting-schema"
-        type="application/ld+json"
-        strategy="beforeInteractive"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(blogPostingLd),
-        }}
-      />
+      {/* BlogPosting Schema (server-rendered JSON-LD) */}
+      <JsonLd data={blogPostingLd} />
 
       {/* BreadcrumbList Schema */}
-      <Script
-        id="breadcrumb-schema"
-        type="application/ld+json"
-        strategy="beforeInteractive"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(breadcrumbLd),
-        }}
-      />
+      <JsonLd data={breadcrumbLd} />
 
       {/* FAQPage Schema */}
-      {faqLd && (
-        <Script
-          id="faq-schema"
-          type="application/ld+json"
-          strategy="beforeInteractive"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(faqLd),
-          }}
-        />
-      )}
+      {faqLd && <JsonLd data={faqLd} />}
       {/* Hero Section */}
       <div className="relative bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">

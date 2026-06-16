@@ -10,10 +10,26 @@ import TestimonialsSection from '@/components/home/testimonials-section';
 import AutoLeadPopup from '@/components/home/auto-lead-popup';
 import FeaturedBlogPreview from '@/components/home/featured-blog-preview';
 import BannerSection from '@/components/home/banner-section';
+import JsonLd from '@/components/common/JsonLd';
+import { HOME_FAQS } from '@/lib/home-faqs';
+
+const homeFaqLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: HOME_FAQS.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: faq.answer,
+    },
+  })),
+};
 
 const page = () => {
   return (
     <div className="">
+      <JsonLd data={homeFaqLd} />
       <AutoLeadPopup />
       <HeroSection />
       <BannerSection />
