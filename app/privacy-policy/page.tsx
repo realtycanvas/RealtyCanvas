@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Breadcrumb from '@/components/ui/breadcrumb';
 
 export const metadata: Metadata = {
   title: 'Privacy Policy | Realty Canvas',
@@ -11,6 +12,7 @@ export default function PrivacyPolicyPage() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 mt-20">
+      <Breadcrumb items={[{ label: 'Privacy Policy' }]} />
       {/* Hero */}
       <section className="bg-brand-secondary text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

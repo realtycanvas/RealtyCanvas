@@ -234,6 +234,7 @@ const BLOG_POST_FIELDS = `
   body,
   featured,
   readTime,
+  youtubeUrl,
   faqs[]{
     question,
     answer
@@ -287,10 +288,37 @@ function getMockImageUrl(imageRef: string): string {
   return imageMap[imageRef] || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=400&fit=crop';
 }
 
+// Fetch the latest N blog posts (no filters, sorted by publishedAt)
+export async function getLatestBlogPosts(limit = 3): Promise<BlogPostPreview[]> {
+  if (isDevelopmentMode) {
+    return mockBlogPosts
+      .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
+      .slice(0, limit)
+      .map((post) => ({
+        _id: post._id,
+        title: post.title,
+        slug: post.slug,
+        author: { _id: post.author._id, name: post.author.name, slug: post.author.slug },
+        mainImage: post.mainImage,
+        categories: post.categories,
+        publishedAt: post.publishedAt,
+        excerpt: post.excerpt,
+        featured: post.featured,
+        readTime: post.readTime,
+      }));
+  }
+
+  const query = `*[_type == "blogPost" && defined(title) && featured != true] | order(publishedAt desc) [0...${limit}] {
+    ${BLOG_POST_PREVIEW_FIELDS}
+  }`;
+
+  return client.fetch(query, {}, { next: { revalidate: 60 } });
+}
+
 // Query functions
 export async function getAllBlogPosts(limit = 10, offset = 0, search?: string): Promise<BlogPostPreview[]> {
   if (isDevelopmentMode) {
-    let posts = mockBlogPosts.filter((post) => !post.featured);
+    let posts = [...mockBlogPosts];
 
     if (search && search.trim().length > 0) {
       const q = search.toLowerCase();
@@ -317,7 +345,7 @@ export async function getAllBlogPosts(limit = 10, offset = 0, search?: string): 
     }));
   }
 
-  const baseFilter = `_type == "blogPost" && featured != true`;
+  const baseFilter = `_type == "blogPost"`;
   const filter =
     search && search.trim().length > 0 ? `${baseFilter} && (title match $search || excerpt match $search)` : baseFilter;
 
@@ -332,7 +360,7 @@ export async function getAllBlogPosts(limit = 10, offset = 0, search?: string): 
 
 export async function getBlogPostCount(search?: string): Promise<number> {
   if (isDevelopmentMode) {
-    let posts = mockBlogPosts.filter((post) => !post.featured);
+    let posts = [...mockBlogPosts];
     if (!search || search.trim().length === 0) {
       return posts.length;
     }
@@ -342,7 +370,7 @@ export async function getBlogPostCount(search?: string): Promise<number> {
     ).length;
   }
 
-  const baseFilter = `_type == "blogPost" && featured != true`;
+  const baseFilter = `_type == "blogPost"`;
   const filter =
     search && search.trim().length > 0 ? `${baseFilter} && (title match $search || excerpt match $search)` : baseFilter;
 

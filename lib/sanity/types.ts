@@ -45,6 +45,7 @@ export interface BlogPost {
   excerpt?: string;
   publishedAt: string;
   readTime: number;
+  youtubeUrl?: string;
   featured?: boolean;
   body?: PortableTextBlock[];
   mainImage?: SanityImage;

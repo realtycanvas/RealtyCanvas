@@ -160,8 +160,7 @@ const Footer = () => {
                     </svg>
                   </div>
                   <div>
-                    <p className="text-gray-300">+91 9555562626</p>
-                    {/* <p className="text-gray-300">+91 11 2345 6789</p> */}
+                    <a href="tel:+919555562626" className="text-gray-300 hover:text-white transition-colors">+91 9555562626</a>
                   </div>
                 </div>
 
@@ -229,6 +228,39 @@ const Footer = () => {
                  </li>
                </ul>
              </div> */}
+          </div>
+
+          {/* Trending Projects Tags */}
+          <div className="border-t border-gray-700 py-8">
+            
+            <div className="flex flex-wrap gap-2">
+              {[
+                {label: 'Residential Plots in Gurgaon' , href: '/residential-plots-in-gurgaon'},
+                { label: 'Birla Arika',               href: '/projects/birla-arika-sector-31-nh8-gurgaon' },
+                { label: 'Elan The Statement',        href: '/projects/elan-the-statement-sector-49-sohna-road-gurgaon' },
+                { label: 'Max Estate 360',            href: '/projects/max-estate-360-residences-sector-36a-gurgaon' },
+                { label: 'Adani The Marq',            href: '/projects/adani-the-marq-sector-102-gurgaon' },
+                { label: 'Elan Imperial',             href: '/projects/elan-imperial-sector-82-gurgaon' },
+                { label: 'BPTP Downtown 66',          href: '/projects/bptp-downtown-66-sector-66-gurgaon' },
+                { label: 'DLF Privana South',         href: '/projects/dlf-privana-south-sector-77-gurgaon' },
+                { label: 'SPJ Vedatam',               href: '/projects/spj-vedatam-sector-14-gurgaon' },
+                { label: 'M3M Jewel',                 href: '/projects/m3m-jewel-sector-25-gurgaon' },
+                { label: 'AIPL Joy District',         href: '/projects/aipl-joy-district-sector-88-gurgaon' },
+                { label: 'TARC Ishva',                href: '/projects/tarc-ishva-sector-63a-gurgaon' },
+                { label: 'Smartworld Trump Residences', href: '/projects/smartworld-the-trump-residences-sector-69-gurgaon' },
+                { label: 'Whiteland Westin',          href: '/projects/whiteland-westin-residences-sector-103-gurgaon' },
+                { label: 'Elan The Presidential',     href: '/projects/elan-the-presidential-sector-106-gurgaon' },
+                { label: 'Smartworld One DXP',        href: '/projects/smartworld-one-dxp-sector-113-gurgaon' },
+              ].map(({ label, href }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className="px-3 py-1 text-xs text-gray-300 border border-gray-600 rounded hover:border-white hover:text-white transition-colors duration-200"
+                >
+                  {label}
+                </Link>
+              ))}
+            </div>
           </div>
 
           {/* Bottom Bar */}

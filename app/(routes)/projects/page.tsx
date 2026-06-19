@@ -1,4 +1,5 @@
 import ProjectsPage from '@/components/projects/projects-page';
+import Breadcrumb from '@/components/ui/breadcrumb';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -12,7 +13,8 @@ export const metadata: Metadata = {
 
 const page = () => {
   return (
-    <div>
+    <div className="min-h-screen bg-white dark:bg-gray-900 pt-20">
+      <Breadcrumb items={[{ label: 'Projects' }]} />
       <ProjectsPage />
     </div>
   );

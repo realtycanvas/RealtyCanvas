@@ -1,11 +1,26 @@
 import { prisma } from '@/lib/prisma';
-import { Prisma, ProjectCategory, ProjectStatus } from '@/app/generated/prisma/client';
+import { Prisma, ProjectCategory, ProjectStatus, CategoryType } from '@/app/generated/prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
 import { unstable_cache, revalidatePath, revalidateTag } from 'next/cache';
 import { PROJECT_TAGS, getTagMeta } from '@/lib/project-tags';
 
 // ─── Cache Tag ────────────────────────────────────────────────────────────────
 const PROJECTS_TAG = 'projects-list';
+
+function parsePriceToRupees(raw: unknown): number | null {
+  if (typeof raw !== 'string') return null;
+  const s = raw.trim();
+  if (!s) return null;
+  const lower = s.toLowerCase();
+  const numStr = lower.replace(/[^0-9.]/g, '');
+  if (!numStr) return null;
+  const n = Number.parseFloat(numStr);
+  if (!Number.isFinite(n) || n <= 0) return null;
+  const isCrore = /\b(crore|crores|cr)\b/.test(lower);
+  const isLakh = /\b(lakh|lakhs|lac|lacs)\b/.test(lower);
+  const multiplier = isCrore ? 10000000 : isLakh ? 100000 : 1;
+  return Math.round(n * multiplier);
+}
 
 // ─── Cached DB Fetch ──────────────────────────────────────────────────────────
 function getProjectsFromDB(filters: {
@@ -16,13 +31,14 @@ function getProjectsFromDB(filters: {
   status: string;
   city: string;
   projectTag?: string;
+  categoryType?: string;
   includeInactive?: boolean;
   minPrice?: number;
   maxPrice?: number;
 }) {
   return unstable_cache(
     async () => {
-      const { page, limit, search, category, status, city, projectTag, includeInactive, minPrice, maxPrice } = filters;
+      const { page, limit, search, category, status, city, projectTag, categoryType, includeInactive, minPrice, maxPrice } = filters;
       const skip = (page - 1) * limit;
 
       const where: Prisma.ProjectWhereInput = includeInactive ? {} : { isActive: true };
@@ -40,64 +56,82 @@ function getProjectsFromDB(filters: {
       if (status !== 'ALL') where.status = status as ProjectStatus;
       if (city) where.city = { contains: city, mode: 'insensitive' };
       if (projectTag) where.projectTags = { has: projectTag };
-      const priceFilters: Prisma.ProjectWhereInput[] = [];
+      if (categoryType && categoryType !== 'NONE') where.categoryType = categoryType as CategoryType;
       const hasMin = typeof minPrice === 'number' && minPrice > 0;
       const hasMax = typeof maxPrice === 'number' && maxPrice > 0;
 
-      if (hasMin && hasMax) {
-        priceFilters.push({
-          priceMin: { gte: minPrice },
-        });
-        priceFilters.push({
-          priceMin: { lte: maxPrice },
-        });
-      } else if (hasMin) {
-        priceFilters.push({
-          priceMin: { gte: minPrice },
-        });
-      } else if (hasMax) {
-        priceFilters.push({
-          priceMin: { lte: maxPrice },
-        });
-      }
+      const select = {
+        id: true,
+        slug: true,
+        title: true,
+        subtitle: true,
+        category: true,
+        status: true,
+        address: true,
+        city: true,
+        state: true,
+        featuredImage: true,
+        basePrice: true,
+        priceMin: true,
+        minRatePsf: true,
+        maxRatePsf: true,
+        developerName: true,
+        locality: true,
+        createdAt: true,
+        isActive: true,
+      } satisfies Prisma.ProjectSelect;
 
-      if (priceFilters.length > 0) {
-        where.AND = Array.isArray(where.AND) ? [...where.AND, ...priceFilters] : priceFilters;
-      }
+      if (!hasMin && !hasMax) {
+        const [projects, totalCount] = await Promise.all([
+          prisma.project.findMany({
+            where,
+            skip,
+            take: limit,
+            orderBy: { updatedAt: 'desc' },
+            select,
+          }),
+          prisma.project.count({ where }),
+        ]);
 
-      const [projects, totalCount] = await Promise.all([
-        prisma.project.findMany({
-          where,
-          skip,
-          take: limit,
-          orderBy: { updatedAt: 'desc' },
-          select: {
-            id: true,
-            slug: true,
-            title: true,
-            subtitle: true,
-            category: true,
-            status: true,
-            address: true,
-            city: true,
-            state: true,
-            featuredImage: true,
-            basePrice: true,
-            minRatePsf: true,
-            maxRatePsf: true,
-            developerName: true,
-            locality: true,
-            createdAt: true,
-            isActive: true,
+        const totalPages = Math.ceil(totalCount / limit);
+
+        return {
+          data: projects.map((p) => ({
+            ...p,
+            createdAt: p.createdAt.toISOString(),
+          })),
+          pagination: {
+            page,
+            limit,
+            totalCount,
+            totalPages,
+            hasMore: page < totalPages,
+            hasPrevious: page > 1,
           },
-        }),
-        prisma.project.count({ where }),
-      ]);
+        };
+      }
 
+      const candidates = await prisma.project.findMany({
+        where,
+        take: 2000,
+        orderBy: { updatedAt: 'desc' },
+        select,
+      });
+
+      const filtered = candidates.filter((p) => {
+        const derivedMin = p.priceMin ?? parsePriceToRupees(p.basePrice);
+        if (derivedMin == null) return false;
+        if (hasMin && derivedMin < (minPrice as number)) return false;
+        if (hasMax && derivedMin > (maxPrice as number)) return false;
+        return true;
+      });
+
+      const totalCount = filtered.length;
       const totalPages = Math.ceil(totalCount / limit);
+      const pageItems = filtered.slice(skip, skip + limit);
 
       return {
-        data: projects.map((p) => ({
+        data: pageItems.map((p) => ({
           ...p,
           createdAt: p.createdAt.toISOString(),
         })),
@@ -133,6 +167,7 @@ export async function GET(request: NextRequest) {
     const city = searchParams.get('city')?.trim() || '';
     const slug = searchParams.get('slug')?.trim() || '';
     const projectTag = searchParams.get('projectTag')?.trim() || '';
+    const categoryType = searchParams.get('categoryType')?.trim() || '';
     const groupByTags = searchParams.get('groupByTags') === '1';
     const includeInactive = searchParams.get('includeInactive') === '1';
     const minPriceRaw = searchParams.get('minPrice')?.trim() || '';
@@ -253,6 +288,7 @@ export async function GET(request: NextRequest) {
       status,
       city,
       projectTag,
+      categoryType,
       includeInactive,
       minPrice: Number.isFinite(minPrice) ? minPrice : 0,
       maxPrice: Number.isFinite(maxPrice) ? maxPrice : 0,
@@ -330,6 +366,7 @@ export async function POST(request: NextRequest) {
         slug,
         description: body.description.trim(),
         category: body.category || 'COMMERCIAL',
+        type: body.type?.trim() || null,
         status: body.status || 'PLANNED',
         address: body.address.trim(),
         locality: body.locality?.trim() || null,
@@ -345,7 +382,7 @@ export async function POST(request: NextRequest) {
         launchDate: body.launchDate ? new Date(body.launchDate) : null,
         basePrice: body.basePrice?.trim() || null,
         priceRange: body.priceRange?.trim() || null,
-        priceMin: body.priceMin ?? null,
+        priceMin: parsePriceToRupees(body.basePrice) ?? body.priceMin ?? null,
         priceMax: body.priceMax ?? null,
         featuredImage: body.featuredImage.trim(),
         landArea: body.landArea?.trim() || null,
@@ -373,6 +410,7 @@ export async function POST(request: NextRequest) {
         galleryImages: body.galleryImages || [],
         videoUrls: body.videoUrls || [],
         projectTags: body.projectTags || [],
+        categoryType: body.categoryType || 'NONE',
         isActive: body.isActive ?? true,
         highlights: {
           create: (body.highlights || []).map(
@@ -406,6 +444,7 @@ export async function POST(request: NextRequest) {
         pricingTable: {
           create: (body.pricingTable || []).map(
             (p: {
+              unitArea?: string;
               type?: string;
               reraArea?: string;
               price?: string;
@@ -414,6 +453,7 @@ export async function POST(request: NextRequest) {
               floorNumbers?: string;
               features?: unknown;
             }) => ({
+              unitArea: p.unitArea?.trim() || null,
               type: p.type?.trim() || '',
               reraArea: p.reraArea?.trim() || '',
               price: p.price?.trim() || '',

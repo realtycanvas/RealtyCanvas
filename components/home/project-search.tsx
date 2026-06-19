@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'nextjs-toploader/app';
 import { BrandButton } from '@/components/ui/BrandButton';
 import { BanknoteIcon, BuildingIcon, ChevronDown, MagnifyIcon } from '../ui/icon';
 import {
@@ -168,6 +168,7 @@ export default function ProjectSearchBar({ onSearch, className = '', compact = f
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const suggestionRef = useRef<HTMLDivElement>(null);
+  const suggestionLimit = 50;
 
   const handleSearch = () => {
     const filters: SearchFilters = {
@@ -201,6 +202,7 @@ export default function ProjectSearchBar({ onSearch, className = '', compact = f
         setIsFetching(true);
         const params = new URLSearchParams({
           page: '1',
+          limit: String(suggestionLimit),
           search: searchQuery.trim(),
           category: 'ALL',
           status: 'ALL',
@@ -208,9 +210,9 @@ export default function ProjectSearchBar({ onSearch, className = '', compact = f
         const res = await fetch(`/api/projects?${params}`, { signal: controller.signal });
         if (!res.ok) return;
         const data = await res.json();
-        const items = Array.isArray(data?.data) ? data.data.slice(0, 4) : [];
+        const items = Array.isArray(data?.data) ? data.data : [];
         setSuggestions(items);
-        setShowSuggestions(items.length > 0);
+        setShowSuggestions(true);
       } catch (error: unknown) {
         const isAbort = error instanceof DOMException && error.name === 'AbortError';
         if (!isAbort) {
@@ -346,31 +348,49 @@ export default function ProjectSearchBar({ onSearch, className = '', compact = f
             className="w-full h-10 px-3 rounded border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#FBB70F] bg-white text-sm"
           />
           {showSuggestions ? (
-            <div className="absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden">
-              {suggestions.map((item) => (
+            <div className="absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded shadow-xl overflow-hidden max-h-96 overflow-y-auto">
+              {suggestions.length > 0 ? (
+                suggestions.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => {
+                      setShowSuggestions(false);
+                      router.push(`/projects/${item.slug}`);
+                    }}
+                    className="w-full text-left flex items-center gap-3 px-3 py-2 hover:bg-gray-50 transition-colors"
+                  >
+                    <span className="w-12 h-12 rounded overflow-hidden bg-gray-100 shrink-0">
+                      <img src={item.featuredImage} alt={item.title} className="w-full h-full object-cover" />
+                    </span>
+                    <span className="flex-1 min-w-0">
+                      <span className="block text-sm font-semibold text-gray-900 truncate">{item.title}</span>
+                      <span className="block text-xs text-gray-500 truncate">
+                        {item.subtitle || item.developerName || item.city || item.state || ''}
+                      </span>
+                    </span>
+                    <span className="text-[10px] px-2 py-1 rounded bg-gray-100 text-gray-600 uppercase">
+                      {item.status.replace(/_/g, ' ')}
+                    </span>
+                  </button>
+                ))
+              ) : isFetching ? null : (
+                <div className="px-3 py-3 text-sm text-gray-600">No projects found matching your search</div>
+              )}
+              {suggestions.length >= suggestionLimit ? (
                 <button
-                  key={item.id}
                   type="button"
                   onClick={() => {
                     setShowSuggestions(false);
-                    router.push(`/projects/${item.slug}`);
+                    const params = new URLSearchParams();
+                    if (searchQuery.trim()) params.set('search', searchQuery.trim());
+                    router.push(`/projects${params.toString() ? `?${params.toString()}` : ''}`);
                   }}
-                  className="w-full text-left flex items-center gap-3 px-3 py-2 hover:bg-gray-50 transition-colors"
+                  className="w-full text-left px-3 py-2 text-sm font-semibold text-blue-600 hover:bg-gray-50 transition-colors"
                 >
-                  <span className="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 shrink-0">
-                    <img src={item.featuredImage} alt={item.title} className="w-full h-full object-cover" />
-                  </span>
-                  <span className="flex-1 min-w-0">
-                    <span className="block text-sm font-semibold text-gray-900 truncate">{item.title}</span>
-                    <span className="block text-xs text-gray-500 truncate">
-                      {item.subtitle || item.developerName || item.city || item.state || ''}
-                    </span>
-                  </span>
-                  <span className="text-[10px] px-2 py-1 rounded bg-gray-100 text-gray-600 uppercase">
-                    {item.status.replace(/_/g, ' ')}
-                  </span>
+                  View all results
                 </button>
-              ))}
+              ) : null}
               {isFetching ? <div className="px-3 py-2 text-xs text-gray-500">Searching...</div> : null}
             </div>
           ) : null}

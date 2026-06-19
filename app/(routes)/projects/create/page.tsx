@@ -1,7 +1,9 @@
 'use client';
 
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'nextjs-toploader/app';
+import { useSearchParams } from 'next/navigation';
 import { Suspense, useState, useEffect } from 'react';
+import { useAuth } from '@/hooks/use-auth';
 import { PROJECT_TAGS } from '@/lib/project-tags';
 import ImageUpload from '@/components/ui/image-upload';
 
@@ -17,7 +19,7 @@ const priceRanges = [
   { label: '₹1Cr - ₹5Cr', min: 10000000, max: 50000000 },
   { label: '₹5Cr - ₹10Cr', min: 50000000, max: 100000000 },
   { label: '₹10Cr - ₹25Cr', min: 100000000, max: 250000000 },
-  { label: '₹25Cr+', min: 250000000, max: 1000000000 },
+  { label: '₹25Cr+', min: 250000000, max: 0 },
 ];
 
 const TABS = [
@@ -49,6 +51,7 @@ type ProjectResponse = {
   subtitle?: string | null;
   description: string;
   category: string;
+  type?: string | null;
   status: string;
   address: string;
   locality?: string | null;
@@ -87,6 +90,7 @@ type ProjectResponse = {
   sitePlanTitle?: string | null;
   sitePlanDescription?: string | null;
   projectTags?: string[];
+  categoryType?: string | null;
   isActive?: boolean;
   galleryImages?: string[];
   videoUrls?: string[];
@@ -94,6 +98,7 @@ type ProjectResponse = {
   amenities?: { category: string; name: string; details: string | null }[];
   offerings?: { icon: string | null; title: string; description: string }[];
   pricingTable?: {
+    unitArea?: string | null;
     type: string;
     reraArea: string;
     price: string;
@@ -226,6 +231,7 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
   const [success, setSuccess] = useState('');
   const [slugLocked, setSlugLocked] = useState(false);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [categoryType, setCategoryType] = useState<string>('NONE');
   const [isEditing, setIsEditing] = useState(false);
   const [initialSlug, setInitialSlug] = useState('');
 
@@ -237,6 +243,7 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
     slug: '',
     description: '',
     category: 'COMMERCIAL',
+    type: '',
     status: 'PLANNED',
     isActive: true,
     // Location
@@ -303,6 +310,7 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
   const [offerings, setOfferings] = useState([{ icon: '', title: '', description: '' }]);
   const [pricing, setPricing] = useState([
     {
+      unitArea: '',
       type: '',
       reraArea: '',
       price: '',
@@ -328,23 +336,23 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
     },
   ]);
   const [faqs, setFaqs] = useState([{ question: '', answer: '' }]);
+  const [faqJsonInput, setFaqJsonInput] = useState('');
+  const [faqJsonError, setFaqJsonError] = useState('');
 
   // ── Auth check ─────────────────────────────────────────────────────────────
+  const { user: authUser, loading: authLoading } = useAuth();
+
   useEffect(() => {
+    if (!authLoading && !authUser) {
+      router.push('/admin/login');
+    }
+  }, [authLoading, authUser, router]);
+
+  // ── Load project for editing ──────────────────────────────────────────────
+  useEffect(() => {
+    if (authLoading || !authUser) return;
     let active = true;
     const run = async () => {
-      try {
-        const authRes = await fetch('/api/auth/me');
-        const authData = await authRes.json();
-        if (!authData.user) {
-          router.push('/admin/login');
-          return;
-        }
-      } catch {
-        router.push('/admin/login');
-        return;
-      }
-
       if (editSlug) {
         setIsEditing(true);
         setSlugLocked(true);
@@ -376,12 +384,14 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
 
           setInitialSlug(project.slug || editSlug);
           setSelectedTags(project.projectTags || []);
+          setCategoryType(project.categoryType || 'NONE');
           setF({
             title: project.title || '',
             subtitle: project.subtitle || '',
             slug: project.slug || '',
             description: project.description || '',
             category: project.category || 'COMMERCIAL',
+            type: project.type || '',
             status: project.status || 'PLANNED',
             isActive: project.isActive ?? true,
             address: project.address || '',
@@ -459,6 +469,7 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
           setPricing(
             project.pricingTable?.length
               ? project.pricingTable.map((p) => ({
+                  unitArea: p.unitArea || '',
                   type: p.type || '',
                   reraArea: p.reraArea || '',
                   price: p.price || '',
@@ -468,6 +479,7 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
                 }))
               : [
                   {
+                    unitArea: '',
                     type: '',
                     reraArea: '',
                     price: '',
@@ -531,7 +543,7 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
     return () => {
       active = false;
     };
-  }, [router, editSlug]);
+  }, [authLoading, authUser, editSlug]);
 
   // ── Handlers ───────────────────────────────────────────────────────────────
   const change = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -551,7 +563,7 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
 
   const selectPriceRange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const r = priceRanges.find((x) => x.label === e.target.value);
-    if (r) setF((p) => ({ ...p, priceMin: String(r.min), priceMax: String(r.max) }));
+    if (r) setF((p) => ({ ...p, priceMin: String(r.min), priceMax: r.max > 0 ? String(r.max) : '' }));
   };
 
   // ── Generic array helpers ──────────────────────────────────────────────────
@@ -566,6 +578,14 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
   }
   function delRow<T>(set: React.Dispatch<React.SetStateAction<T[]>>, i: number) {
     set((p) => p.filter((_, j) => j !== i));
+  }
+  function moveRow<T>(set: React.Dispatch<React.SetStateAction<T[]>>, from: number, to: number) {
+    set((p) => {
+      if (to < 0 || to >= p.length) return p;
+      const next = [...p];
+      [next[from], next[to]] = [next[to], next[from]];
+      return next;
+    });
   }
   function updRow<T extends Record<string, unknown>>(
     set: React.Dispatch<React.SetStateAction<T[]>>,
@@ -630,6 +650,7 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
     const payload = {
       ...core,
       projectTags: selectedTags,
+      categoryType,
       latitude: core.latitude ? parseFloat(core.latitude) : null,
       longitude: core.longitude ? parseFloat(core.longitude) : null,
       priceMin: priceMin ? parseInt(priceMin) : null,
@@ -658,6 +679,7 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
         .filter((p) => p.type.trim())
         .map((p) => ({
           ...p,
+          unitArea: p.unitArea?.trim() || '',
           availabilityStatus: p.availabilityStatus || null,
         })),
 
@@ -793,6 +815,10 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
                       </Select>
                     </div>
                     <div>
+                      <Label>Type</Label>
+                      <Input name="type" value={f.type} onChange={change} placeholder="e.g. Retail, Office, Plots" />
+                    </div>
+                    <div>
                       <Label req>Status</Label>
                       <Select name="status" value={f.status} onChange={change}>
                         {STATUSES.map((s) => (
@@ -861,6 +887,32 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
                         Selected: {selectedTags.map((t) => PROJECT_TAGS.find((p) => p.value === t)?.label).join(', ')}
                       </p>
                     )}
+                  </div>
+
+                  {/* Category Type */}
+                  <div>
+                    <Label>Category Type</Label>
+                    <p className="text-xs text-gray-400 mb-2">Controls which special homepage sections this project appears in.</p>
+                    <div className="flex gap-3">
+                      {[
+                        { value: 'NONE', label: 'None', desc: 'No special category' },
+                        { value: 'PLOTS', label: '🌿 Plots', desc: 'Best Plots in Gurugram' },
+                      ].map((opt) => (
+                        <button
+                          key={opt.value}
+                          type="button"
+                          onClick={() => setCategoryType(opt.value)}
+                          className={`flex-1 px-3 py-2 rounded border text-sm text-left transition ${
+                            categoryType === opt.value
+                              ? 'border-yellow-400 bg-yellow-50 text-yellow-800 font-medium'
+                              : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
+                          }`}
+                        >
+                          <div className="font-medium">{opt.label}</div>
+                          <div className="text-xs text-gray-400 mt-0.5">{opt.desc}</div>
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </Card>
@@ -1128,6 +1180,14 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
                     <RowBox key={i} onDel={() => delRow(setPricing, i)}>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pr-8">
                         <div>
+                          <Label>Unit</Label>
+                          <Input
+                            value={row.unitArea}
+                            onChange={(e) => updRow(setPricing, i, 'unitArea', e.target.value)}
+                            placeholder="e.g. Unit Type 12 / Shop 14"
+                          />
+                        </div>
+                        <div>
                           <Label>Property Type</Label>
                           <Input
                             value={row.type}
@@ -1183,6 +1243,7 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
                   <AddBtn
                     onClick={() =>
                       addRow(setPricing, {
+                        unitArea: '',
                         type: '',
                         reraArea: '',
                         price: '',
@@ -1537,9 +1598,134 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
               {/* FAQs */}
               <Card title="FAQs" desc="Shown in the Frequently Asked Questions accordion.">
                 <div className="space-y-4">
+                  {/* Bulk actions */}
+                  <div className="flex flex-wrap gap-2 pb-2 border-b border-gray-100">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const json = JSON.stringify(
+                          faqs.filter((fq) => fq.question.trim()),
+                          null,
+                          2
+                        );
+                        navigator.clipboard.writeText(json);
+                        alert('FAQ JSON copied to clipboard!');
+                      }}
+                      className="px-3 py-1.5 text-xs font-medium rounded border border-gray-300 text-gray-600 hover:bg-gray-50 transition"
+                    >
+                      Export JSON
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (faqs.some((fq) => fq.question.trim()) && !confirm('Remove all FAQs?')) return;
+                        setFaqs([{ question: '', answer: '' }]);
+                      }}
+                      className="px-3 py-1.5 text-xs font-medium rounded border border-red-200 text-red-500 hover:bg-red-50 transition"
+                    >
+                      Clear All
+                    </button>
+                  </div>
+
+                  {/* Bulk JSON import */}
+                  <details className="group">
+                    <summary className="cursor-pointer text-xs font-medium text-blue-600 hover:text-blue-700 select-none">
+                      Import FAQs from JSON
+                    </summary>
+                    <div className="mt-2 space-y-2">
+                      <Textarea
+                        value={faqJsonInput}
+                        onChange={(e) => {
+                          setFaqJsonInput(e.target.value);
+                          setFaqJsonError('');
+                        }}
+                        rows={5}
+                        placeholder='Paste JSON array, e.g. [{"question":"...","answer":"..."},...]'
+                      />
+                      {faqJsonError && <p className="text-xs text-red-500">{faqJsonError}</p>}
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            try {
+                              const parsed = JSON.parse(faqJsonInput);
+                              if (!Array.isArray(parsed)) throw new Error('Must be a JSON array');
+                              const mapped = parsed
+                                .filter((item: Record<string, unknown>) => item.question)
+                                .map((item: Record<string, unknown>) => ({
+                                  question: String(item.question || ''),
+                                  answer: String(item.answer || ''),
+                                }));
+                              if (mapped.length === 0) throw new Error('No valid FAQs found');
+                              setFaqs((prev) => {
+                                const existing = prev.filter((fq) => fq.question.trim());
+                                return existing.length ? [...existing, ...mapped] : mapped;
+                              });
+                              setFaqJsonInput('');
+                              setFaqJsonError('');
+                            } catch (err) {
+                              setFaqJsonError(err instanceof Error ? err.message : 'Invalid JSON');
+                            }
+                          }}
+                          className="px-3 py-1.5 text-xs font-medium rounded bg-blue-600 text-white hover:bg-blue-700 transition"
+                        >
+                          Append to existing
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            try {
+                              const parsed = JSON.parse(faqJsonInput);
+                              if (!Array.isArray(parsed)) throw new Error('Must be a JSON array');
+                              const mapped = parsed
+                                .filter((item: Record<string, unknown>) => item.question)
+                                .map((item: Record<string, unknown>) => ({
+                                  question: String(item.question || ''),
+                                  answer: String(item.answer || ''),
+                                }));
+                              if (mapped.length === 0) throw new Error('No valid FAQs found');
+                              setFaqs(mapped);
+                              setFaqJsonInput('');
+                              setFaqJsonError('');
+                            } catch (err) {
+                              setFaqJsonError(err instanceof Error ? err.message : 'Invalid JSON');
+                            }
+                          }}
+                          className="px-3 py-1.5 text-xs font-medium rounded border border-blue-300 text-blue-600 hover:bg-blue-50 transition"
+                        >
+                          Replace all
+                        </button>
+                      </div>
+                    </div>
+                  </details>
+
+                  {/* FAQ rows */}
                   {faqs.map((fq, i) => (
                     <RowBox key={i} onDel={() => delRow(setFaqs, i)}>
                       <div className="space-y-2 pr-8">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-xs font-medium text-gray-400">#{i + 1}</span>
+                          <div className="flex gap-1 ml-auto">
+                            <button
+                              type="button"
+                              disabled={i === 0}
+                              onClick={() => moveRow(setFaqs, i, i - 1)}
+                              title="Move up"
+                              className="w-6 h-6 flex items-center justify-center rounded text-gray-400 hover:bg-gray-200 hover:text-gray-600 transition disabled:opacity-30 disabled:cursor-not-allowed"
+                            >
+                              ↑
+                            </button>
+                            <button
+                              type="button"
+                              disabled={i === faqs.length - 1}
+                              onClick={() => moveRow(setFaqs, i, i + 1)}
+                              title="Move down"
+                              className="w-6 h-6 flex items-center justify-center rounded text-gray-400 hover:bg-gray-200 hover:text-gray-600 transition disabled:opacity-30 disabled:cursor-not-allowed"
+                            >
+                              ↓
+                            </button>
+                          </div>
+                        </div>
                         <div>
                           <Label>Question</Label>
                           <Input

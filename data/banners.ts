@@ -24,7 +24,7 @@ export const banners: BannerItem[] = [
     mobileImage: '/banner/mobile/downtown-Mobile.webp',
     tabletImage: '/banner/tablet/downtown-tablet.webp',
     tvImage: '/banner/tv/downtown-tv.webp',
-    link: '/projects/bptp-downtown-66',
+    link: '/projects/bptp-downtown-66-sector-66-gurgaon',
     sortOrder: 2,
   },
   {

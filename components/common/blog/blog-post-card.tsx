@@ -27,7 +27,7 @@ export default function BlogPostCard({ post, index = 0 }: BlogPostCardProps) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
-      className="group bg-white dark:bg-gray-800 rounded shadow-lg hover:shadow transition-all duration-300 overflow-hidden border border-gray-100 dark:border-gray-700 hover:border-brand-primary/20 dark:hover:border-brand-primary/30"
+      className="group bg-white dark:bg-gray-800 rounded shadow-lg hover:shadow transition-all duration-300 overflow-hidden border border-gray-100 dark:border-gray-700 hover:border-brand-primary/20 dark:hover:border-brand-primary/30 h-full"
     >
       <Link href={`/blog/${slugValue}`} className="block h-full">
         {/* Image */}
@@ -78,7 +78,7 @@ export default function BlogPostCard({ post, index = 0 }: BlogPostCardProps) {
         </div>
 
         {/* Content */}
-        <div className="p-6 flex flex-col gap-3">
+        <div className="p-4 sm:p-6 flex flex-col gap-3">
           {/* Categories */}
           {post.categories && post.categories.length > 0 && (
             <div className="flex flex-wrap gap-2">
@@ -94,14 +94,14 @@ export default function BlogPostCard({ post, index = 0 }: BlogPostCardProps) {
           )}
 
           {/* Title */}
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white line-clamp-2 group-hover:text-brand-primary transition-colors duration-300">
+          <h3 className="text-base sm:text-xl font-bold text-gray-900 dark:text-white line-clamp-2 group-hover:text-brand-primary transition-colors duration-300">
             {post.title}
           </h3>
 
           {/* Excerpt */}
-          {post.excerpt && (
+          {/* {post.excerpt && (
             <p className="text-gray-600 dark:text-gray-300 line-clamp-3 leading-relaxed text-sm">{post.excerpt}</p>
-          )}
+          )} */}
 
           {/* Meta — Date + Read Time */}
           <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">

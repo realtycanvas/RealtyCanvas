@@ -13,6 +13,21 @@ interface Props {
 
 const PROJECTS_TAG = 'projects-list';
 
+const parsePriceToRupees = (raw: unknown): number | null => {
+  if (typeof raw !== 'string') return null;
+  const s = raw.trim();
+  if (!s) return null;
+  const lower = s.toLowerCase();
+  const numStr = lower.replace(/[^0-9.]/g, '');
+  if (!numStr) return null;
+  const n = Number.parseFloat(numStr);
+  if (!Number.isFinite(n) || n <= 0) return null;
+  const isCrore = /\b(crore|crores|cr)\b/.test(lower);
+  const isLakh = /\b(lakh|lakhs|lac|lacs)\b/.test(lower);
+  const multiplier = isCrore ? 10000000 : isLakh ? 100000 : 1;
+  return Math.round(n * multiplier);
+};
+
 export async function GET(request: NextRequest, { params }: Props) {
   try {
     const { slug } = await params;
@@ -178,6 +193,7 @@ export async function PUT(request: NextRequest, { params }: Props) {
         slug: nextSlug,
         description: body.description.trim(),
         category: body.category || 'COMMERCIAL',
+        type: body.type?.trim() || null,
         status: body.status || 'PLANNED',
         address: body.address.trim(),
         locality: body.locality?.trim() || null,
@@ -193,7 +209,7 @@ export async function PUT(request: NextRequest, { params }: Props) {
         launchDate: body.launchDate ? new Date(body.launchDate) : null,
         basePrice: body.basePrice?.trim() || null,
         priceRange: body.priceRange?.trim() || null,
-        priceMin: body.priceMin ?? null,
+        priceMin: parsePriceToRupees(body.basePrice) ?? body.priceMin ?? null,
         priceMax: body.priceMax ?? null,
         featuredImage: body.featuredImage.trim(),
         landArea: body.landArea?.trim() || null,
@@ -221,6 +237,7 @@ export async function PUT(request: NextRequest, { params }: Props) {
         galleryImages: body.galleryImages || [],
         videoUrls: body.videoUrls || [],
         projectTags: body.projectTags || [],
+        categoryType: body.categoryType || 'NONE',
         isActive: body.isActive ?? true,
         highlights: {
           deleteMany: {},
@@ -258,6 +275,7 @@ export async function PUT(request: NextRequest, { params }: Props) {
           deleteMany: {},
           create: (body.pricingTable || []).map(
             (p: {
+              unitArea?: string;
               type?: string;
               reraArea?: string;
               price?: string;
@@ -266,6 +284,7 @@ export async function PUT(request: NextRequest, { params }: Props) {
               floorNumbers?: string;
               features?: unknown;
             }) => ({
+              unitArea: p.unitArea?.trim() || null,
               type: p.type?.trim() || '',
               reraArea: p.reraArea?.trim() || '',
               price: p.price?.trim() || '',
@@ -327,9 +346,10 @@ export async function PUT(request: NextRequest, { params }: Props) {
     revalidatePath(`/projects/${project.slug}`);
     revalidateTag(PROJECTS_TAG, 'default');
     return NextResponse.json(project);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Project update error:', error);
-    return NextResponse.json({ error: 'Failed to update project' }, { status: 500 });
+    const msg = error?.message || error?.meta?.cause || 'Failed to update project';
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }
 

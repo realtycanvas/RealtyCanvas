@@ -20,7 +20,7 @@ const FaqItem = ({ question, answer }: { question: string; answer: string | null
 
       {isOpen && (
         <div className="px-5 py-4 border-t border-gray-100 bg-gray-50">
-          <p className="text-gray-700 text-sm leading-relaxed">{answer}</p>
+          <p className="text-gray-700 text-sm leading-relaxed whitespace-pre-wrap">{answer}</p>
         </div>
       )}
     </div>

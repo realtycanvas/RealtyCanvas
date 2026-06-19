@@ -1,11 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'nextjs-toploader/app';
 import { EyeIcon, EyeSlashIcon, LockClosedIcon, UserIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useAuth } from '@/hooks/use-auth';
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState('');
@@ -17,29 +18,16 @@ export default function AdminLoginPage() {
   const [forgotEmail, setForgotEmail] = useState('');
   const [forgotLoading, setForgotLoading] = useState(false);
   const [forgotSuccess, setForgotSuccess] = useState(false);
-  const [isChecking, setIsChecking] = useState(true);
   const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
 
-  // Check if already logged in
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const res = await fetch('/api/auth/me');
-        const data = await res.json();
-        if (data.user) {
-          // Already logged in, redirect to projects
-          router.push('/admin/dashboard');
-        }
-      } catch {
-        // Not logged in, continue
-      } finally {
-        setIsChecking(false);
-      }
-    };
-    checkAuth();
-  }, [router]);
+    if (!authLoading && user) {
+      router.push('/admin/dashboard');
+    }
+  }, [authLoading, user, router]);
 
-  if (isChecking) {
+  if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-yellow-50 to-white">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-500"></div>

@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
+import { useAuth } from '@/hooks/use-auth';
 import Image from 'next/image';
 import Link from 'next/link';
 import { MapPin } from 'lucide-react';
@@ -8,6 +9,8 @@ import FaqItem from './faq-item';
 import { usePathname } from 'next/navigation';
 import LeadModal from '../common/lead-modal';
 import { ClipboardDocumentIcon } from '@heroicons/react/24/outline';
+import EnquirySection from '../home/enquiry-section';
+import ViewAllLink from '../ui/view-all-link';
 
 // ─── Types (unchanged) ─────────────────────────────────────────────────────────
 
@@ -24,6 +27,7 @@ type FloorPlan = {
 };
 type PricingTableRow = {
   id: string;
+  unitArea: string | null;
   type: string;
   reraArea: string;
   price: string;
@@ -44,7 +48,7 @@ type ProjectSeo = {
   longFormTitle: string | null;
   longFormContent: string | null;
 };
-type User = { email: string; role: string };
+
 type Project = {
   id: string;
   slug: string;
@@ -52,6 +56,7 @@ type Project = {
   subtitle: string | null;
   description: string;
   category: string;
+  type: string | null;
   status: string;
   address: string;
   locality: string | null;
@@ -93,6 +98,20 @@ type Project = {
   nearbyPoints: NearbyPoint[];
   offerings: Offering[];
   seo: ProjectSeo | null;
+};
+
+type RelatedProject = {
+  id: string;
+  slug: string;
+  title: string;
+  subtitle: string | null;
+  category: string;
+  status: string;
+  city: string | null;
+  state: string | null;
+  featuredImage: string;
+  basePrice: string | null;
+  priceRange: string | null;
 };
 
 // ─── Helpers ───────────────────────────────────────────────────────────────────
@@ -234,14 +253,22 @@ const VideoThumbnail = ({
 
 // ─── Main Component ────────────────────────────────────────────────────────────
 
-export default function ProjectDetailClient({ project }: { project: Project }) {
+export default function ProjectDetailClient({
+  project,
+  relatedProjects,
+}: {
+  project: Project;
+  relatedProjects: RelatedProject[];
+}) {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [viewAllPhotos, setViewAllPhotos] = useState(false);
   const [isLeadModalOpen, setIsLeadModalOpen] = useState(false);
   const [activeVideoIndex, setActiveVideoIndex] = useState(0);
   const [viewAllVideos, setViewAllVideos] = useState(false);
+  const [activeFloorPlanIndex, setActiveFloorPlanIndex] = useState(0);
+  const [viewAllFloorPlans, setViewAllFloorPlans] = useState(false);
   const [toast, setToast] = useState('');
-  const [user, setUser] = useState<User | null>(null);
+  const { user } = useAuth();
 
   const pathname = usePathname();
 
@@ -289,23 +316,6 @@ export default function ProjectDetailClient({ project }: { project: Project }) {
     window.setTimeout(() => setToast(''), 2500);
   };
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const res = await fetch('/api/auth/me');
-        const data = await res.json();
-        if (data.user) {
-          setUser(data.user);
-        } else {
-          setUser(null);
-        }
-      } catch {
-        setUser(null);
-      }
-    };
-    checkAuth();
-  }, []);
-
   const youtubeOrigin = (() => {
     const raw = process.env.NEXT_PUBLIC_BASE_URL;
     if (!raw) return null;
@@ -340,6 +350,9 @@ export default function ProjectDetailClient({ project }: { project: Project }) {
     `Hi, I'm interested in *${project.title}*\n📍 ${[project.address, project.city].filter(Boolean).join(', ')}`
   )}`;
 
+  const showRelatedCategory = project.category === 'COMMERCIAL' || project.category === 'RESIDENTIAL';
+  const viewAllHref = showRelatedCategory ? `/projects?category=${encodeURIComponent(project.category)}` : '/projects';
+
   return (
     // ✅ pb-20 lg:pb-0 — clears the mobile floating CTA bar
     <div className="min-h-screen bg-gray-50 pb-20 lg:pb-0">
@@ -358,8 +371,7 @@ export default function ProjectDetailClient({ project }: { project: Project }) {
       />
 
       {/* ✅ px-3 sm:px-4, py-4 sm:py-6 lg:py-8, mt-16 sm:mt-20 */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 lg:py-8 mt-20">
-        {/* Back + CTA — ✅ flex-wrap so it never overflows on 320px */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 lg:py-8 mt-4 md:mt-0">
         <div className="flex flex-wrap items-center justify-between gap-3 mb-4 sm:mb-6">
           <Link href="/projects" className="text-blue-600 hover:text-blue-800 font-medium text-sm sm:text-base">
             ← Back to Projects
@@ -380,7 +392,7 @@ export default function ProjectDetailClient({ project }: { project: Project }) {
               </Link>
             )}
             <Link
-              href="tel:9555562626"
+              href="tel:+919555562626"
               className="px-3 py-1.5 sm:px-4 sm:py-2 rounded bg-green-600 hover:bg-green-700 text-white font-semibold text-sm sm:text-base"
             >
               Call Now
@@ -479,7 +491,9 @@ export default function ProjectDetailClient({ project }: { project: Project }) {
 
             {/* Short Description */}
             <div className="bg-white rounded p-4 sm:p-6 shadow">
-              <p className="text-gray-700 leading-relaxed text-sm sm:text-base">{project.description}</p>
+              <p className="text-gray-700 leading-relaxed whitespace-pre-wrap text-sm sm:text-base">
+                {project.description}
+              </p>
             </div>
 
             {/* 1. Project Overview */}
@@ -539,7 +553,9 @@ export default function ProjectDetailClient({ project }: { project: Project }) {
                     >
                       <div className="text-2xl sm:text-3xl mb-2 sm:mb-3">{offering.icon || '•'}</div>
                       <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">{offering.title}</h3>
-                      <p className="text-gray-600 leading-relaxed text-sm">{offering.description}</p>
+                      <p className="text-gray-600 leading-relaxed whitespace-pre-wrap text-sm">
+                        {offering.description}
+                      </p>
                     </div>
                   ))}
                 </div>
@@ -551,78 +567,124 @@ export default function ProjectDetailClient({ project }: { project: Project }) {
               <Section title="Price & Unit Size Overview">
                 {(project.priceRange || project.basePrice) && (
                   <div className="flex flex-wrap gap-3 sm:gap-4 mb-4 sm:mb-6">
-                    {project.priceRange && (
+                    {/* {project.priceRange && (
                       <div className="bg-yellow-50 border border-yellow-200 rounded px-4 py-2.5 sm:px-5 sm:py-3 min-w-0">
                         <p className="text-xs text-gray-500 mb-0.5 sm:mb-1">Price Range</p>
                         <p className="text-base sm:text-lg font-bold text-yellow-700">{project.priceRange}</p>
                       </div>
-                    )}
+                    )} */}
                     {project.basePrice && (
                       <div className="bg-gray-50 border border-gray-200 rounded px-4 py-2.5 sm:px-5 sm:py-3 min-w-0">
                         <p className="text-xs text-gray-500 mb-0.5 sm:mb-1">Base Price</p>
                         <p className="text-base sm:text-lg font-bold text-gray-900">{project.basePrice}</p>
                       </div>
                     )}
-                    {project.priceMin && project.priceMax && (
+                    {/* {project.priceMin && project.priceMax && (
                       <div className="bg-gray-50 border border-gray-200 rounded px-4 py-2.5 sm:px-5 sm:py-3 min-w-0">
                         <p className="text-xs text-gray-500 mb-0.5 sm:mb-1">Pricing Band</p>
                         <p className="text-base sm:text-lg font-bold text-gray-900">
                           ₹{formatNumber(project.priceMin)} – ₹{formatNumber(project.priceMax)}
                         </p>
                       </div>
-                    )}
+                    )} */}
                   </div>
                 )}
 
                 {project.pricingTable.length > 0 && (
                   <div className="overflow-x-auto -mx-4 sm:mx-0">
                     <div className="min-w-120 px-4 sm:px-0">
-                      <table className="min-w-full text-sm">
-                        <thead>
-                          <tr className="bg-gray-50 text-left text-gray-600">
-                            <th className="py-2.5 px-3 sm:py-3 sm:px-4 font-semibold rounded-tl text-xs sm:text-sm">
-                              Property Type
-                            </th>
-                            <th className="py-2.5 px-3 sm:py-3 sm:px-4 font-semibold text-xs sm:text-sm">
-                              Approx Unit Size
-                            </th>
-                            <th className="py-2.5 px-3 sm:py-3 sm:px-4 font-semibold text-xs sm:text-sm">
-                              Indicative Price
-                            </th>
-                            <th className="py-2.5 px-3 sm:py-3 sm:px-4 font-semibold text-xs sm:text-sm">
-                              Price / Sq.ft
-                            </th>
-                            <th className="py-2.5 px-3 sm:py-3 sm:px-4 font-semibold rounded-tr text-xs sm:text-sm">
-                              Status
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {project.pricingTable.map((row, idx) => (
-                            <tr key={row.id} className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                              <td className="py-2.5 px-3 sm:py-3 sm:px-4 font-medium text-gray-900 text-xs sm:text-sm">
-                                {row.type}
-                              </td>
-                              <td className="py-2.5 px-3 sm:py-3 sm:px-4 text-gray-700 text-xs sm:text-sm">
-                                {row.reraArea}
-                              </td>
-                              <td className="py-2.5 px-3 sm:py-3 sm:px-4 text-yellow-700 font-semibold text-xs sm:text-sm">
-                                {row.price}
-                              </td>
-                              <td className="py-2.5 px-3 sm:py-3 sm:px-4 text-gray-600 text-xs sm:text-sm">
-                                {row.pricePerSqft || '—'}
-                              </td>
-                              <td className="py-2.5 px-3 sm:py-3 sm:px-4 text-gray-600 text-xs sm:text-sm">
-                                {row.availabilityStatus === 'available'
-                                  ? 'Available'
-                                  : row.availabilityStatus === 'not-available'
-                                    ? 'Not Available'
-                                    : row.availabilityStatus || '—'}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                      {(() => {
+                        const showUnitArea = project.pricingTable.some((row) => (row.unitArea || '').trim().length > 0);
+                        const showReraArea = project.pricingTable.some((row) => (row.reraArea || '').trim().length > 0);
+                        const showFloor = project.pricingTable.some(
+                          (row) => (row.floorNumbers || '').trim().length > 0
+                        );
+                        const showPricePerSqft = project.pricingTable.some(
+                          (row) => (row.pricePerSqft || '').trim().length > 0
+                        );
+                        const showStatus = project.pricingTable.some(
+                          (row) => (row.availabilityStatus || '').trim().length > 0
+                        );
+
+                        return (
+                          <table className="min-w-full text-sm">
+                            <thead>
+                              <tr className="bg-gray-50 text-left text-gray-600">
+                                {showUnitArea ? (
+                                  <th className="py-2.5 px-3 sm:py-3 sm:px-4 font-semibold text-xs sm:text-sm">Unit</th>
+                                ) : null}
+                                <th className="py-2.5 px-3 sm:py-3 sm:px-4 font-semibold text-xs sm:text-sm">
+                                  Property Type
+                                </th>
+                                {showReraArea ? (
+                                  <th className="py-2.5 px-3 sm:py-3 sm:px-4 font-semibold text-xs sm:text-sm">
+                                    Approx Unit Size
+                                  </th>
+                                ) : null}
+                                {showFloor ? (
+                                  <th className="py-2.5 px-3 sm:py-3 sm:px-4 font-semibold text-xs sm:text-sm">
+                                    Floor
+                                  </th>
+                                ) : null}
+                                <th className="py-2.5 px-3 sm:py-3 sm:px-4 font-semibold text-xs sm:text-sm">
+                                  Indicative Price
+                                </th>
+                                {showPricePerSqft ? (
+                                  <th className="py-2.5 px-3 sm:py-3 sm:px-4 font-semibold text-xs sm:text-sm">
+                                    Price / Sq.ft
+                                  </th>
+                                ) : null}
+                                {showStatus ? (
+                                  <th className="py-2.5 px-3 sm:py-3 sm:px-4 font-semibold text-xs sm:text-sm">
+                                    Status
+                                  </th>
+                                ) : null}
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {project.pricingTable.map((row, idx) => (
+                                <tr key={row.id} className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                                  {showUnitArea ? (
+                                    <td className="py-2.5 px-3 sm:py-3 sm:px-4 font-medium text-gray-900 text-xs sm:text-sm">
+                                      {row.unitArea || '—'}
+                                    </td>
+                                  ) : null}
+                                  <td className="py-2.5 px-3 sm:py-3 sm:px-4 font-medium text-gray-900 text-xs sm:text-sm">
+                                    {row.type}
+                                  </td>
+                                  {showReraArea ? (
+                                    <td className="py-2.5 px-3 sm:py-3 sm:px-4 text-gray-700 text-xs sm:text-sm">
+                                      {row.reraArea || '—'}
+                                    </td>
+                                  ) : null}
+                                  {showFloor ? (
+                                    <td className="py-2.5 px-3 sm:py-3 sm:px-4 text-gray-700 text-xs sm:text-sm">
+                                      {row.floorNumbers || '—'}
+                                    </td>
+                                  ) : null}
+                                  <td className="py-2.5 px-3 sm:py-3 sm:px-4 text-yellow-700 font-semibold text-xs sm:text-sm">
+                                    {row.price}
+                                  </td>
+                                  {showPricePerSqft ? (
+                                    <td className="py-2.5 px-3 sm:py-3 sm:px-4 text-gray-600 text-xs sm:text-sm">
+                                      {row.pricePerSqft || '—'}
+                                    </td>
+                                  ) : null}
+                                  {showStatus ? (
+                                    <td className="py-2.5 px-3 sm:py-3 sm:px-4 text-gray-600 text-xs sm:text-sm">
+                                      {row.availabilityStatus === 'available'
+                                        ? 'Available'
+                                        : row.availabilityStatus === 'not-available'
+                                          ? 'Not Available'
+                                          : row.availabilityStatus || '—'}
+                                    </td>
+                                  ) : null}
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        );
+                      })()}
                     </div>
                     <p className="text-xs text-gray-400 mt-3 px-4 sm:px-0">
                       * Prices and sizes are indicative and subject to change at developer discretion.
@@ -684,8 +746,15 @@ export default function ProjectDetailClient({ project }: { project: Project }) {
             {project.floorPlans.length > 0 && (
               <Section title="Floor Plans & Layouts">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-                  {project.floorPlans.map((plan) => (
-                    <div key={plan.id} className="border border-gray-200 rounded overflow-hidden">
+                  {project.floorPlans.map((plan, index) => (
+                    <div
+                      key={plan.id}
+                      className="border border-gray-200 rounded overflow-hidden cursor-pointer hover:shadow-lg transition-shadow"
+                      onClick={() => {
+                        setActiveFloorPlanIndex(index);
+                        setViewAllFloorPlans(true);
+                      }}
+                    >
                       <div className="relative aspect-video">
                         <Image
                           src={normalizeImageSrc(plan.imageUrl)}
@@ -779,8 +848,11 @@ export default function ProjectDetailClient({ project }: { project: Project }) {
                 <div className="flex flex-wrap justify-around p-3 sm:p-4 gap-2 sm:gap-3">
                   {[
                     { label: 'Land Area', value: project.landArea },
+                    { label: 'Towers', value: project.numberOfTowers },
+                    { label: 'Apartments', value: project.numberOfApartments },
                     { label: 'Floors', value: project.numberOfFloors },
                     { label: 'Total Units', value: project.totalUnits },
+                    { label: 'Type', value: project.type },
                     { label: 'Category', value: formatCategory(project.category) },
                   ]
                     .filter(({ value }) => value !== null && value !== undefined && value !== '')
@@ -822,7 +894,63 @@ export default function ProjectDetailClient({ project }: { project: Project }) {
             </div>
           </div>
         </div>
+
+        {relatedProjects.length > 0 && (
+          <section className="my-12 md:my-16 lg:my-20">
+            <div className="flex items-center justify-between gap-3 mb-4 sm:mb-6">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Related Projects</h2>
+              <ViewAllLink href={viewAllHref} />
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+              {relatedProjects.map((item) => (
+                <Link
+                  key={item.id}
+                  href={`/projects/${item.slug}`}
+                  className="bg-white rounded shadow-sm border overflow-hidden hover:shadow-md transition-shadow duration-300"
+                >
+                  <div className="relative h-44 bg-gray-200">
+                    {item.featuredImage ? (
+                      <Image
+                        src={item.featuredImage}
+                        alt={item.title}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      />
+                    ) : null}
+                    <div className="absolute top-2 left-2 flex gap-2">
+                      <span className="px-3 py-1 rounded text-[10px] font-medium bg-gray-100 text-gray-800">
+                        {formatCategory(item.category)}
+                      </span>
+                      <span className={`px-3 py-1 rounded text-[10px] font-medium ${getStatusStyle(item.status)}`}>
+                        {formatCategory(item.status)}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="p-4">
+                    <h3 className="text-base font-bold text-gray-900 mb-1 line-clamp-2">{item.title}</h3>
+                    {item.subtitle ? <p className="text-xs text-gray-600 mb-2 line-clamp-2">{item.subtitle}</p> : null}
+                    <div className="space-y-1 text-xs">
+                      {(item.city || item.state) && (
+                        <p className="text-gray-700">
+                          <span className="font-semibold">Location:</span>{' '}
+                          {[item.city, item.state].filter(Boolean).join(', ')}
+                        </p>
+                      )}
+                      {(item.basePrice || item.priceRange) && (
+                        <p className="text-yellow-600 font-semibold">
+                          <span className="font-semibold">Base Price:</span> {item.basePrice || item.priceRange}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
       </div>
+      <EnquirySection />
 
       {/* ── Mobile Floating CTA Bar ─────────────────────────────────────────── */}
       {/* ✅ lg:hidden — replaces sidebar CTAs on mobile; safe-area-inset for iOS home bar */}
@@ -834,7 +962,7 @@ export default function ProjectDetailClient({ project }: { project: Project }) {
           Enquire
         </button>
         <Link
-          href="tel:9555562626"
+          href="tel:+919555562626"
           className="flex-1 py-2.5 rounded bg-green-600 text-white font-semibold text-sm text-center"
         >
           Call Now
@@ -908,6 +1036,87 @@ export default function ProjectDetailClient({ project }: { project: Project }) {
                         // ✅ smaller filmstrip thumbnails on mobile
                         className="w-16 h-12 sm:w-24 sm:h-20 object-cover rounded"
                       />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Floor Plan Gallery Modal ─────────────────────────────────────── */}
+      {viewAllFloorPlans && project.floorPlans.length > 0 && (
+        <div className="fixed inset-0 z-50 bg-black/80 flex items-end sm:items-center justify-center sm:p-4">
+          <div className="bg-white rounded-t-2xl sm:rounded w-full sm:max-w-6xl h-[92vh] sm:h-[90vh] overflow-hidden flex flex-col">
+            <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b">
+              <div>
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900">
+                  Floor Plans ({activeFloorPlanIndex + 1} / {project.floorPlans.length})
+                </h3>
+                <p className="text-xs sm:text-sm text-gray-500">
+                  {project.floorPlans[activeFloorPlanIndex].level}
+                  {project.floorPlans[activeFloorPlanIndex].title
+                    ? ` • ${project.floorPlans[activeFloorPlanIndex].title}`
+                    : ''}
+                </p>
+              </div>
+              <button
+                onClick={() => setViewAllFloorPlans(false)}
+                className="cursor-pointer px-3 py-1.5 rounded bg-gray-200 hover:bg-gray-300 text-sm font-medium"
+              >
+                Close
+              </button>
+            </div>
+            <div className="flex-1 grid grid-rows-[1fr_auto] overflow-hidden">
+              <div className="relative bg-black overflow-hidden">
+                <Image
+                  src={normalizeImageSrc(project.floorPlans[activeFloorPlanIndex].imageUrl)}
+                  alt={`${project.floorPlans[activeFloorPlanIndex].level} floor plan`}
+                  fill
+                  className="object-contain"
+                  sizes="(max-width: 768px) 100vw, 80vw"
+                />
+                {project.floorPlans.length > 1 && (
+                  <>
+                    <button
+                      onClick={() =>
+                        setActiveFloorPlanIndex(
+                          (activeFloorPlanIndex - 1 + project.floorPlans.length) % project.floorPlans.length
+                        )
+                      }
+                      className="cursor-pointer absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 rounded-full w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-lg sm:text-xl font-bold"
+                    >
+                      ‹
+                    </button>
+                    <button
+                      onClick={() => setActiveFloorPlanIndex((activeFloorPlanIndex + 1) % project.floorPlans.length)}
+                      className="cursor-pointer absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 rounded-full w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-lg sm:text-xl font-bold"
+                    >
+                      ›
+                    </button>
+                  </>
+                )}
+              </div>
+              <div className="p-3 sm:p-4 overflow-x-auto bg-white border-t">
+                <div className="flex gap-2 sm:gap-3">
+                  {project.floorPlans.map((plan, index) => (
+                    <button
+                      key={plan.id}
+                      onClick={() => setActiveFloorPlanIndex(index)}
+                      className={`cursor-pointer rounded border-2 shrink-0 ${
+                        index === activeFloorPlanIndex ? 'border-yellow-500' : 'border-gray-200'
+                      }`}
+                    >
+                      <div className="relative w-16 h-12 sm:w-24 sm:h-20">
+                        <Image
+                          src={normalizeImageSrc(plan.imageUrl)}
+                          alt={`${plan.level} floor plan`}
+                          fill
+                          className="object-cover rounded"
+                          sizes="96px"
+                        />
+                      </div>
                     </button>
                   ))}
                 </div>

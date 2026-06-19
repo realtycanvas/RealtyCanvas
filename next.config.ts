@@ -9,6 +9,15 @@ const nextConfig: NextConfig = {
       { source: '/logo-original.webp', destination: '/logo/logo-original.webp' },
     ];
   },
+  async redirects() {
+    return [
+      {
+        source: '/gurugram-residential-plots',
+        destination: '/residential-plots-in-gurgaon',
+        permanent: true,
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       // Unsplash
@@ -100,24 +109,9 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
       {
-        protocol: 'http',
-        hostname: '187.127.128.90', // no port, nginx handles it on 80
-        pathname: '/uploads/**',
-      },
-      {
-        protocol: 'http',
-        hostname: 'cdn.realtycanvas.in',
-        pathname: '/**',
-      },
-      {
         protocol: 'https',
         hostname: 'cdn.realtycanvas.in',
         pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: '187.127.128.90',
-        pathname: '/uploads/**',
       },
       {
         protocol: 'https',
