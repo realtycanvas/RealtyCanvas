@@ -154,12 +154,15 @@ export function VedicLightbox() {
 
   return (
     <Overlay onClose={closeLightbox}>
+      {/* Overlay's wrapper scrolls, and overflow-y:auto forces overflow-x:auto too, so
+          it clips anything placed outside this box. Keep the close button fully inside
+          it — the image's mt-10 reserves the band it sits in. */}
       <div className="relative flex max-h-[88vh] w-[92vw] max-w-5xl flex-col items-center gap-3">
         <button
           type="button"
           onClick={closeLightbox}
           aria-label="Close"
-          className="absolute -top-1 right-0 z-10 cursor-pointer rounded-full bg-white/15 p-2 text-white transition-colors hover:bg-white/30"
+          className="absolute top-0 right-0 z-10 cursor-pointer rounded-full bg-white/15 p-2 text-white transition-colors hover:bg-white/30"
         >
           <X className="h-5 w-5" />
         </button>
