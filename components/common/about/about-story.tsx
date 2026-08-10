@@ -73,7 +73,7 @@ export default function AboutStory() {
             <div className="space-y-6 text-gray-600 dark:text-gray-300 leading-relaxed">
               <p>
                 Realty Canvas began with a clear purpose: to bridge the gap between what clients need and what
-                traditional real estate offers. We're not just here to list properties—we're here to help you find a
+                traditional real estate offers. We're not just here to list properties-we're here to help you find a
                 home that feels like home.
               </p>
               <p>

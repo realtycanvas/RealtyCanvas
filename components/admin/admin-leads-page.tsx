@@ -242,7 +242,7 @@ export default function AdminLeadsPage() {
                     <td className="px-4 py-3 text-sm text-gray-900 font-semibold">{lead.name}</td>
                     <td className="px-4 py-3 text-sm text-gray-700">{lead.email}</td>
                     <td className="px-4 py-3 text-sm text-gray-700">{lead.phone}</td>
-                    <td className="px-4 py-3 text-sm text-gray-700">{lead.message || '—'}</td>
+                    <td className="px-4 py-3 text-sm text-gray-700">{lead.message || '-'}</td>
                     <td className="px-4 py-3 text-sm text-gray-700">
                       {new Date(lead.createdAt).toLocaleString('en-IN')}
                     </td>

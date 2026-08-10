@@ -22,21 +22,21 @@ const TESTIMONIALS = [
     name: 'Amit Gupta',
     initials: 'AG',
     color: 'bg-green-500',
-    text: 'We were comparing multiple projects across Golf Course Extension Road and Realty Canvas gave us a thorough data-backed comparison. No pressure, no upselling — just solid advice. Booked our 4 BHK with full confidence.',
+    text: 'We were comparing multiple projects across Golf Course Extension Road and Realty Canvas gave us a thorough data-backed comparison. No pressure, no upselling - just solid advice. Booked our 4 BHK with full confidence.',
     date: 'January 2026',
   },
   {
     name: 'Neha Singh',
     initials: 'NS',
     color: 'bg-purple-500',
-    text: 'As an NRI buying property remotely, I was worried about verification and legal clarity. Realty Canvas handled everything — from RERA checks to virtual walkthroughs — without a single issue. The process was smooth and they were always reachable.',
+    text: 'As an NRI buying property remotely, I was worried about verification and legal clarity. Realty Canvas handled everything - from RERA checks to virtual walkthroughs - without a single issue. The process was smooth and they were always reachable.',
     date: 'March 2026',
   },
   {
     name: 'Vikram Malhotra',
     initials: 'VM',
     color: 'bg-rose-500',
-    text: 'Invested in a commercial project on SPR based on Realty Canvas\'s recommendation. The research they shared on rental yield and corridor growth was genuinely impressive. Already seeing strong appreciation. Trustworthy advisors.',
+    text: "Invested in a commercial project on SPR based on Realty Canvas's recommendation. The research they shared on rental yield and corridor growth was genuinely impressive. Already seeing strong appreciation. Trustworthy advisors.",
     date: 'February 2026',
   },
   {
@@ -82,7 +82,9 @@ function TestimonialCard({ t }: { t: (typeof TESTIMONIALS)[0] }) {
       {/* Header */}
       <div className="flex items-start justify-between gap-2">
         <div className="flex items-center gap-3 min-w-0">
-          <div className={`${t.color} w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0`}>
+          <div
+            className={`${t.color} w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0`}
+          >
             {t.initials}
           </div>
           <div className="min-w-0">
@@ -156,19 +158,18 @@ export default function TestimonialsSection() {
         {/* Heading */}
         <div className="text-center mb-8 sm:mb-10">
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900">
-            Real Stories from{' '}
-            <span className="text-brand-primary">Happy Homeowners</span>
+            Real Stories from <span className="text-brand-primary">Happy Homeowners</span>
           </h2>
           <p className="mt-3 sm:mt-4 text-sm sm:text-base text-gray-600 max-w-2xl mx-auto leading-relaxed">
-            98% client satisfaction rate — as Gurgaon&apos;s trusted real estate advisors, we handle
-            everything from RERA compliance to possession.{' '}
+            98% client satisfaction rate - as Gurgaon&apos;s trusted real estate advisors, we handle everything from
+            RERA compliance to possession.{' '}
             <span className="text-brand-primary font-medium">100% verified projects only.</span>
           </p>
         </div>
 
         {/* Carousel */}
         <div className="relative">
-          {/* Hidden on mobile — touch users swipe; shown sm+ only when there's content to scroll */}
+          {/* Hidden on mobile - touch users swipe; shown sm+ only when there's content to scroll */}
           <button
             onClick={() => scrollBy('left')}
             aria-label="Scroll left"
@@ -200,7 +201,7 @@ export default function TestimonialsSection() {
           </button>
         </div>
 
-        {/* Swipe hint — only visible on mobile */}
+        {/* Swipe hint - only visible on mobile */}
         <p className="mt-4 text-center text-xs text-gray-400 sm:hidden">Swipe to see more reviews</p>
       </div>
     </section>

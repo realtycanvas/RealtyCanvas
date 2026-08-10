@@ -22,7 +22,7 @@ export default function AboutMission() {
       ),
       title: 'Integrity',
       description:
-        'We conduct every transaction with complete transparency and honesty, providing accurate information about projects, payment plans, and future benefits—no surprises, no hidden details.',
+        'We conduct every transaction with complete transparency and honesty, providing accurate information about projects, payment plans, and future benefits-no surprises, no hidden details.',
     },
     {
       icon: (
@@ -106,7 +106,7 @@ export default function AboutMission() {
                 <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Our Mission</h3>
               </div>
               <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                To transform real estate decisions by connecting people with properties that match their vision—through
+                To transform real estate decisions by connecting people with properties that match their vision-through
                 personalized insights, transparent information, and unwavering support. We make property ownership
                 accessible, clear, and rewarding for homebuyers, investors, and businesses across Gurgaon
               </p>

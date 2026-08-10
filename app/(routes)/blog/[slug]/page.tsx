@@ -106,7 +106,9 @@ const portableTextComponents = {
       }
       return (
         <div className="my-4 sm:my-8">
-          {title && <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4">{title}</h3>}
+          {title && (
+            <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4">{title}</h3>
+          )}
           <div className="overflow-x-auto rounded border border-gray-200 dark:border-gray-700 shadow-sm">
             <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
               <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
@@ -115,7 +117,9 @@ const portableTextComponents = {
                     <td className="px-3 sm:px-6 py-2 sm:py-4 text-sm font-medium text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-800/50 w-1/3 border-r border-gray-200 dark:border-gray-700">
                       {row.field}
                     </td>
-                    <td className="px-3 sm:px-6 py-2 sm:py-4 text-sm text-gray-700 dark:text-gray-300">{row.details}</td>
+                    <td className="px-3 sm:px-6 py-2 sm:py-4 text-sm text-gray-700 dark:text-gray-300">
+                      {row.details}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -127,10 +131,14 @@ const portableTextComponents = {
   },
   block: {
     h2: ({ children }: any) => (
-      <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mt-5 sm:mt-8 mb-3 sm:mb-4">{children}</h2>
+      <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mt-5 sm:mt-8 mb-3 sm:mb-4">
+        {children}
+      </h2>
     ),
     h3: ({ children }: any) => (
-      <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mt-4 sm:mt-6 mb-2 sm:mb-3">{children}</h3>
+      <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mt-4 sm:mt-6 mb-2 sm:mb-3">
+        {children}
+      </h3>
     ),
     normal: ({ children }: any) => <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">{children}</p>,
     blockquote: ({ children }: any) => (
@@ -330,7 +338,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
           {/* Excerpt */}
           {post.excerpt && (
-            <p className="text-sm sm:text-lg lg:text-xl text-gray-600 dark:text-gray-300 mb-6 sm:mb-8 leading-relaxed">{post.excerpt}</p>
+            <p className="text-sm sm:text-lg lg:text-xl text-gray-600 dark:text-gray-300 mb-6 sm:mb-8 leading-relaxed">
+              {post.excerpt}
+            </p>
           )}
 
           {/* Meta Information */}
@@ -495,7 +505,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       {relatedPosts && relatedPosts.length > 0 && (
         <div className="bg-[#F9FAFB] border-t border-gray-200 dark:border-gray-700">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
-            <h2 className="text-xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-8 text-center">Related Articles</h2>
+            <h2 className="text-xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-8 text-center">
+              Related Articles
+            </h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8">
               {relatedPosts.map((relatedPost, index) => (
                 <BlogPostCard key={relatedPost._id} post={relatedPost} index={index} />

@@ -8,7 +8,7 @@ datasource db {
 }
 
 // ─────────────────────────────────────────────
-// PROJECT — Core listing
+// PROJECT - Core listing
 // ─────────────────────────────────────────────
 model Project {
   id                  String          @id @default(uuid())
@@ -94,7 +94,7 @@ model Project {
 }
 
 // ─────────────────────────────────────────────
-// HIGHLIGHT — USP bullet points
+// HIGHLIGHT - USP bullet points
 // e.g. "RERA Approved", "🚗 Metro – 5 min"
 // ─────────────────────────────────────────────
 model Highlight {
@@ -109,7 +109,7 @@ model Highlight {
 }
 
 // ─────────────────────────────────────────────
-// AMENITY — Features grouped by category
+// AMENITY - Features grouped by category
 // e.g. category: "Parking" → name: "1000+ car basement"
 // ─────────────────────────────────────────────
 model Amenity {
@@ -125,7 +125,7 @@ model Amenity {
 }
 
 // ─────────────────────────────────────────────
-// FAQ — Q&A section + Google Featured Snippets
+// FAQ - Q&A section + Google Featured Snippets
 // ─────────────────────────────────────────────
 model Faq {
   id        String  @id @default(uuid())
@@ -139,7 +139,7 @@ model Faq {
 }
 
 // ─────────────────────────────────────────────
-// MEDIA — Images, videos, brochures, 360° tours
+// MEDIA - Images, videos, brochures, 360° tours
 // ─────────────────────────────────────────────
 model Media {
   id        String    @id @default(uuid())
@@ -157,7 +157,7 @@ model Media {
 }
 
 // ─────────────────────────────────────────────
-// FLOOR PLAN — Level-wise layout images
+// FLOOR PLAN - Level-wise layout images
 // ─────────────────────────────────────────────
 model FloorPlan {
   id        String  @id @default(uuid())
@@ -173,7 +173,7 @@ model FloorPlan {
 }
 
 // ─────────────────────────────────────────────
-// DOCUMENT — RERA approvals, brochures, deeds
+// DOCUMENT - RERA approvals, brochures, deeds
 // ─────────────────────────────────────────────
 model Document {
   id         String    @id @default(uuid())
@@ -190,7 +190,7 @@ model Document {
 }
 
 // ─────────────────────────────────────────────
-// NEARBY POINT — Location & connectivity
+// NEARBY POINT - Location & connectivity
 // e.g. METRO: "HUDA City Centre – 2.5km – 8min"
 // ─────────────────────────────────────────────
 model NearbyPoint {
@@ -206,7 +206,7 @@ model NearbyPoint {
 }
 
 // ─────────────────────────────────────────────
-// PRICING TABLE — Price list per unit type
+// PRICING TABLE - Price list per unit type
 // e.g. "Retail Shop | 320 sqft | ₹1.2Cr | ₹37,500/sqft"
 // ─────────────────────────────────────────────
 model PricingTable {
@@ -226,7 +226,7 @@ model PricingTable {
 }
 
 // ─────────────────────────────────────────────
-// PROJECT SEO — Per-project SEO config
+// PROJECT SEO - Per-project SEO config
 // ─────────────────────────────────────────────
 model ProjectSeo {
   id              String   @id @default(uuid())
@@ -256,7 +256,7 @@ model ProjectSeo {
 }
 
 // ─────────────────────────────────────────────
-// PROJECT CLICK — Daily click analytics
+// PROJECT CLICK - Daily click analytics
 // ─────────────────────────────────────────────
 model ProjectClick {
   id          String   @id @default(uuid())
@@ -272,7 +272,7 @@ model ProjectClick {
 }
 
 // ─────────────────────────────────────────────
-// LEAD — Enquiry form / CRM
+// LEAD - Enquiry form / CRM
 // ─────────────────────────────────────────────
 model Lead {
   id           String     @id @default(uuid())
@@ -309,7 +309,7 @@ model Banner {
 }
 
 // ─────────────────────────────────────────────
-// OFFERING — Space type sections
+// OFFERING - Space type sections
 // e.g. "🛍 High-Street Retail Shops" with description
 // Renders as icon cards on project detail page
 // ─────────────────────────────────────────────

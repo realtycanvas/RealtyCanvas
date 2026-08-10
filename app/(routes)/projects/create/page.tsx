@@ -765,7 +765,7 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
           )}
 
           {/* ──────────────────────────────────────────────────────────────────
-              TAB 1 — BASIC INFO
+              TAB 1 - BASIC INFO
           ────────────────────────────────────────────────────────────────── */}
           {tab === 'basic' && (
             <div className="space-y-5">
@@ -892,7 +892,9 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
                   {/* Category Type */}
                   <div>
                     <Label>Category Type</Label>
-                    <p className="text-xs text-gray-400 mb-2">Controls which special homepage sections this project appears in.</p>
+                    <p className="text-xs text-gray-400 mb-2">
+                      Controls which special homepage sections this project appears in.
+                    </p>
                     <div className="flex gap-3">
                       {[
                         { value: 'NONE', label: 'None', desc: 'No special category' },
@@ -1013,7 +1015,7 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
           )}
 
           {/* ──────────────────────────────────────────────────────────────────
-              TAB 2 — PRICING
+              TAB 2 - PRICING
           ────────────────────────────────────────────────────────────────── */}
           {tab === 'pricing' && (
             <div className="space-y-5">
@@ -1260,7 +1262,7 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
           )}
 
           {/* ──────────────────────────────────────────────────────────────────
-              TAB 3 — MEDIA
+              TAB 3 - MEDIA
           ────────────────────────────────────────────────────────────────── */}
           {tab === 'media' && (
             <div className="space-y-5">
@@ -1309,7 +1311,7 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
                         type="url"
                         value={url}
                         onChange={(e) => updStr(setVideos, i, e.target.value)}
-                        placeholder={`Video ${i + 1} — YouTube or direct URL`}
+                        placeholder={`Video ${i + 1} - YouTube or direct URL`}
                       />
                       <DelBtn onClick={() => delStr(setVideos, i)} />
                     </div>
@@ -1369,7 +1371,7 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
           )}
 
           {/* ──────────────────────────────────────────────────────────────────
-              TAB 4 — CONTENT
+              TAB 4 - CONTENT
           ────────────────────────────────────────────────────────────────── */}
           {tab === 'content' && (
             <div className="space-y-5">
@@ -1408,7 +1410,7 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
               </Card>
 
               {/* About / Overview */}
-              <Card title="Project Overview" desc='Section 1 on the detail page — "About the project".'>
+              <Card title="Project Overview" desc='Section 1 on the detail page - "About the project".'>
                 <div className="space-y-3">
                   <div>
                     <Label>Section Heading</Label>
@@ -1468,7 +1470,7 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
                       <Input
                         value={h.label}
                         onChange={(e) => updRow(setHighlights, i, 'label', e.target.value)}
-                        placeholder="Highlight text — e.g. RERA approved project"
+                        placeholder="Highlight text - e.g. RERA approved project"
                         className="w-full"
                       />
                       <div className="sm:self-center">
@@ -1753,13 +1755,13 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
           )}
 
           {/* ──────────────────────────────────────────────────────────────────
-              TAB 5 — DETAILS (extra meta)
+              TAB 5 - DETAILS (extra meta)
           ────────────────────────────────────────────────────────────────── */}
           {tab === 'details' && (
             <div className="space-y-5">
               <Card title="Project Branding">
                 <p className="text-xs text-gray-400 mb-4">
-                  These fields are optional — fill only what is needed for your listing.
+                  These fields are optional - fill only what is needed for your listing.
                 </p>
                 <div className="space-y-4">
                   <G2>
@@ -1775,18 +1777,18 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
                 </div>
               </Card>
 
-              <Card title="Quick Review" desc="Summary of all entered data — check before publishing.">
+              <Card title="Quick Review" desc="Summary of all entered data - check before publishing.">
                 <div className="text-xs text-gray-600 space-y-2">
                   {[
-                    ['Title', f.title || '—'],
-                    ['Slug', f.slug || '—'],
+                    ['Title', f.title || '-'],
+                    ['Slug', f.slug || '-'],
                     ['Category', f.category],
                     ['Tags', selectedTags.length ? selectedTags.join(', ') : 'None'],
                     ['Status', f.status],
-                    ['Address', [f.address, f.locality, f.city, f.state].filter(Boolean).join(', ') || '—'],
-                    ['Price Range', f.priceRange || '—'],
-                    ['Price Min', f.priceMin ? rupeeHint(f.priceMin) : '—'],
-                    ['Price Max', f.priceMax ? rupeeHint(f.priceMax) : '—'],
+                    ['Address', [f.address, f.locality, f.city, f.state].filter(Boolean).join(', ') || '-'],
+                    ['Price Range', f.priceRange || '-'],
+                    ['Price Min', f.priceMin ? rupeeHint(f.priceMin) : '-'],
+                    ['Price Max', f.priceMax ? rupeeHint(f.priceMax) : '-'],
                     ['Featured Image', f.featuredImage ? '✅ Set' : '❌ Missing'],
                     ['Gallery', `${gallery.filter(Boolean).length} image(s)`],
                     ['Videos', `${videos.filter(Boolean).length} video(s)`],
@@ -1797,8 +1799,8 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
                     ['Nearby Points', `${nearby.filter((n) => n.name).length} row(s)`],
                     ['Floor Plans', `${floorPlans.filter((fp) => fp.level).length} row(s)`],
                     ['FAQs', `${faqs.filter((fq) => fq.question).length} row(s)`],
-                    ['SEO H1', f.seoH1 || '—'],
-                    ['Meta Title', f.seoMetaTitle || '—'],
+                    ['SEO H1', f.seoH1 || '-'],
+                    ['Meta Title', f.seoMetaTitle || '-'],
                   ].map(([k, v]) => (
                     <div key={k} className="flex justify-between py-1.5 border-b border-gray-100 last:border-0">
                       <span className="font-medium text-gray-500 w-36 shrink-0">{k}</span>
@@ -1811,7 +1813,7 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
           )}
 
           {/* ──────────────────────────────────────────────────────────────────
-              TAB 6 — SEO
+              TAB 6 - SEO
           ────────────────────────────────────────────────────────────────── */}
           {tab === 'seo' && (
             <div className="space-y-5">
@@ -1906,7 +1908,7 @@ function CreateProjectPage({ adminMode = false }: CreateProjectPageProps) {
                 </div>
               </Card>
 
-              <Card title="Long-form SEO Content" desc='"Who Should Consider" section — helps with organic rankings.'>
+              <Card title="Long-form SEO Content" desc='"Who Should Consider" section - helps with organic rankings.'>
                 <div className="space-y-3">
                   <div>
                     <Label>Section Title</Label>

@@ -104,7 +104,7 @@ SPJ Group delivers premium residential and commercial developments rooted in met
 - SPJ Education – Space Global and Astroport
 - SPJ Finance – Tailored financial solutions, venture capital and leasing
 
-Architect: ACPL Architects — pioneers in architectural excellence with a legacy of prestigious projects spanning commercial, residential, and institutional spaces across India.`,
+Architect: ACPL Architects - pioneers in architectural excellence with a legacy of prestigious projects spanning commercial, residential, and institutional spaces across India.`,
   isIndexable: true,
   sitemapPriority: 0.9,
 };
@@ -194,7 +194,7 @@ const amenitiesData = [
     category: 'Parking',
     name: 'Up to 1,100 car parking spaces with seamless ingress and egress',
     details:
-      'Three-level car parking — the only one of its kind in the vicinity. Generous 14 ft. basement height for easy movement. Advanced security measures.',
+      'Three-level car parking - the only one of its kind in the vicinity. Generous 14 ft. basement height for easy movement. Advanced security measures.',
     sortOrder: 1,
   },
   {
@@ -248,7 +248,7 @@ const amenitiesData = [
   {
     category: 'Shopping',
     name: 'One-stop shop for major fast fashion & lifestyle brands',
-    details: 'Curated retail across three levels — lower ground, upper ground, and first floor',
+    details: 'Curated retail across three levels - lower ground, upper ground, and first floor',
     sortOrder: 10,
   },
   {
@@ -277,7 +277,7 @@ const offeringsData = [
     icon: '🛍',
     title: 'KANAKA – Premium Retail Zone',
     description:
-      'Urban retail excellence across three meticulously designed levels — Lower Ground Floor (8,450 sq.mt.), Upper Ground Floor (9,430 sq.mt.), and First Floor (9,000 sq.mt.). A gateway to timeless and exceptional shopping experience with curated selection of premium brands. High visibility and accessibility creating an ideal showcase for brands.',
+      'Urban retail excellence across three meticulously designed levels - Lower Ground Floor (8,450 sq.mt.), Upper Ground Floor (9,430 sq.mt.), and First Floor (9,000 sq.mt.). A gateway to timeless and exceptional shopping experience with curated selection of premium brands. High visibility and accessibility creating an ideal showcase for brands.',
     sortOrder: 1,
   },
   {
@@ -291,7 +291,7 @@ const offeringsData = [
     icon: '🎬',
     title: 'TARANG – Multiplex & Entertainment',
     description:
-      "Third Floor (8,230 sq.mt.) — the city's premier entertainment destination. Multiplex signed with PVR Cinemas offering world-class cinematic experience with plush seating, stunning visuals and immersive audio. Complemented with interactive entertainment spaces, pub & lounges for an all-encompassing experience across age groups.",
+      "Third Floor (8,230 sq.mt.) - the city's premier entertainment destination. Multiplex signed with PVR Cinemas offering world-class cinematic experience with plush seating, stunning visuals and immersive audio. Complemented with interactive entertainment spaces, pub & lounges for an all-encompassing experience across age groups.",
     sortOrder: 3,
   },
   {

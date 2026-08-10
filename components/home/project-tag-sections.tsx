@@ -125,7 +125,7 @@ const ProjectTagSection = ({
         </div>
 
         <div className="relative">
-          {/* Left arrow — sits in the section padding, outside the cards area */}
+          {/* Left arrow - sits in the section padding, outside the cards area */}
           <button
             onClick={() => scrollBy('left')}
             aria-label="Scroll left"
@@ -134,11 +134,8 @@ const ProjectTagSection = ({
             <ChevronLeftIcon className="w-5 h-5 text-gray-700" />
           </button>
 
-          {/* Scroll container — same width as the title above */}
-          <div
-            ref={scrollRef}
-            className="no-scrollbar flex gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory"
-          >
+          {/* Scroll container - same width as the title above */}
+          <div ref={scrollRef} className="no-scrollbar flex gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory">
             {data.projects.map((project) => (
               <Link
                 key={project.id}
@@ -169,7 +166,7 @@ const ProjectTagSection = ({
             ))}
           </div>
 
-          {/* Right arrow — sits in the section padding, outside the cards area */}
+          {/* Right arrow - sits in the section padding, outside the cards area */}
           <button
             onClick={() => scrollBy('right')}
             aria-label="Scroll right"

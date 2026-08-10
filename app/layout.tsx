@@ -7,6 +7,7 @@ import { LAYOUT_METADATA } from '@/lib/metadata';
 
 import Navbar from '@/components/layout/navbar';
 import Footer from '@/components/layout/footer';
+import SiteChrome from '@/components/layout/site-chrome';
 import ClientLayout from '@/components/common/ClientLayout';
 
 export const metadata: Metadata = LAYOUT_METADATA;
@@ -76,16 +77,17 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${InterClassName} antialiased`}>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(globalSchema) }}
-        />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(globalSchema) }} />
         <SEO />
         <NextTopLoader color="#FBB70F" showSpinner={false} />
         <ClientLayout>
-          <Navbar />
+          <SiteChrome>
+            <Navbar />
+          </SiteChrome>
           {children}
-          <Footer />
+          <SiteChrome>
+            <Footer />
+          </SiteChrome>
         </ClientLayout>
       </body>
     </html>

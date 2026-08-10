@@ -2,6 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 import { prisma } from '@/lib/prisma';
 
+// Campaign landing pages can copy an extra inbox on top of the sales address.
+// Keyed by projectSlug; unset env var simply means no copy is sent.
+const EXTRA_LEAD_RECIPIENTS: Record<string, string | undefined> = {
+  'vedic-city-goa': process.env.VEDIC_CITY_LEAD_EMAIL,
+};
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -95,9 +101,12 @@ export async function POST(request: NextRequest) {
         `
           : '';
 
+      const extraRecipient = cleanData.projectSlug ? EXTRA_LEAD_RECIPIENTS[cleanData.projectSlug] : undefined;
+
       const mailOptions = {
         from: process.env.GODADDY_EMAIL_USER,
         to: 'sales@realtycanvas.in',
+        ...(extraRecipient ? { cc: extraRecipient } : {}),
         subject: `🏠 New ${cleanData.propertyType} Lead - ${cleanData.name}`,
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">

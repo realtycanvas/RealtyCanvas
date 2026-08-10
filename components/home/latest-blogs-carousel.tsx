@@ -38,7 +38,7 @@ export default function LatestBlogsCarousel({ posts }: { posts: BlogPostPreview[
 
   return (
     <div className="relative mt-8">
-      {/* Left arrow — sits in the section padding, outside the cards area */}
+      {/* Left arrow - sits in the section padding, outside the cards area */}
       <button
         onClick={() => scrollBy('left')}
         aria-label="Scroll left"
@@ -47,11 +47,8 @@ export default function LatestBlogsCarousel({ posts }: { posts: BlogPostPreview[
         <ChevronLeftIcon className="w-5 h-5 text-gray-700" />
       </button>
 
-      {/* Scroll container — same width as the title above */}
-      <div
-        ref={scrollRef}
-        className="no-scrollbar flex gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory"
-      >
+      {/* Scroll container - same width as the title above */}
+      <div ref={scrollRef} className="no-scrollbar flex gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory">
         {posts.map((post, index) => (
           <div
             key={post._id}
@@ -62,7 +59,7 @@ export default function LatestBlogsCarousel({ posts }: { posts: BlogPostPreview[
         ))}
       </div>
 
-      {/* Right arrow — sits in the section padding, outside the cards area */}
+      {/* Right arrow - sits in the section padding, outside the cards area */}
       <button
         onClick={() => scrollBy('right')}
         aria-label="Scroll right"

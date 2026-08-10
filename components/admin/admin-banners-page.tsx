@@ -224,7 +224,7 @@ export default function AdminBannersPage() {
                   <div className="p-3 flex items-center justify-between gap-2">
                     <div className="min-w-0">
                       <p className="text-xs font-semibold text-gray-700 truncate">Sort: {banner.sortOrder}</p>
-                      <p className="text-xs text-gray-500 truncate">{banner.link || '—'}</p>
+                      <p className="text-xs text-gray-500 truncate">{banner.link || '-'}</p>
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
                       <button
@@ -366,11 +366,11 @@ export default function AdminBannersPage() {
                             className="h-14 w-10 rounded object-cover border border-gray-200 bg-gray-100"
                           />
                         ) : (
-                          <span className="text-xs text-gray-500">—</span>
+                          <span className="text-xs text-gray-500">-</span>
                         )}
                       </td>
                       <td className="px-4 py-3 text-sm text-gray-700">{banner.sortOrder}</td>
-                      <td className="px-4 py-3 text-sm text-gray-700">{banner.link || '—'}</td>
+                      <td className="px-4 py-3 text-sm text-gray-700">{banner.link || '-'}</td>
                       <td className="px-4 py-3">
                         <button
                           type="button"

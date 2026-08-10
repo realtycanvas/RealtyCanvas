@@ -134,7 +134,7 @@ const getStatusStyle = (status: string) => {
 // Explicit locale prevents SSR hydration mismatch
 const formatNumber = (value: number | null) => (value != null ? value.toLocaleString('en-IN') : null);
 
-// ─── Section Wrapper — responsive padding & heading ────────────────────────────
+// ─── Section Wrapper - responsive padding & heading ────────────────────────────
 
 const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
   <section className="bg-white rounded p-4 sm:p-6 lg:p-8 shadow">
@@ -207,7 +207,7 @@ const VideoPlayer = ({
   );
 };
 
-// ─── Video Thumbnail — responsive sizes ────────────────────────────────────────
+// ─── Video Thumbnail - responsive sizes ────────────────────────────────────────
 
 const VideoThumbnail = ({
   url,
@@ -354,9 +354,9 @@ export default function ProjectDetailClient({
   const viewAllHref = showRelatedCategory ? `/projects?category=${encodeURIComponent(project.category)}` : '/projects';
 
   return (
-    // ✅ pb-20 lg:pb-0 — clears the mobile floating CTA bar
+    // ✅ pb-20 lg:pb-0 - clears the mobile floating CTA bar
     <div className="min-h-screen bg-gray-50 pb-20 lg:pb-0">
-      {/* ── Toast — ✅ was missing in original ───────────────────────────── */}
+      {/* ── Toast - ✅ was missing in original ───────────────────────────── */}
       {toast && (
         <div className="fixed bottom-24 lg:bottom-6 left-1/2 -translate-x-1/2 z-70 bg-gray-900 text-white px-4 py-2 rounded text-sm shadow-lg whitespace-nowrap pointer-events-none">
           {toast}
@@ -405,7 +405,7 @@ export default function ProjectDetailClient({
           {/* ── Left Column ───────────────────────────────────────────────── */}
           {/* ✅ space-y-4 sm:space-y-6 lg:space-y-8 */}
           <div className="lg:col-span-2 space-y-4 sm:space-y-6 lg:space-y-8">
-            {/* Gallery — ✅ height scales from 40vh on mobile to 60vh on desktop */}
+            {/* Gallery - ✅ height scales from 40vh on mobile to 60vh on desktop */}
             <div className="relative h-[40vh] sm:h-[50vh] md:h-[55vh] lg:h-[60vh] rounded overflow-hidden">
               {galleryImages[activeImageIndex] && (
                 <Image
@@ -646,7 +646,7 @@ export default function ProjectDetailClient({
                                 <tr key={row.id} className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
                                   {showUnitArea ? (
                                     <td className="py-2.5 px-3 sm:py-3 sm:px-4 font-medium text-gray-900 text-xs sm:text-sm">
-                                      {row.unitArea || '—'}
+                                      {row.unitArea || '-'}
                                     </td>
                                   ) : null}
                                   <td className="py-2.5 px-3 sm:py-3 sm:px-4 font-medium text-gray-900 text-xs sm:text-sm">
@@ -654,12 +654,12 @@ export default function ProjectDetailClient({
                                   </td>
                                   {showReraArea ? (
                                     <td className="py-2.5 px-3 sm:py-3 sm:px-4 text-gray-700 text-xs sm:text-sm">
-                                      {row.reraArea || '—'}
+                                      {row.reraArea || '-'}
                                     </td>
                                   ) : null}
                                   {showFloor ? (
                                     <td className="py-2.5 px-3 sm:py-3 sm:px-4 text-gray-700 text-xs sm:text-sm">
-                                      {row.floorNumbers || '—'}
+                                      {row.floorNumbers || '-'}
                                     </td>
                                   ) : null}
                                   <td className="py-2.5 px-3 sm:py-3 sm:px-4 text-yellow-700 font-semibold text-xs sm:text-sm">
@@ -667,7 +667,7 @@ export default function ProjectDetailClient({
                                   </td>
                                   {showPricePerSqft ? (
                                     <td className="py-2.5 px-3 sm:py-3 sm:px-4 text-gray-600 text-xs sm:text-sm">
-                                      {row.pricePerSqft || '—'}
+                                      {row.pricePerSqft || '-'}
                                     </td>
                                   ) : null}
                                   {showStatus ? (
@@ -676,7 +676,7 @@ export default function ProjectDetailClient({
                                         ? 'Available'
                                         : row.availabilityStatus === 'not-available'
                                           ? 'Not Available'
-                                          : row.availabilityStatus || '—'}
+                                          : row.availabilityStatus || '-'}
                                     </td>
                                   ) : null}
                                 </tr>
@@ -880,7 +880,7 @@ export default function ProjectDetailClient({
                 </div>
               )}
 
-              {/* ✅ WhatsApp only on desktop — mobile uses floating CTA bar below */}
+              {/* ✅ WhatsApp only on desktop - mobile uses floating CTA bar below */}
               <div className="hidden lg:block">
                 <Link
                   href={whatsappHref}
@@ -953,7 +953,7 @@ export default function ProjectDetailClient({
       <EnquirySection />
 
       {/* ── Mobile Floating CTA Bar ─────────────────────────────────────────── */}
-      {/* ✅ lg:hidden — replaces sidebar CTAs on mobile; safe-area-inset for iOS home bar */}
+      {/* ✅ lg:hidden - replaces sidebar CTAs on mobile; safe-area-inset for iOS home bar */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-gray-200 px-3 py-2.5 pb-[calc(0.625rem+env(safe-area-inset-bottom))] flex gap-2 shadow-[0_-2px_8px_rgba(0,0,0,0.08)]">
         <button
           onClick={() => setIsLeadModalOpen(true)}
@@ -977,7 +977,7 @@ export default function ProjectDetailClient({
         </Link>
       </div>
 
-      {/* ── Photo Gallery Modal — sheet-style on mobile, dialog on desktop ──── */}
+      {/* ── Photo Gallery Modal - sheet-style on mobile, dialog on desktop ──── */}
       {viewAllPhotos && galleryImages.length > 0 && (
         // ✅ items-end on mobile = bottom sheet feel; sm:items-center = centered dialog
         <div className="fixed inset-0 z-50 bg-black/80 flex items-end sm:items-center justify-center sm:p-4">
@@ -1126,7 +1126,7 @@ export default function ProjectDetailClient({
         </div>
       )}
 
-      {/* ── Video Gallery Modal — same sheet/dialog pattern ─────────────────── */}
+      {/* ── Video Gallery Modal - same sheet/dialog pattern ─────────────────── */}
       {viewAllVideos && project.videoUrls.length > 0 && (
         <div className="fixed inset-0 z-50 bg-black/80 flex items-end sm:items-center justify-center sm:p-4">
           <div className="bg-white rounded-t-2xl sm:rounded w-full sm:max-w-6xl h-[92vh] sm:h-[90vh] overflow-hidden flex flex-col">

@@ -382,7 +382,7 @@ export default function AdminProjectsPage() {
                       {new Date(project.createdAt).toLocaleDateString('en-IN')}
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-700">{project.status.replaceAll('_', ' ')}</td>
-                    <td className="px-4 py-3 text-sm text-gray-700">{project.city || '—'}</td>
+                    <td className="px-4 py-3 text-sm text-gray-700">{project.city || '-'}</td>
                     <td className="px-4 py-3">
                       <button
                         type="button"

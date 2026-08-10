@@ -38,7 +38,19 @@ function getProjectsFromDB(filters: {
 }) {
   return unstable_cache(
     async () => {
-      const { page, limit, search, category, status, city, projectTag, categoryType, includeInactive, minPrice, maxPrice } = filters;
+      const {
+        page,
+        limit,
+        search,
+        category,
+        status,
+        city,
+        projectTag,
+        categoryType,
+        includeInactive,
+        minPrice,
+        maxPrice,
+      } = filters;
       const skip = (page - 1) * limit;
 
       const where: Prisma.ProjectWhereInput = includeInactive ? {} : { isActive: true };
@@ -145,7 +157,7 @@ function getProjectsFromDB(filters: {
         },
       };
     },
-    // Cache key — unique per filter combo
+    // Cache key - unique per filter combo
     [PROJECTS_TAG, JSON.stringify(filters)],
     {
       revalidate: 60, // 60 seconds TTL
@@ -254,7 +266,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ sections: sectionResults, tags: tagDetails });
     }
 
-    // ── Slug fetch — no cache needed (admin/detail use) ──
+    // ── Slug fetch - no cache needed (admin/detail use) ──
     if (slug) {
       const normalized = decodeURIComponent(slug)
         .trim()
@@ -279,7 +291,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json(project);
     }
 
-    // ── Listing — cached ──
+    // ── Listing - cached ──
     const responseData = await getProjectsFromDB({
       page,
       limit,

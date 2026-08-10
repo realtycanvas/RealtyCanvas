@@ -31,8 +31,7 @@ export default function TableOfContents({ embedded = false }: Props = {}) {
     const isBelow = linkRect.bottom > containerRect.bottom;
 
     if (isAbove || isBelow) {
-      const targetTop =
-        link.offsetTop - container.clientHeight / 2 + link.clientHeight / 2;
+      const targetTop = link.offsetTop - container.clientHeight / 2 + link.clientHeight / 2;
       container.scrollTo({ top: Math.max(0, targetTop), behavior: 'smooth' });
     }
   }, [activeId]);
@@ -149,17 +148,14 @@ export default function TableOfContents({ embedded = false }: Props = {}) {
     // Card fills the parent, inner scroll container handles overflow.
     return (
       <div className="bg-white dark:bg-gray-800 rounded shadow-sm border border-gray-100 dark:border-gray-700 h-full flex flex-col overflow-hidden">
-        <div
-          ref={scrollRef}
-          className="overflow-y-auto custom-scrollbar flex-1 min-h-0 px-5 py-4"
-        >
+        <div ref={scrollRef} className="overflow-y-auto custom-scrollbar flex-1 min-h-0 px-5 py-4">
           <nav className="space-y-1 relative z-0">{items}</nav>
         </div>
       </div>
     );
   }
 
-  // Standalone — sticky wrapper auto-sizes to content, clipped at viewport with scroll.
+  // Standalone - sticky wrapper auto-sizes to content, clipped at viewport with scroll.
   return (
     <div
       ref={scrollRef}

@@ -103,7 +103,7 @@ export default function BlogPostCard({ post, index = 0 }: BlogPostCardProps) {
             <p className="text-gray-600 dark:text-gray-300 line-clamp-3 leading-relaxed text-sm">{post.excerpt}</p>
           )} */}
 
-          {/* Meta — Date + Read Time */}
+          {/* Meta - Date + Read Time */}
           <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
             {post.publishedAt && (
               <div className="flex items-center gap-1">

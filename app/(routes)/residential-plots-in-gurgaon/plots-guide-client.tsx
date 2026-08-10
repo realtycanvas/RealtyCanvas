@@ -15,7 +15,7 @@ const plots: Plot[] = [
     name: 'DLF Phase 1',
     image: '/sector-maps/dlf-phase-1.jpg',
     description:
-      'Own a premium residential plot in the heart of Gurgaon at DLF Phase 1, one of the city\'s most established luxury neighborhoods. Enjoy seamless connectivity to Golf Course Road, Cyber City, and top social hubs. Surrounded by premium schools, malls, and hospitals, it offers an unmatched lifestyle and high appreciation potential. A perfect choice for building your dream home or securing a future-ready investment.',
+      "Own a premium residential plot in the heart of Gurgaon at DLF Phase 1, one of the city's most established luxury neighborhoods. Enjoy seamless connectivity to Golf Course Road, Cyber City, and top social hubs. Surrounded by premium schools, malls, and hospitals, it offers an unmatched lifestyle and high appreciation potential. A perfect choice for building your dream home or securing a future-ready investment.",
   },
   {
     name: 'DLF Phase 2',
@@ -27,19 +27,19 @@ const plots: Plot[] = [
     name: 'DLF Phase 4',
     image: '/sector-maps/dlf-phase-4.jpg',
     description:
-      'Build your dream home in DLF Phase 4, one of Gurgaon\'s most sought-after residential destinations. Strategically located near Galleria Market and Golf Course Road, it offers unmatched convenience and connectivity. The area is known for its elite neighborhood, lush green surroundings, and premium lifestyle. A smart investment choice with strong rental and resale demand.',
+      "Build your dream home in DLF Phase 4, one of Gurgaon's most sought-after residential destinations. Strategically located near Galleria Market and Golf Course Road, it offers unmatched convenience and connectivity. The area is known for its elite neighborhood, lush green surroundings, and premium lifestyle. A smart investment choice with strong rental and resale demand.",
   },
   {
     name: 'DLF Phase 5',
     image: '/sector-maps/dlf-phase-5.jpg',
     description:
-      'Experience luxury living with residential plots in DLF Phase 5, Gurgaon\'s premium address for high-end residences. Close to Golf Course Road, Rapid Metro, and top corporate hubs, it ensures exceptional connectivity. The locality offers world-class infrastructure, upscale social amenities, and a secure environment. Perfect for those seeking prestige, comfort, and long-term value.',
+      "Experience luxury living with residential plots in DLF Phase 5, Gurgaon's premium address for high-end residences. Close to Golf Course Road, Rapid Metro, and top corporate hubs, it ensures exceptional connectivity. The locality offers world-class infrastructure, upscale social amenities, and a secure environment. Perfect for those seeking prestige, comfort, and long-term value.",
   },
   {
     name: 'Sushant Lok 1',
     image: '/sector-maps/sushant-lok-1.jpg',
     description:
-      'Sushant Lok 1 is a prime residential hub offering well-planned plots in the center of Gurgaon. Located near MG Road and major commercial zones, it provides easy access to schools, malls, and metro stations. The area is highly preferred for its vibrant lifestyle and investment potential. Build a custom home in one of Gurgaon\'s most connected neighborhoods.',
+      "Sushant Lok 1 is a prime residential hub offering well-planned plots in the center of Gurgaon. Located near MG Road and major commercial zones, it provides easy access to schools, malls, and metro stations. The area is highly preferred for its vibrant lifestyle and investment potential. Build a custom home in one of Gurgaon's most connected neighborhoods.",
   },
   {
     name: 'Sushant Lok 2',
@@ -57,7 +57,7 @@ const plots: Plot[] = [
     name: 'South City 1',
     image: '/sector-maps/south-city-1.jpg',
     description:
-      'South City 1 is one of Gurgaon\'s most popular residential areas, offering premium plots with excellent connectivity. Located close to NH-48, HUDA City Centre, and major commercial hubs, it ensures convenience and accessibility. The locality features parks, schools, and shopping centers within easy reach. A perfect destination for luxurious and comfortable living.',
+      "South City 1 is one of Gurgaon's most popular residential areas, offering premium plots with excellent connectivity. Located close to NH-48, HUDA City Centre, and major commercial hubs, it ensures convenience and accessibility. The locality features parks, schools, and shopping centers within easy reach. A perfect destination for luxurious and comfortable living.",
   },
   {
     name: 'South City 2',
@@ -81,7 +81,7 @@ const plots: Plot[] = [
     name: 'DLF Alameda',
     image: '/sector-maps/dlf-alameda.jpg',
     description:
-      'DLF Alameda offers premium residential plots in a low-density luxury township in Sector 73 Gurgaon. The project combines modern infrastructure with lush green surroundings and top-class amenities. With excellent connectivity to NH-48 and SPR Road, it ensures unmatched convenience. Build a sophisticated lifestyle in one of Gurgaon\'s finest plotted communities.',
+      "DLF Alameda offers premium residential plots in a low-density luxury township in Sector 73 Gurgaon. The project combines modern infrastructure with lush green surroundings and top-class amenities. With excellent connectivity to NH-48 and SPR Road, it ensures unmatched convenience. Build a sophisticated lifestyle in one of Gurgaon's finest plotted communities.",
   },
   {
     name: 'DLF Garden City',
@@ -147,8 +147,8 @@ export default function PlotsGuideClient() {
                   Residential Plots in <span className="text-[#feb711]">Gurgaon</span>
                 </h1>
                 <p className="text-sm sm:text-base text-gray-400 max-w-2xl leading-relaxed">
-                  Explore detailed sector maps showing layouts, road networks, planning zones, and nearby infrastructure.
-                  Use the maps to evaluate connectivity and current property inventory across Gurgaon.
+                  Explore detailed sector maps showing layouts, road networks, planning zones, and nearby
+                  infrastructure. Use the maps to evaluate connectivity and current property inventory across Gurgaon.
                 </p>
               </div>
 
@@ -243,14 +243,10 @@ export default function PlotsGuideClient() {
                 {/* Title with yellow left bar */}
                 <div className="flex items-start gap-3 mb-5">
                   <span className="mt-1 w-1 min-h-full shrink-0 self-stretch rounded-full bg-[#feb711]" />
-                  <h2 className="text-xl sm:text-2xl font-bold text-[#0d1b25] leading-snug">
-                    {selected.name}
-                  </h2>
+                  <h2 className="text-xl sm:text-2xl font-bold text-[#0d1b25] leading-snug">{selected.name}</h2>
                 </div>
 
-                <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
-                  {selected.description}
-                </p>
+                <p className="text-sm sm:text-base text-gray-600 leading-relaxed">{selected.description}</p>
 
                 {/* Footer label */}
                 <div className="mt-6 pt-5 border-t border-gray-100 flex items-center gap-2">

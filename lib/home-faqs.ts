@@ -2,7 +2,7 @@ export type HomeFaq = { question: string; answer: string };
 
 // Shared source of truth for the homepage FAQ.
 // Rendered visibly by components/home/FAQ-section.tsx and emitted as
-// FAQPage JSON-LD by app/page.tsx — keep both in sync via this list.
+// FAQPage JSON-LD by app/page.tsx - keep both in sync via this list.
 export const HOME_FAQS: HomeFaq[] = [
   {
     question: 'Who is Realty Canvas?',

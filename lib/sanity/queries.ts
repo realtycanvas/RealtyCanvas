@@ -174,7 +174,7 @@ const mockBlogPosts: BlogPost[] = [
           {
             _type: 'span',
             _key: 'span-3',
-            text: "Sustainable architecture is no longer just a trend—it's becoming the standard for responsible development. Learn about the innovative approaches that are shaping the future of construction.",
+            text: "Sustainable architecture is no longer just a trend-it's becoming the standard for responsible development. Learn about the innovative approaches that are shaping the future of construction.",
             marks: [],
           },
         ],
@@ -404,6 +404,19 @@ export async function getFeaturedBlogPosts(): Promise<BlogPostPreview[]> {
 
   const query = `*[_type == "blogPost" && featured == true] | order(publishedAt desc) [0...3] {
     ${BLOG_POST_PREVIEW_FIELDS}
+  }`;
+
+  return client.fetch(query);
+}
+
+// Every published post with full body/faqs - used by the llms.txt generators.
+export async function getAllBlogPostsForLlms(): Promise<BlogPost[]> {
+  if (isDevelopmentMode) {
+    return [...mockBlogPosts].sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+  }
+
+  const query = `*[_type == "blogPost" && defined(slug.current)] | order(publishedAt desc) {
+    ${BLOG_POST_FIELDS}
   }`;
 
   return client.fetch(query);
