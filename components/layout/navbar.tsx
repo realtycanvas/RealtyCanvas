@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 
-import { defaultNavItems } from '@/data/navbar.data';
+import { defaultNavItems, type NavItem } from '@/data/navbar.data';
 import { useEffect, useMemo, useState } from 'react';
 import { formatPhoneLink, formatWhatsappLink } from '@/helpers/navbar.helper';
 import { BarsIcon, CloseIcon, PhoneIcon, ShareIcon, WhatsappIcon } from '../ui/icon';
@@ -11,6 +11,16 @@ import { usePathname } from 'next/navigation';
 import { useRouter } from 'nextjs-toploader/app';
 import { LogoutModal } from '../common/logout-modal';
 import { useAuth } from '@/hooks/use-auth';
+
+type NavbarProps = {
+  brandName?: string;
+  logoLightSrc?: string;
+  logoDarkSrc?: string;
+  phoneNumber?: string;
+  whatsappNumber?: string;
+  navItems?: NavItem[];
+  currentPath?: string;
+};
 
 const Navbar = ({
   brandName = 'Realty Canvas',
