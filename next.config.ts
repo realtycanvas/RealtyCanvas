@@ -7,6 +7,10 @@ const nextConfig: NextConfig = {
     return [
       { source: '/logo-white.webp', destination: '/logo/logo-white.webp' },
       { source: '/logo-original.webp', destination: '/logo/logo-original.webp' },
+      // /vedic-city-goa serves the original static build verbatim (it carries its
+      // own GTM + Pabbly wiring) from public/vedic-city-goa/. The React version of
+      // this page is shelved under archive/vedic-city-goa-react/.
+      { source: '/vedic-city-goa', destination: '/vedic-city-goa/index.html' },
     ];
   },
   async redirects() {

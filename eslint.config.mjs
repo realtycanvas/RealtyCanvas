@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Shelved implementations - not compiled, not routed.
+    "archive/**",
   ]),
 ]);
 
